@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 1198px;
+            height: 822px;
+            background-color: #ffffff;
+            position: relative;
+        }
+
+        .top-panel {
+            width: 100%;
+            height: 70px;
+            background-color: #4169E1;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .dashboard-panel {
+            width: 500px;
+            height: 280px;
+            background-color: #6495ED;
+            position: absolute;
+            top: 272px;
+            left: 350px;
+            border-radius: 8px;
+            padding: 30px 50px;
+        }
+
+        .welcome-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .button {
+            width: 100%;
+            height: 30px;
+            background-color: #4169E1;
+            color: #ffffff;
+            border: 1px solid #4169E1;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 9px;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #315bb5;
+            border-color: #315bb5;
+            transform: translateY(-1px);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button-order {
+            margin-top: 0;
+        }
+
+        .button-inventory {
+            margin-top: 0;
+        }
+
+        .button-sales {
+            margin-top: 0;
+        }
+
+        .button-account {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-panel"></div>
+        
+        <div class="dashboard-panel">
+            <h1 class="welcome-title">Welcome Admin!</h1>
+            
+            <button class="button button-order" onclick="handleOrderManagement()">
+                Order Management
+            </button>
+            
+            <button class="button button-inventory" onclick="handleInventoryManagement()">
+                Inventory Management
+            </button>
+            
+            <button class="button button-sales" onclick="handleSalesReport()">
+                Sales Report
+            </button>
+            
+            <button class="button button-account" onclick="handleAccount()">
+                Account
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function handleOrderManagement() {
+            alert('Opening Order Management...');
+            // Add navigation logic here
+        }
+
+        function handleInventoryManagement() {
+            alert('Opening Inventory Management...');
+            // Add navigation logic here
+        }
+
+        function handleSalesReport() {
+            alert('Opening Sales Report...');
+            // Add navigation logic here
+        }
+
+        function handleAccount() {
+            alert('Opening Account...');
+            // Add navigation logic here
+        }
+    </script>
+</body>
+</html>

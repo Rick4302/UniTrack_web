@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 1198px;
+            height: 822px;
+            background-color: #ffffff;
+            position: relative;
+        }
+
+        .top-panel {
+            width: 100%;
+            height: 70px;
+            background-color: #4169E1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .back-button {
+            font-size: 33px;
+            font-weight: bold;
+            color: #FFFF00;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .update-btn {
+            background-color: #FFFF00;
+            color: #000000;
+            border: 1px solid #FFFF00;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
+
+        .update-btn:hover {
+            background-color: #e6e600;
+            border-color: #e6e600;
+            transform: translateY(-1px);
+        }
+
+        .update-btn:active {
+            transform: translateY(0);
+        }
+
+        .filter-panel {
+            margin: 15px 17px 0;
+            background-color: #6495ED;
+            padding: 11px 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        select {
+            width: 152px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            font-weight: bold;
+            color: #999;
+            background-color: #ffffff;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4169E1;
+        }
+
+        .filter-btn, .add-btn {
+            background-color: #FFFF00;
+            color: #000000;
+            border: 1px solid #FFFF00;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .add-btn:hover {
+            background-color: #e6e600;
+            border-color: #e6e600;
+            transform: translateY(-1px);
+        }
+
+        .filter-btn:active, .add-btn:active {
+            transform: translateY(0);
+        }
+
+        .add-btn {
+            margin-left: auto;
+        }
+
+        .data-grid-container {
+            margin: 11px 17px 17px;
+            background-color: #6495ED;
+            height: 661px;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+
+        th {
+            background-color: #4169E1;
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .stock-low {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .stock-medium {
+            color: #f57c00;
+            font-weight: bold;
+        }
+
+        .stock-high {
+            color: #388e3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-panel">
+            <div class="back-button" onclick="goBack()">&lt;</div>
+            <div class="title">Stocks Available</div>
+            <button class="update-btn" onclick="updateStocks()">UPDATE STOCKS</button>
+        </div>
+        
+        <div class="filter-panel">
+            <select id="courseFilter" onchange="applyFilters()">
+                <option value="">Course</option>
+                <option value="computer-science">Computer Science</option>
+                <option value="engineering">Engineering</option>
+                <option value="business">Business</option>
+                <option value="arts">Arts</option>
+            </select>
+            
+            <select id="sizeFilter" onchange="applyFilters()">
+                <option value="">Size</option>
+                <option value="xs">XS</option>
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+                <option value="xl">XL</option>
+                <option value="xxl">XXL</option>
+            </select>
+            
+            <button class="filter-btn" onclick="applyFilters()">FILTER</button>
+            <button class="add-btn" onclick="addItem()">ADD AN ITEM</button>
+        </div>
+        
+        <div class="data-grid-container">
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Item ID</th>
+                        <th>Product Name</th>
+                        <th>Course</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Last Updated</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    <!-- Sample data -->
+                    <tr data-course="computer-science" data-size="medium">
+                        <td>ITEM-001</td>
+                        <td>CS Uniform Shirt</td>
+                        <td>Computer Science</td>
+                        <td>Medium</td>
+                        <td><span class="stock-high">150</span></td>
+                        <td>$25.00</td>
+                        <td>2025-11-15</td>
+                        <td>In Stock</td>
+                    </tr>
+                    <tr data-course="engineering" data-size="large">
+                        <td>ITEM-002</td>
+                        <td>Engineering Polo</td>
+                        <td>Engineering</td>
+                        <td>Large</td>
+                        <td><span class="stock-medium">45</span></td>
+                        <td>$30.00</td>
+                        <td>2025-11-16</td>
+                        <td>In Stock</td>
+                    </tr>
+                    <tr data-course="business" data-size="small">
+                        <td>ITEM-003</td>
+                        <td>Business Attire</td>
+                        <td>Business</td>
+                        <td>Small</td>
+                        <td><span class="stock-low">12</span></td>
+                        <td>$35.00</td>
+                        <td>2025-11-17</td>
+                        <td>Low Stock</td>
+                    </tr>
+                    <tr data-course="arts" data-size="medium">
+                        <td>ITEM-004</td>
+                        <td>Arts T-Shirt</td>
+                        <td>Arts</td>
+                        <td>Medium</td>
+                        <td><span class="stock-high">200</span></td>
+                        <td>$20.00</td>
+                        <td>2025-11-18</td>
+                        <td>In Stock</td>
+                    </tr>
+                    <tr data-course="engineering" data-size="xl">
+                        <td>ITEM-005</td>
+                        <td>Engineering Lab Coat</td>
+                        <td>Engineering</td>
+                        <td>XL</td>
+                        <td><span class="stock-medium">38</span></td>
+                        <td>$45.00</td>
+                        <td>2025-11-19</td>
+                        <td>In Stock</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            alert('Navigating back...');
+            // Add navigation logic here
+        }
+
+        function updateStocks() {
+            alert('Opening Update Stocks dialog...');
+            // Add update stocks logic here
+        }
+
+        function addItem() {
+            alert('Opening Add Item dialog...');
+            // Add item logic here
+        }
+
+        function applyFilters() {
+            const courseFilter = document.getElementById('courseFilter').value;
+            const sizeFilter = document.getElementById('sizeFilter').value;
+            
+            const rows = document.querySelectorAll('#inventoryTableBody tr');
+            
+            rows.forEach(row => {
+                const course = row.getAttribute('data-course');
+                const size = row.getAttribute('data-size');
+                
+                let showRow = true;
+                
+                // Course filter
+                if (courseFilter && course !== courseFilter) {
+                    showRow = false;
+                }
+                
+                // Size filter
+                if (sizeFilter && size !== sizeFilter) {
+                    showRow = false;
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        function updateStockStatus(quantity) {
+            if (quantity < 20) return 'stock-low';
+            if (quantity < 50) return 'stock-medium';
+            return 'stock-high';
+        }
+
+        // Function to load inventory data dynamically
+        function loadInventoryData(inventoryData) {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+            
+            if (inventoryData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No inventory items found</td></tr>';
+                return;
+            }
+            
+            inventoryData.forEach(item => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-course', item.course.toLowerCase().replace(/\s+/g, '-'));
+                row.setAttribute('data-size', item.size.toLowerCase());
+                
+                const stockClass = updateStockStatus(item.quantity);
+                const status = item.quantity < 20 ? 'Low Stock' : 'In Stock';
+                
+                row.innerHTML = `
+                    <td>${item.itemId}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.course}</td>
+                    <td>${item.size}</td>
+                    <td><span class="${stockClass}">${item.quantity}</span></td>
+                    <td>${item.price}</td>
+                    <td>${item.lastUpdated}</td>
+                    <td>${status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Example: Load inventory data from API or database
+        // loadInventoryData(inventoryData);
+    </script>
+</body>
+</html>

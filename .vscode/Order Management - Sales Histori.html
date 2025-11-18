@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales History</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 1198px;
+            height: 822px;
+            background-color: #ffffff;
+            position: relative;
+        }
+
+        .top-panel {
+            width: 100%;
+            height: 70px;
+            background-color: #4169E1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .back-button {
+            font-size: 33px;
+            font-weight: bold;
+            color: #FFFF00;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .filter-panel {
+            margin: 15px 17px 0;
+            background-color: #6495ED;
+            padding: 15px 17px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-box {
+            width: 185px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #4169E1;
+            color: #000;
+        }
+
+        select {
+            width: 152px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            font-weight: bold;
+            color: #999;
+            background-color: #ffffff;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4169E1;
+        }
+
+        select:not(:first-of-type) {
+            margin-left: 0;
+        }
+
+        .data-grid-container {
+            margin: 6px 17px 17px;
+            background-color: #6495ED;
+            height: 666px;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+
+        th {
+            background-color: #4169E1;
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-panel">
+            <div class="back-button" onclick="goBack()">&lt;</div>
+            <div class="title">Sales History</div>
+        </div>
+        
+        <div class="filter-panel">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search..." oninput="filterTable()">
+            
+            <div class="filter-container">
+                <select id="dateFilter" onchange="filterTable()">
+                    <option value="">Select Date</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                </select>
+                
+                <select id="sizeFilter" onchange="filterTable()">
+                    <option value="">Select Size</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                    <option value="xl">XL</option>
+                </select>
+                
+                <select id="paymentFilter" onchange="filterTable()">
+                    <option value="">Payment Type</option>
+                    <option value="cash">Cash</option>
+                    <option value="credit">Credit Card</option>
+                    <option value="debit">Debit Card</option>
+                    <option value="online">Online Payment</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="data-grid-container">
+            <table id="salesTable">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Product</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Total Amount</th>
+                        <th>Payment Type</th>
+                        <th>Order Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="salesTableBody">
+                    <!-- Sample data -->
+                    <tr data-size="medium" data-payment="cash" data-date="2025-11-15">
+                        <td>ORD-001</td>
+                        <td>John Doe</td>
+                        <td>Product A</td>
+                        <td>Medium</td>
+                        <td>5</td>
+                        <td>$250.00</td>
+                        <td>Cash</td>
+                        <td>2025-11-15</td>
+                        <td>Completed</td>
+                    </tr>
+                    <tr data-size="large" data-payment="credit" data-date="2025-11-16">
+                        <td>ORD-002</td>
+                        <td>Jane Smith</td>
+                        <td>Product B</td>
+                        <td>Large</td>
+                        <td>3</td>
+                        <td>$150.00</td>
+                        <td>Credit Card</td>
+                        <td>2025-11-16</td>
+                        <td>Completed</td>
+                    </tr>
+                    <tr data-size="small" data-payment="online" data-date="2025-11-17">
+                        <td>ORD-003</td>
+                        <td>Bob Johnson</td>
+                        <td>Product C</td>
+                        <td>Small</td>
+                        <td>10</td>
+                        <td>$500.00</td>
+                        <td>Online Payment</td>
+                        <td>2025-11-17</td>
+                        <td>Completed</td>
+                    </tr>
+                    <tr data-size="xl" data-payment="debit" data-date="2025-11-18">
+                        <td>ORD-004</td>
+                        <td>Alice Williams</td>
+                        <td>Product D</td>
+                        <td>XL</td>
+                        <td>2</td>
+                        <td>$120.00</td>
+                        <td>Debit Card</td>
+                        <td>2025-11-18</td>
+                        <td>Completed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            alert('Navigating back...');
+            // Add navigation logic here
+        }
+
+        function filterTable() {
+            const searchValue = document.getElementById('searchBox').value.toLowerCase();
+            const dateFilter = document.getElementById('dateFilter').value;
+            const sizeFilter = document.getElementById('sizeFilter').value;
+            const paymentFilter = document.getElementById('paymentFilter').value;
+            
+            const rows = document.querySelectorAll('#salesTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const size = row.getAttribute('data-size');
+                const payment = row.getAttribute('data-payment');
+                
+                let showRow = true;
+                
+                // Search filter
+                if (searchValue && !text.includes(searchValue)) {
+                    showRow = false;
+                }
+                
+                // Size filter
+                if (sizeFilter && size !== sizeFilter) {
+                    showRow = false;
+                }
+                
+                // Payment filter
+                if (paymentFilter && payment !== paymentFilter) {
+                    showRow = false;
+                }
+                
+                // Date filter (simplified - you can enhance this)
+                if (dateFilter) {
+                    // Add your date filtering logic here
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // Function to load sales data dynamically
+        function loadSalesData(salesData) {
+            const tbody = document.getElementById('salesTableBody');
+            tbody.innerHTML = '';
+            
+            if (salesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="no-data">No sales history found</td></tr>';
+                return;
+            }
+            
+            salesData.forEach(sale => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-size', sale.size.toLowerCase());
+                row.setAttribute('data-payment', sale.paymentType.toLowerCase());
+                row.setAttribute('data-date', sale.orderDate);
+                
+                row.innerHTML = `
+                    <td>${sale.orderId}</td>
+                    <td>${sale.customerName}</td>
+                    <td>${sale.product}</td>
+                    <td>${sale.size}</td>
+                    <td>${sale.quantity}</td>
+                    <td>${sale.totalAmount}</td>
+                    <td>${sale.paymentType}</td>
+                    <td>${sale.orderDate}</td>
+                    <td>${sale.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Example: Load sales data from API or database
+        // loadSalesData(salesData);
+    </script>
+</body>
+</html>

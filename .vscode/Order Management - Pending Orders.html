@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Orders</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 1198px;
+            height: 822px;
+            background-color: #ffffff;
+            position: relative;
+        }
+
+        .top-panel {
+            width: 100%;
+            height: 70px;
+            background-color: #4169E1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .back-button {
+            font-size: 33px;
+            font-weight: bold;
+            color: #FFFF00;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .sales-history-btn {
+            background-color: #FFFF00;
+            color: #000000;
+            border: 1px solid #FFFF00;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sales-history-btn:hover {
+            background-color: #e6e600;
+            border-color: #e6e600;
+            transform: translateY(-1px);
+        }
+
+        .sales-history-btn:active {
+            transform: translateY(0);
+        }
+
+        .data-grid-container {
+            margin: 24px 17px;
+            background-color: #6495ED;
+            height: 717px;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+
+        th {
+            background-color: #4169E1;
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-panel">
+            <div class="back-button" onclick="goBack()">&lt;</div>
+            <div class="title">Pending Orders</div>
+            <button class="sales-history-btn" onclick="viewSalesHistory()">SALES HISTORY</button>
+        </div>
+        
+        <div class="data-grid-container">
+            <table id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Total Amount</th>
+                        <th>Order Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <!-- Sample data - replace with actual data -->
+                    <tr>
+                        <td>ORD-001</td>
+                        <td>John Doe</td>
+                        <td>Product A</td>
+                        <td>5</td>
+                        <td>$250.00</td>
+                        <td>2025-11-15</td>
+                        <td>Pending</td>
+                    </tr>
+                    <tr>
+                        <td>ORD-002</td>
+                        <td>Jane Smith</td>
+                        <td>Product B</td>
+                        <td>3</td>
+                        <td>$150.00</td>
+                        <td>2025-11-16</td>
+                        <td>Pending</td>
+                    </tr>
+                    <tr>
+                        <td>ORD-003</td>
+                        <td>Bob Johnson</td>
+                        <td>Product C</td>
+                        <td>10</td>
+                        <td>$500.00</td>
+                        <td>2025-11-17</td>
+                        <td>Pending</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            alert('Navigating back...');
+            // Add navigation logic here
+            // window.history.back() or redirect to dashboard
+        }
+
+        function viewSalesHistory() {
+            alert('Opening Sales History...');
+            // Add navigation logic here
+        }
+
+        // Function to load orders dynamically
+        function loadOrders(orders) {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = '';
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">No pending orders found</td></tr>';
+                return;
+            }
+            
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.customerName}</td>
+                    <td>${order.product}</td>
+                    <td>${order.quantity}</td>
+                    <td>${order.totalAmount}</td>
+                    <td>${order.orderDate}</td>
+                    <td>${order.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Example: Load orders from API or database
+        // loadOrders(ordersData);
+    </script>
+</body>
+</html>
