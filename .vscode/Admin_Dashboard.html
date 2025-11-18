@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>UniTrack</title>
     <style>
         * {
             margin: 0;
@@ -31,9 +31,37 @@
             width: 100%;
             height: 70px;
             background-color: #4169E1;
-            position: absolute;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            position: fixed;
             top: 0;
             left: 0;
+            z-index: 1000;
+        }
+
+        .admin-info {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #FFC700;
+            transform: translateY(-2px);
         }
 
         .dashboard-panel {
@@ -97,7 +125,12 @@
 </head>
 <body>
     <div class="container">
-        <div class="top-panel"></div>
+        <div class="top-panel">
+            <div class="admin-info">
+                Welcome, <span id="adminEmail">Admin</span>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        </div>
         
         <div class="dashboard-panel">
             <h1 class="welcome-title">Welcome Admin!</h1>
@@ -121,24 +154,54 @@
     </div>
 
     <script>
+        // Check if user is logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const adminEmail = sessionStorage.getItem('adminEmail');
+            
+            if (!adminEmail) {
+                // Redirect to login if not authenticated
+                window.location.href = 'Admin%20Login.html';
+                return;
+            }
+            
+            // Display admin email
+            document.getElementById('adminEmail').textContent = adminEmail;
+        });
+
         function handleOrderManagement() {
             alert('Opening Order Management...');
-            // Add navigation logic here
+            // TODO: Navigate to Order Management page
+            // window.location.href = 'Order_Management.html';
         }
 
         function handleInventoryManagement() {
             alert('Opening Inventory Management...');
-            // Add navigation logic here
+            // TODO: Navigate to Inventory Management page
+            // window.location.href = 'Inventory_Management.html';
         }
 
         function handleSalesReport() {
             alert('Opening Sales Report...');
-            // Add navigation logic here
+            // TODO: Navigate to Sales Report page
+            // window.location.href = 'Sales_Report.html';
         }
 
         function handleAccount() {
             alert('Opening Account...');
-            // Add navigation logic here
+            // TODO: Navigate to Account page
+            // window.location.href = 'Account.html';
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear session data
+                sessionStorage.removeItem('adminEmail');
+                sessionStorage.removeItem('adminUserId');
+                localStorage.removeItem('rememberedEmail');
+                
+                // Redirect to login page
+                window.location.href = 'Admin%20Login.html';
+            }
         }
     </script>
 </body>
