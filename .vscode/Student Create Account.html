@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signup-panel {
+            background-color: #FFD700;
+            padding: 30px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 6px;
+        }
+
+        .input-with-button {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input.full-width {
+            width: 100%;
+        }
+
+        .form-input:focus {
+            border-color: #4169E1;
+        }
+
+        .btn-verify {
+            padding: 12px 20px;
+            background-color: #4169E1;
+            color: #fff;
+            font-size: 13px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-verify:hover {
+            background-color: #365ac6;
+        }
+
+        .btn-verify:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-signup {
+            width: 120px;
+            padding: 12px;
+            background-color: #4169E1;
+            color: #fff;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .btn-signup:hover {
+            background-color: #365ac6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(65, 105, 225, 0.4);
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .footer-text-gray {
+            font-size: 13px;
+            font-weight: bold;
+            color: #A9A9A9;
+        }
+
+        .footer-link {
+            font-size: 13px;
+            font-weight: bold;
+            color: #808080;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        .verification-status {
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .verified {
+            color: #008000;
+        }
+
+        .not-verified {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-panel">
+            <h1 class="title">Create Account</h1>
+            
+            <form onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label" for="studentId">Student ID</label>
+                    <input 
+                        type="text" 
+                        id="studentId" 
+                        class="form-input full-width" 
+                        placeholder="Enter your student ID"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <div class="input-with-button">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            class="form-input" 
+                            placeholder="Enter your email"
+                            required
+                        >
+                        <button type="button" class="btn-verify" onclick="verifyEmail()" id="verifyEmailBtn">
+                            VERIFY EMAIL
+                        </button>
+                    </div>
+                    <div id="emailStatus" class="verification-status"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="otp">OTP</label>
+                    <div class="input-with-button">
+                        <input 
+                            type="text" 
+                            id="otp" 
+                            class="form-input" 
+                            placeholder="Enter OTP code"
+                            maxlength="6"
+                            disabled
+                        >
+                        <button type="button" class="btn-verify" onclick="verifyOTP()" id="verifyOtpBtn" disabled>
+                            VERIFY OTP
+                        </button>
+                    </div>
+                    <div id="otpStatus" class="verification-status"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input full-width" 
+                        placeholder="Enter password"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        class="form-input full-width" 
+                        placeholder="Confirm your password"
+                        required
+                    >
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="showPassword" onchange="togglePassword()">
+                    <label for="showPassword">Show Password</label>
+                </div>
+
+                <button type="submit" class="btn-signup" id="signupBtn" disabled>
+                    SIGNUP
+                </button>
+            </form>
+
+            <div class="footer-text">
+                <span class="footer-text-gray">Already have an account?</span>
+                <a href="#" class="footer-link" onclick="goToLogin(event)">Log In Here!</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let emailVerified = false;
+        let otpVerified = false;
+
+        function verifyEmail() {
+            const email = document.getElementById('email').value;
+            
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+
+            // Simulate sending OTP
+            alert(`OTP code sent to ${email}\n\nFor demo purposes, use code: 123456`);
+            
+            emailVerified = true;
+            document.getElementById('emailStatus').textContent = '✓ Email verified. OTP sent!';
+            document.getElementById('emailStatus').className = 'verification-status verified';
+            
+            // Enable OTP field
+            document.getElementById('otp').disabled = false;
+            document.getElementById('verifyOtpBtn').disabled = false;
+            document.getElementById('verifyEmailBtn').disabled = true;
+            document.getElementById('email').disabled = true;
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('otp').value;
+            
+            if (!otp) {
+                alert('Please enter the OTP code');
+                return;
+            }
+
+            // Simulate OTP verification (in real app, verify with backend)
+            if (otp === '123456') {
+                otpVerified = true;
+                document.getElementById('otpStatus').textContent = '✓ OTP verified successfully!';
+                document.getElementById('otpStatus').className = 'verification-status verified';
+                document.getElementById('verifyOtpBtn').disabled = true;
+                document.getElementById('otp').disabled = true;
+                document.getElementById('signupBtn').disabled = false;
+            } else {
+                document.getElementById('otpStatus').textContent = '✗ Invalid OTP code';
+                document.getElementById('otpStatus').className = 'verification-status not-verified';
+            }
+        }
+
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const confirmPasswordField = document.getElementById('confirmPassword');
+            const showPassword = document.getElementById('showPassword').checked;
+            
+            passwordField.type = showPassword ? 'text' : 'password';
+            confirmPasswordField.type = showPassword ? 'text' : 'password';
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            if (!otpVerified) {
+                alert('Please verify your email and OTP first');
+                return;
+            }
+
+            const studentId = document.getElementById('studentId').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
+
+            alert(`Account created successfully!\n\nStudent ID: ${studentId}\nEmail: ${email}\n\nYou can now log in.`);
+            
+            // Redirect to login page
+            // window.location.href = 'login.html';
+        }
+
+        function goToLogin(event) {
+            event.preventDefault();
+            alert('Redirecting to login page...');
+            // window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

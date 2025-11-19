@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTrack - Business Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+        }
+
+        .header {
+            background-color: #FFD700;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-title {
+            font-size: 42px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .header-icons {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .icon-settings {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M5.6 5.6l4.2 4.2m4.4 4.4l4.2 4.2M1 12h6m6 0h6M5.6 18.4l4.2-4.2m4.4-4.4l4.2-4.2"/></svg>');
+        }
+
+        .icon-cart {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>');
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background-color: #D3D3D3;
+            border: 2px solid #000;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #C0C0C0;
+        }
+
+        .nav-btn.active {
+            background-color: #D3D3D3;
+        }
+
+        .content {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .product-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .product-image img {
+            max-width: 450px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .products-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #000;
+            border-radius: 4px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .product-size {
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 0 10px;
+            min-width: 70px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #FFD700;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .btn-add {
+            padding: 6px 20px;
+            background-color: #FFD700;
+            border: 2px solid #FFD700;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(255, 215, 0, 0.4);
+        }
+
+        @media (max-width: 968px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .nav-buttons {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-icons">
+            <div class="icon icon-settings" onclick="goToSettings()"></div>
+            <div class="icon icon-cart" onclick="goToCart()"></div>
+        </div>
+        <h1 class="header-title">UniTrack</h1>
+        <p class="header-subtitle">STI College Global City</p>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="nav-btn" onclick="changeDepartment('jhs')">JHS/SHS</button>
+        <button class="nav-btn" onclick="changeDepartment('ict')">ICT and ENGINEERING</button>
+        <button class="nav-btn" onclick="changeDepartment('tm')">TOURISM MANAGEMENT</button>
+        <button class="nav-btn" onclick="changeDepartment('hm')">HOSPITALITY MANAGEMENT</button>
+        <button class="nav-btn" onclick="changeDepartment('ans')">ART and SCIENCES</button>
+        <button class="nav-btn active">BUSINESS and MANAGEMENT</button>
+    </div>
+
+    <div class="content">
+        <div class="product-image">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 450 350'%3E%3Crect fill='%23f0f0f0' width='450' height='350'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='24' fill='%23999'%3EUniform Preview%3C/text%3E%3C/svg%3E" alt="Business Management Uniform">
+        </div>
+
+        <div class="products-list">
+            <div class="product-item">
+                <span class="product-name">BUSINESS AND MANAGEMENT - RED SCARF</span>
+                <span class="product-size"></span>
+                <span class="product-price">₱150.00</span>
+                <button class="btn-add" onclick="addToCart('Red Scarf', null, 150)">ADD</button>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">BUSINESS AND MANAGEMENT - RED NECKTIE</span>
+                <span class="product-size"></span>
+                <span class="product-price">₱150.00</span>
+                <button class="btn-add" onclick="addToCart('Red Necktie', null, 150)">ADD</button>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">BUSINESS AND MANAGEMENT - BLUE LONG SLEEVE POLO</span>
+                <select class="product-size" id="polo-size">
+                    <option>Size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                    <option>XL</option>
+                </select>
+                <span class="product-price">₱650.00</span>
+                <button class="btn-add" onclick="addToCart('Blue Long Sleeve Polo', 'polo-size', 650)">ADD</button>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">BUSINESS AND MANAGEMENT - BLUE LONG SLEEVE BLOUSE</span>
+                <select class="product-size" id="blouse-size">
+                    <option>Size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                    <option>XL</option>
+                </select>
+                <span class="product-price">₱650.00</span>
+                <button class="btn-add" onclick="addToCart('Blue Long Sleeve Blouse', 'blouse-size', 650)">ADD</button>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">BUSINESS AND MANAGEMENT - MALE BLAZER</span>
+                <select class="product-size" id="mblazer-size">
+                    <option>Size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                    <option>XL</option>
+                </select>
+                <span class="product-price">₱1,200.00</span>
+                <button class="btn-add" onclick="addToCart('Male Blazer', 'mblazer-size', 1200)">ADD</button>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">BUSINESS AND MANAGEMENT - FEMALE BLAZER</span>
+                <select class="product-size" id="fblazer-size">
+                    <option>Size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                    <option>XL</option>
+                </select>
+                <span class="product-price">₱1,200.00</span>
+                <button class="btn-add" onclick="addToCart('Female Blazer', 'fblazer-size', 1200)">ADD</button>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">BUSINESS AND MANAGEMENT - PANTS</span>
+                <select class="product-size" id="pants-size">
+                    <option>Size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                    <option>XL</option>
+                </select>
+                <span class="product-price">₱550.00</span>
+                <button class="btn-add" onclick="addToCart('Pants', 'pants-size', 550)">ADD</button>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">BUSINESS AND MANAGEMENT - SKIRT</span>
+                <select class="product-size" id="skirt-size">
+                    <option>Size</option>
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                    <option>XL</option>
+                </select>
+                <span class="product-price">₱550.00</span>
+                <button class="btn-add" onclick="addToCart('Skirt', 'skirt-size', 550)">ADD</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addToCart(itemName, sizeSelectId, price) {
+            let size = 'One Size';
+            
+            if (sizeSelectId) {
+                const sizeSelect = document.getElementById(sizeSelectId);
+                size = sizeSelect.value;
+                
+                if (size === 'Size') {
+                    alert('Please select a size first');
+                    return;
+                }
+            }
+
+            alert(`Added to cart:\n${itemName}\nSize: ${size}\nPrice: ₱${price.toFixed(2)}`);
+            
+            // Here you would typically add to cart storage
+            console.log('Added to cart:', { itemName, size, price });
+        }
+
+        function changeDepartment(dept) {
+            alert(`Switching to ${dept.toUpperCase()} department...`);
+            // window.location.href = `dashboard-${dept}.html`;
+        }
+
+        function goToSettings() {
+            alert('Opening settings...');
+            // window.location.href = 'settings.html';
+        }
+
+        function goToCart() {
+            alert('Opening shopping cart...');
+            // window.location.href = 'shopping-cart.html';
+        }
+    </script>
+</body>
+</html>

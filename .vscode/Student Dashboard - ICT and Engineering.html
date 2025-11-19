@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTrack - ICT and Engineering</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        .container {
+            width: 1198px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+
+        .header {
+            background-color: #ffff00;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        .logo-title {
+            font-size: 42px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .logo-subtitle {
+            font-size: 13px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            background-color: #333;
+            border-radius: 4px;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 0;
+            padding: 18px 0;
+            background-color: #ffffff;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background-color: #d3d3d3;
+            border: 1px solid #999;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            color: #000000;
+        }
+
+        .nav-btn:hover {
+            background-color: #c0c0c0;
+        }
+
+        .nav-btn.active {
+            background-color: #d3d3d3;
+        }
+
+        .main-image {
+            width: 500px;
+            height: 400px;
+            margin: 20px auto;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+        }
+
+        .products-section {
+            padding: 20px 26px;
+        }
+
+        .product-item {
+            border: 1px solid #000;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            margin-bottom: 0;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #000000;
+        }
+
+        .product-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .size-select {
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            color: #c0c0c0;
+            font-size: 13px;
+        }
+
+        .price-label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #4169e1;
+        }
+
+        .add-btn {
+            background-color: #ffff00;
+            border: 1px solid #000;
+            padding: 6px 20px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .add-btn:hover {
+            background-color: #ffed00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="width: 50px;"></div>
+            <div class="logo-section">
+                <div class="logo-title">UniTrack</div>
+                <div class="logo-subtitle">STI College Global City</div>
+            </div>
+            <div class="header-icons">
+                <div class="icon-btn" title="Settings"></div>
+                <div class="icon-btn" title="Cart"></div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn">JHS/SHS</button>
+            <button class="nav-btn active">ICT and ENGINEERING</button>
+            <button class="nav-btn">TOURISM MANAGEMENT</button>
+            <button class="nav-btn">HOSPITALITY MANAGEMENT</button>
+            <button class="nav-btn">ART and SCIENCES</button>
+            <button class="nav-btn">BUSINESS and MANAGEMENT</button>
+        </div>
+
+        <div class="main-image"></div>
+
+        <div class="products-section">
+            <div class="product-item">
+                <span class="product-name">ICT AND ENGINEERING - GRAY POLO WITH 3/4 SLEEVES</span>
+                <div class="product-controls">
+                    <select class="size-select">
+                        <option>Size</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                    </select>
+                    <span class="price-label">PRICE</span>
+                    <button class="add-btn">ADD</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">ICT AND ENGINEERING - GRAY BLOUSE WITH 3/4 SLEEVES</span>
+                <div class="product-controls">
+                    <select class="size-select">
+                        <option>Size</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                    </select>
+                    <span class="price-label">PRICE</span>
+                    <button class="add-btn">ADD</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">ICT AND ENGINEERING - PANTS</span>
+                <div class="product-controls">
+                    <select class="size-select">
+                        <option>Size</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                    </select>
+                    <span class="price-label">PRICE</span>
+                    <button class="add-btn">ADD</button>
+                </div>
+            </div>
+
+            <div class="product-item">
+                <span class="product-name">ICT AND ENGINEERING - SKIRT</span>
+                <div class="product-controls">
+                    <select class="size-select">
+                        <option>Size</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                    </select>
+                    <span class="price-label">PRICE</span>
+                    <button class="add-btn">ADD</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: #FFD700;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .back-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .back-button {
+            position: absolute;
+            right: 20px;
+            font-size: 32px;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: translateX(5px);
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 70px);
+            padding: 20px;
+        }
+
+        .settings-panel {
+            background-color: #FFFFE0;
+            padding: 40px 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 4px;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 215, 0, 0.2);
+            transform: translateX(5px);
+        }
+
+        .menu-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .menu-label {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .logout-button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #FFD700;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #FFD700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-button:hover {
+            background-color: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+
+        /* SVG Icons as background images using data URIs */
+        .icon-account {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .icon-cart {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .icon-settings {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M5.6 5.6l4.2 4.2m4.4 4.4l4.2 4.2M1 12h6m6 0h6M5.6 18.4l4.2-4.2m4.4-4.4l4.2-4.2"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="icon-settings back-icon"></div>
+        <h1 class="header-title">Settings</h1>
+        <div class="back-button" onclick="goBack()">&lt;</div>
+    </div>
+
+    <div class="container">
+        <div class="settings-panel">
+            <div class="menu-item" onclick="navigateToAccount()">
+                <div class="menu-icon icon-account"></div>
+                <div class="menu-label">Account</div>
+            </div>
+
+            <div class="menu-item" onclick="navigateToCart()">
+                <div class="menu-icon icon-cart"></div>
+                <div class="menu-label">Cart</div>
+            </div>
+
+            <button class="logout-button" onclick="handleLogout()">
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function navigateToAccount() {
+            alert('Navigating to Account settings...');
+            // window.location.href = 'account.html';
+        }
+
+        function navigateToCart() {
+            alert('Navigating to Shopping Cart...');
+            // window.location.href = 'shopping-cart.html';
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to log out?')) {
+                alert('Logging out...');
+                // Clear session and redirect to login
+                // window.location.href = 'login.html';
+            }
+        }
+
+        function goBack() {
+            alert('Going back to previous page...');
+            // window.history.back();
+        }
+    </script>
+</body>
+</html>

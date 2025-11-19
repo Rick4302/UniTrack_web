@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: #4169E1;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 20px;
+            font-size: 32px;
+            color: #FFD700;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .controls-panel {
+            background-color: #6495ED;
+            margin: 20px;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .controls-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .date-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-select, .date-picker {
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #999;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .filter-select {
+            min-width: 152px;
+        }
+
+        .date-picker {
+            min-width: 183px;
+        }
+
+        .buttons-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 2px solid;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-export {
+            background-color: #C0C0C0;
+            color: #000;
+            border-color: #C0C0C0;
+        }
+
+        .btn-export:hover {
+            background-color: #A9A9A9;
+        }
+
+        .btn-filter, .btn-dates, .btn-alltime {
+            background-color: #FFD700;
+            color: #000;
+            border-color: #FFD700;
+        }
+
+        .btn-filter:hover, .btn-dates:hover, .btn-alltime:hover {
+            background-color: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.4);
+        }
+
+        .chart-container {
+            margin: 20px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            max-width: 100%;
+            height: 370px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="back-button" onclick="goBack()">&lt;</div>
+        <h1 class="header-title">Sales Report</h1>
+    </div>
+
+    <div class="controls-panel">
+        <div class="controls-header">
+            <span class="controls-title">Monthly Sales</span>
+            <span class="date-display" id="dateDisplay">January 2024 - December 2024</span>
+        </div>
+
+        <div class="filters-row">
+            <select class="filter-select" id="courseSelect">
+                <option>Select Course</option>
+                <option>Computer Science</option>
+                <option>Business Administration</option>
+                <option>Engineering</option>
+                <option>Arts & Sciences</option>
+            </select>
+
+            <select class="filter-select" id="paymentTypeSelect">
+                <option>Payment Type</option>
+                <option>Full Payment</option>
+                <option>Installment</option>
+                <option>Scholarship</option>
+            </select>
+
+            <input type="date" class="date-picker" id="dateFrom">
+            <input type="date" class="date-picker" id="dateTo">
+        </div>
+
+        <div class="buttons-row">
+            <button class="btn btn-export" onclick="exportData()">EXPORT</button>
+            <button class="btn btn-dates" onclick="showLast30Days()">LAST 30 DAYS</button>
+            <button class="btn btn-alltime" onclick="showAllTime()">ALL TIME</button>
+            <button class="btn btn-filter" onclick="applyFilter()">FILTER</button>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="salesChart"></canvas>
+    </div>
+
+    <script>
+        // Initialize dates
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+        
+        document.getElementById('dateFrom').valueAsDate = thirtyDaysAgo;
+        document.getElementById('dateTo').valueAsDate = today;
+
+        // Sample sales data
+        const salesData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Sales Revenue',
+                data: [12000, 19000, 15000, 25000, 22000, 30000, 28000, 32000, 27000, 35000, 38000, 42000],
+                backgroundColor: 'rgba(65, 105, 225, 0.2)',
+                borderColor: 'rgba(65, 105, 225, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        };
+
+        // Create chart
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'line',
+            data: salesData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₱' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateDateDisplay() {
+            const fromDate = document.getElementById('dateFrom').value;
+            const toDate = document.getElementById('dateTo').value;
+            
+            if (fromDate && toDate) {
+                const from = new Date(fromDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                const to = new Date(toDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                document.getElementById('dateDisplay').textContent = `${from} - ${to}`;
+            }
+        }
+
+        function goBack() {
+            alert('Going back to previous page...');
+            // window.history.back();
+        }
+
+        function exportData() {
+            alert('Exporting sales data to CSV...');
+            // Add export logic here
+        }
+
+        function showLast30Days() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+            
+            document.getElementById('dateFrom').valueAsDate = thirtyDaysAgo;
+            document.getElementById('dateTo').valueAsDate = today;
+            updateDateDisplay();
+        }
+
+        function showAllTime() {
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('dateDisplay').textContent = 'All Time';
+        }
+
+        function applyFilter() {
+            const course = document.getElementById('courseSelect').value;
+            const paymentType = document.getElementById('paymentTypeSelect').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+
+            updateDateDisplay();
+            
+            console.log('Applying filters:', { course, paymentType, dateFrom, dateTo });
+            alert('Filters applied! Chart will update with filtered data.');
+            // Add filter logic here to update chart
+        }
+
+        // Update date display on date change
+        document.getElementById('dateFrom').addEventListener('change', updateDateDisplay);
+        document.getElementById('dateTo').addEventListener('change', updateDateDisplay);
+
+        // Initialize date display
+        updateDateDisplay();
+    </script>
+</body>
+</html>

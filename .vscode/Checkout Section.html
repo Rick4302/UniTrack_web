@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Submission</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: #FFD700;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .amount-panel {
+            background-color: #C0C0C0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .amount-section {
+            flex: 1;
+        }
+
+        .amount-label {
+            font-size: 24px;
+            font-weight: bold;
+            color: #696969;
+            margin-bottom: 5px;
+        }
+
+        .amount-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #808000;
+        }
+
+        .payment-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        .payment-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+
+        .btn-payment {
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            background-color: #fff;
+            color: #000;
+            border: 2px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-payment:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-payment.selected {
+            background-color: #FFD700;
+            border-color: #FFD700;
+        }
+
+        .discount-section {
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+
+        .discount-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #808080;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 180px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .image-preview-text {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .btn-attach {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #fff;
+            color: #000;
+            border: 2px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .btn-attach:hover {
+            background-color: #f0f0f0;
+        }
+
+        .filename {
+            font-size: 13px;
+            color: #808080;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .btn-action {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 215px;
+        }
+
+        .btn-cancel {
+            background-color: #fff;
+            color: #000;
+            border-color: #000;
+        }
+
+        .btn-cancel:hover {
+            background-color: #f0f0f0;
+        }
+
+        .btn-submit {
+            background-color: #FFD700;
+            color: #000;
+            border-color: #FFD700;
+        }
+
+        .btn-submit:hover {
+            background-color: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="header-title">Order Submission</h1>
+    </div>
+
+    <div class="container">
+        <div class="amount-panel">
+            <div class="amount-section">
+                <div class="amount-label">Total Amount</div>
+                <div class="amount-value" id="totalAmount">₱12,500.00</div>
+            </div>
+            <div class="amount-section">
+                <div class="amount-label">Discounted Amount</div>
+                <div class="amount-value" id="discountedAmount">₱0.00</div>
+            </div>
+            <div class="amount-section">
+                <div class="amount-label">Final Amount</div>
+                <div class="amount-value" id="finalAmount">₱12,500.00</div>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <h2 class="section-title">Payment Type</h2>
+            
+            <div class="payment-buttons">
+                <button class="btn-payment" id="btnCash" onclick="selectPayment('cash')">
+                    Cash
+                </button>
+                <button class="btn-payment" id="btnGcash" onclick="selectPayment('gcash')">
+                    Gcash
+                </button>
+            </div>
+
+            <div class="discount-section">
+                <div class="discount-label">Drop ID for discounted price</div>
+                
+                <div class="image-preview" id="imagePreview">
+                    <span class="image-preview-text">No image selected</span>
+                </div>
+
+                <button class="btn-attach" onclick="document.getElementById('fileInput').click()">
+                    Attach Photo
+                </button>
+                <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+                
+                <div class="filename" id="filename"></div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-action btn-cancel" onclick="handleCancel()">
+                Cancel
+            </button>
+            <button class="btn-action btn-submit" onclick="handleSubmit()">
+                Submit Order
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedPayment = null;
+        let discountFile = null;
+        const baseAmount = 12500;
+
+        function selectPayment(type) {
+            selectedPayment = type;
+            
+            // Update button styles
+            document.getElementById('btnCash').classList.remove('selected');
+            document.getElementById('btnGcash').classList.remove('selected');
+            
+            if (type === 'cash') {
+                document.getElementById('btnCash').classList.add('selected');
+            } else {
+                document.getElementById('btnGcash').classList.add('selected');
+            }
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                discountFile = file;
+                document.getElementById('filename').textContent = file.name;
+                
+                // Preview image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Discount ID">`;
+                };
+                reader.readAsDataURL(file);
+
+                // Apply discount (20% off for example)
+                const discount = baseAmount * 0.20;
+                const finalAmount = baseAmount - discount;
+                
+                document.getElementById('discountedAmount').textContent = `₱${discount.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                document.getElementById('finalAmount').textContent = `₱${finalAmount.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            }
+        }
+
+        function handleCancel() {
+            if (confirm('Are you sure you want to cancel this order?')) {
+                // Reset form
+                selectedPayment = null;
+                discountFile = null;
+                document.getElementById('btnCash').classList.remove('selected');
+                document.getElementById('btnGcash').classList.remove('selected');
+                document.getElementById('imagePreview').innerHTML = '<span class="image-preview-text">No image selected</span>';
+                document.getElementById('filename').textContent = '';
+                document.getElementById('fileInput').value = '';
+                document.getElementById('discountedAmount').textContent = '₱0.00';
+                document.getElementById('finalAmount').textContent = '₱12,500.00';
+            }
+        }
+
+        function handleSubmit() {
+            if (!selectedPayment) {
+                alert('Please select a payment type');
+                return;
+            }
+
+            const finalAmount = document.getElementById('finalAmount').textContent;
+            
+            if (selectedPayment === 'gcash') {
+                alert(`Order submitted!\nPayment Type: GCash\nAmount: ${finalAmount}\nRedirecting to GCash payment...`);
+                // Redirect to gcash receipt page
+            } else {
+                alert(`Order submitted!\nPayment Type: Cash\nAmount: ${finalAmount}`);
+            }
+        }
+    </script>
+</body>
+</html>

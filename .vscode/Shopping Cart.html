@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: #FFD700;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .back-button {
+            font-size: 32px;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+            transition: transform 0.2s;
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cart-table {
+            width: 100%;
+            background-color: #fff;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-table thead {
+            background-color: #f0f0f0;
+        }
+
+        .cart-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .cart-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        .cart-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #000;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #FFD700;
+            border-color: #FFD700;
+        }
+
+        .quantity-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            background-color: #ff4444;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .cart-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+            gap: 20px;
+        }
+
+        .total-amount {
+            font-size: 22px;
+            font-weight: bold;
+            color: #808000;
+        }
+
+        .checkout-button {
+            padding: 15px 40px;
+            background-color: #FFD700;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #FFD700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 215px;
+        }
+
+        .checkout-button:hover {
+            background-color: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-cart-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart-text {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .cart-table {
+                font-size: 14px;
+            }
+            
+            .cart-table th,
+            .cart-table td {
+                padding: 10px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="back-button" onclick="goBack()">&lt;</div>
+        <h1 class="header-title">Shopping Cart</h1>
+    </div>
+
+    <div class="container">
+        <table class="cart-table" id="cartTable">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="cartItems">
+                <!-- Cart items will be inserted here -->
+            </tbody>
+        </table>
+
+        <div id="emptyCart" class="empty-cart" style="display: none;">
+            <div class="empty-cart-icon">🛒</div>
+            <div class="empty-cart-text">Your cart is empty</div>
+            <p>Add items to get started!</p>
+        </div>
+
+        <div class="cart-footer">
+            <div class="total-amount">
+                Total Amount: <span id="totalAmount">₱0.00</span>
+            </div>
+            <button class="checkout-button" onclick="proceedToCheckout()">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Sample cart data
+        let cartItems = [
+            {
+                id: 1,
+                name: 'Computer Science Course',
+                description: 'Full semester enrollment',
+                price: 25000,
+                quantity: 1,
+                image: '📚'
+            },
+            {
+                id: 2,
+                name: 'Laboratory Fee',
+                description: 'Computer lab access',
+                price: 5000,
+                quantity: 1,
+                image: '🔬'
+            },
+            {
+                id: 3,
+                name: 'Library Card',
+                description: 'Annual subscription',
+                price: 500,
+                quantity: 1,
+                image: '📖'
+            }
+        ];
+
+        function renderCart() {
+            const cartItemsEl = document.getElementById('cartItems');
+            const emptyCartEl = document.getElementById('emptyCart');
+            const cartTableEl = document.getElementById('cartTable');
+
+            if (cartItems.length === 0) {
+                cartTableEl.style.display = 'none';
+                emptyCartEl.style.display = 'block';
+                updateTotal();
+                return;
+            }
+
+            cartTableEl.style.display = 'table';
+            emptyCartEl.style.display = 'none';
+
+            cartItemsEl.innerHTML = cartItems.map(item => `
+                <tr>
+                    <td>
+                        <div style="font-size: 40px;">${item.image}</div>
+                    </td>
+                    <td>
+                        <div class="item-name">${item.name}</div>
+                        <div style="font-size: 13px; color: #888;">${item.description}</div>
+                    </td>
+                    <td>₱${item.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">−</button>
+                            <span class="quantity-value">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                        </div>
+                    </td>
+                    <td>₱${(item.price * item.quantity).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td>
+                        <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateTotal();
+        }
+
+        function updateQuantity(itemId, change) {
+            const item = cartItems.find(i => i.id === itemId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeItem(itemId);
+                } else {
+                    renderCart();
+                }
+            }
+        }
+
+        function removeItem(itemId) {
+            if (confirm('Are you sure you want to remove this item?')) {
+                cartItems = cartItems.filter(i => i.id !== itemId);
+                renderCart();
+            }
+        }
+
+        function updateTotal() {
+            const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('totalAmount').textContent = 
+                '₱' + total.toLocaleString('en-US', {minimumFractionDigits: 2});
+        }
+
+        function proceedToCheckout() {
+            if (cartItems.length === 0) {
+                alert('Your cart is empty. Please add items before checking out.');
+                return;
+            }
+
+            const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            alert(`Proceeding to checkout...\n\nTotal Items: ${cartItems.length}\nTotal Amount: ₱${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
+            // window.location.href = 'checkout.html';
+        }
+
+        function goBack() {
+            alert('Going back to previous page...');
+            // window.history.back();
+        }
+
+        // Initialize cart on page load
+        renderCart();
+    </script>
+</body>
+</html>
