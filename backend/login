@@ -1,0 +1,111 @@
+<?php
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST");
+header("Content-Type: application/json");
+
+include 'db_connect.php';
+session_start();
+
+// Read JSON request
+$data = json_decode(file_get_contents("php://input"), true);
+$email = $data["email"] ?? "";
+$password = $data["password"] ?? "";
+$remember = $data["remember"] ?? false;
+
+if (empty($email) || empty($password)) {
+    echo json_encode(["status" => "error", "message" => "Email and password are required."]);
+    exit;
+}
+
+// -------------------------------
+// Fetch user only ONCE
+// -------------------------------
+$stmt = $conn->prepare("
+    SELECT Id, PasswordHash, PasswordSalt, FailedAttempts, IsLocked 
+    FROM AdminUsers 
+    WHERE Email=?
+");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    http_response_code(404);
+    echo json_encode([
+        "status" => "error",
+        "message" => "No account found with this email. Please sign up first."
+    ]);
+    exit;
+}
+
+if ($user["IsLocked"]) {
+    echo json_encode(["status" => "error", "message" => "Account is locked. Please reset your password."]);
+    exit;
+}
+
+// -------------------------------
+// Validate password
+// -------------------------------
+$salt = base64_decode($user["PasswordSalt"]);
+$hash = base64_decode($user["PasswordHash"]);
+
+$computedHash = hash_pbkdf2("sha1", $password, $salt, 10000, 20, true);
+
+if ($computedHash !== $hash) {
+
+    // Increase failed attempts
+    $failed = $user["FailedAttempts"] + 1;
+
+    $stmt = $conn->prepare("UPDATE AdminUsers SET FailedAttempts=? WHERE Id=?");
+    $stmt->bind_param("ii", $failed, $user["Id"]);
+    $stmt->execute();
+
+    if ($failed >= 3) {
+        $stmt = $conn->prepare("UPDATE AdminUsers SET IsLocked=1 WHERE Id=?");
+        $stmt->bind_param("i", $user["Id"]);
+        $stmt->execute();
+
+        echo json_encode(["status" => "error", "message" => "Account locked after 3 failed attempts."]);
+    } else {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Invalid password. " . (3 - $failed) . " attempts remaining."
+        ]);
+    }
+    exit;
+}
+
+// -------------------------------
+// Successful login
+// -------------------------------
+$stmt = $conn->prepare("UPDATE AdminUsers SET FailedAttempts=0 WHERE Id=?");
+$stmt->bind_param("i", $user["Id"]);
+$stmt->execute();
+
+// Remember-me token
+if ($remember) {
+    $token = bin2hex(random_bytes(16));
+    $expiry = date("Y-m-d H:i:s", strtotime("+7 days"));
+
+    $stmt = $conn->prepare("UPDATE AdminUsers SET RememberMeToken=?, TokenExpiry=? WHERE Id=?");
+    $stmt->bind_param("ssi", $token, $expiry, $user["Id"]);
+    $stmt->execute();
+
+    setcookie("remember_me", $token, time() + 604800, "/");
+}
+
+// Save session
+$_SESSION["email"] = $email;
+
+// SUCCESS RESPONSE
+echo json_encode([
+    "status" => "success",
+    "message" => "Login successful.",
+    "userId" => $user["Id"]
+]);
+
+exit;
+?>
