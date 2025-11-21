@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniTrack</title>
+    <title>UniTrack - Admin Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -11,198 +11,512 @@
             box-sizing: border-box;
         }
 
+       /* === UniTrack Global Background === */
         body {
-            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
-        }
-
-        .container {
-            width: 1198px;
-            height: 822px;
-            background-color: #ffffff;
+            overflow-x: hidden;
             position: relative;
         }
 
-        .top-panel {
+        /* Background Image */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background-image: url("payhigh.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+
+        /* Gradient Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(65, 105, 225, 0.75),
+                rgba(100, 149, 237, 0.75)
+            );
+            z-index: 1;
+        }
+
+        /* Ensures page content stays above background */
+        .page-container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
             width: 100%;
             height: 70px;
             background-color: #4169E1;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 30px;
+            padding: 0 40px;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+            letter-spacing: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
         }
 
         .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: #ffffff;
-            font-size: 16px;
-            font-weight: bold;
         }
 
-        .logout-btn {
-            background-color: #FFD700;
-            color: #000;
-            border: none;
-            padding: 8px 20px;
-            font-size: 14px;
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-weight: bold;
+            color: #4169E1;
+            font-size: 16px;
+        }
+
+        .admin-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-label {
+            font-size: 11px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-email {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-account {
+            background-color: transparent;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 25px;
             transition: all 0.3s ease;
         }
 
-        .logout-btn:hover {
-            background-color: #FFC700;
-            transform: translateY(-2px);
+        .btn-account:hover {
+            background-color: #ffffff;
+            color: #4169E1;
         }
 
-        .dashboard-panel {
-            width: 500px;
-            height: 280px;
-            background-color: #6495ED;
-            position: absolute;
-            top: 272px;
-            left: 350px;
-            border-radius: 8px;
-            padding: 30px 50px;
+        .btn-logout {
+            background-color: #FFD700;
+            color: #000;
+            border: 2px solid #FFD700;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #FFC700;
+            border-color: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 110px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 50px;
         }
 
         .welcome-title {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: bold;
             color: #ffffff;
-            text-align: center;
-            margin-bottom: 35px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
         }
 
-        .button {
-            width: 100%;
-            height: 30px;
-            background-color: #4169E1;
-            color: #ffffff;
-            border: 1px solid #4169E1;
-            font-size: 14px;
-            font-weight: bold;
+        .welcome-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 35px 30px;
+            text-align: center;
             cursor: pointer;
-            margin-bottom: 9px;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #4169E1, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
             transition: all 0.3s ease;
         }
 
-        .button:hover {
-            background-color: #315bb5;
-            border-color: #315bb5;
-            transform: translateY(-1px);
+        .dashboard-card:hover .card-icon {
+            transform: scale(1.1);
         }
 
-        .button:active {
-            transform: translateY(0);
+        .card-order .card-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
         }
 
-        .button-order {
-            margin-top: 0;
+        .card-inventory .card-icon {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
         }
 
-        .button-inventory {
-            margin-top: 0;
+        .card-sales .card-icon {
+            background: linear-gradient(135deg, #ee0979, #ff6a00);
+            color: white;
         }
 
-        .button-sales {
-            margin-top: 0;
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
         }
 
-        .button-account {
-            margin-top: 0;
+        .card-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .card-arrow {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #4169E1;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover .card-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-content p {
+            margin-bottom: 25px;
+            color: #666;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-cancel {
+            background: #e0e0e0;
+            border: none;
+            color: #333;
+        }
+
+        .modal-btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .modal-btn-confirm {
+            background: #ff4757;
+            border: none;
+            color: white;
+        }
+
+        .modal-btn-confirm:hover {
+            background: #ff3344;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-right {
+                gap: 10px;
+            }
+
+            .admin-details {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-panel">
-            <div class="admin-info">
-                Welcome, <span id="adminEmail">Admin</span>
-            </div>
-            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+<div class="page-container">
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div class="logo">UniTrack</div>
         </div>
         
-        <div class="dashboard-panel">
-            <h1 class="welcome-title">Welcome Admin!</h1>
-            
-            <button class="button button-order" onclick="handleOrderManagement()">
-                Order Management
-            </button>
-            
-            <button class="button button-inventory" onclick="handleInventoryManagement()">
-                Inventory Management
-            </button>
-            
-            <button class="button button-sales" onclick="handleSalesReport()">
-                Sales Report
-            </button>
-            
-            <button class="button button-account" onclick="handleAccount()">
-                Account
-            </button>
+        <div class="nav-right">
+            <div class="admin-info">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <div class="admin-details">
+                    <span class="admin-label">Logged in as</span>
+                    <span class="admin-email" id="adminEmail">admin@example.com</span>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn-account" onclick="handleAccount()">
+                    ⚙️ Account
+                </button>
+                <button class="btn-logout" onclick="showLogoutModal()">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome to Dashboard</h1>
+            <p class="welcome-subtitle">Manage your orders, inventory, and sales reports</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Order Management Card -->
+            <div class="dashboard-card card-order" onclick="handleOrderManagement()">
+                <div class="card-icon">📦</div>
+                <h3 class="card-title">Order Management</h3>
+                <p class="card-description">View and manage pending orders, process shipments, and track deliveries</p>
+                <div class="card-arrow">→</div>
+            </div>
+
+            <!-- Inventory Management Card -->
+            <div class="dashboard-card card-inventory" onclick="handleInventoryManagement()">
+                <div class="card-icon">📋</div>
+                <h3 class="card-title">Inventory Management</h3>
+                <p class="card-description">Track stock levels, manage products, and update inventory records</p>
+                <div class="card-arrow">→</div>
+            </div>
+
+            <!-- Sales Report Card -->
+            <div class="dashboard-card card-sales" onclick="handleSalesReport()">
+                <div class="card-icon">📊</div>
+                <h3 class="card-title">Sales Report</h3>
+                <p class="card-description">View sales analytics, generate reports, and track revenue performance</p>
+                <div class="card-arrow">→</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-content">
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout from your account?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="hideLogoutModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" onclick="handleLogout()">Logout</button>
+            </div>
         </div>
     </div>
-
+</div>
     <script>
         // Check if user is logged in
         window.addEventListener('DOMContentLoaded', () => {
             const adminEmail = sessionStorage.getItem('adminEmail');
             
             if (!adminEmail) {
-                // Redirect to login if not authenticated
                 window.location.href = 'Admin%20Login.html';
                 return;
             }
             
             // Display admin email
             document.getElementById('adminEmail').textContent = adminEmail;
+            
+            // Set avatar initial
+            const initial = adminEmail.charAt(0).toUpperCase();
+            document.getElementById('adminAvatar').textContent = initial;
         });
 
         function handleOrderManagement() {
-            alert('Opening Order Management...');
-            // TODO: Navigate to Order Management page
-            // window.location.href = 'Order_Management.html';
+            window.location.href = 'Order Management - Pending Orders.html';
         }
 
         function handleInventoryManagement() {
-            alert('Opening Inventory Management...');
-            // TODO: Navigate to Inventory Management page
-            // window.location.href = 'Inventory_Management.html';
+            window.location.href = 'Inventory Management.html';
         }
 
         function handleSalesReport() {
-            alert('Opening Sales Report...');
-            // TODO: Navigate to Sales Report page
-            // window.location.href = 'Sales_Report.html';
+            window.location.href = 'Sales Report.html';
         }
 
         function handleAccount() {
-            alert('Opening Account...');
-            // TODO: Navigate to Account page
-            // window.location.href = 'Account.html';
+            window.location.href = 'Admin - Account.html';
+        }
+
+        function showLogoutModal() {
+            document.getElementById('logoutModal').classList.add('active');
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').classList.remove('active');
         }
 
         function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                // Clear session data
-                sessionStorage.removeItem('adminEmail');
-                sessionStorage.removeItem('adminUserId');
-                localStorage.removeItem('rememberedEmail');
-                
-                // Redirect to login page
-                window.location.href = 'Admin%20Login.html';
-            }
+            sessionStorage.removeItem('adminEmail');
+            sessionStorage.removeItem('adminUserId');
+            localStorage.removeItem('rememberedEmail');
+            window.location.href = 'Admin%20Login.html';
         }
+
+        // Close modal when clicking outside
+        document.getElementById('logoutModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideLogoutModal();
+            }
+        });
     </script>
 </body>
 </html>

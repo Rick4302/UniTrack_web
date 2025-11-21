@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pending Orders</title>
     <style>
         * {
@@ -12,39 +12,69 @@
         }
 
         body {
-            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
-        }
-
-        .container {
-            width: 1198px;
-            height: 822px;
-            background-color: #ffffff;
+            overflow-x: hidden;
             position: relative;
         }
 
+        /* Background Image */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('payhigh.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(6px);
+            z-index: 0;
+        }
+
+        /* Semi-transparent Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(3px);
+            z-index: 1;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+        }
+
+        /* TOP PANEL (MATCHING ADMIN NAV STYLE) */
         .top-panel {
             width: 100%;
             height: 70px;
             background-color: #4169E1;
-            position: relative;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            align-items: center;
+            padding: 0 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .back-button {
             font-size: 33px;
             font-weight: bold;
-            color: #FFFF00;
+            color: #FFD700;
             cursor: pointer;
-            user-select: none;
-            transition: transform 0.2s;
+            transition: 0.2s;
         }
 
         .back-button:hover {
@@ -52,7 +82,7 @@
         }
 
         .title {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: bold;
             color: #ffffff;
             position: absolute;
@@ -61,160 +91,327 @@
         }
 
         .sales-history-btn {
-            background-color: #FFFF00;
-            color: #000000;
-            border: 1px solid #FFFF00;
-            padding: 8px 16px;
-            font-size: 13px;
+            background-color: #FFD700;
+            color: #000;
+            border: 2px solid #FFD700;
+            padding: 8px 22px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
+            border-radius: 25px;
+            transition: 0.3s ease;
         }
 
         .sales-history-btn:hover {
-            background-color: #e6e600;
-            border-color: #e6e600;
-            transform: translateY(-1px);
+            background-color: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
         }
 
-        .sales-history-btn:active {
-            transform: translateY(0);
-        }
-
+        /* DATA GRID WRAPPER */
         .data-grid-container {
-            margin: 24px 17px;
-            background-color: #6495ED;
-            height: 717px;
-            overflow: auto;
+            margin: 110px auto 0 auto;
+            width: 90%;
+            max-width: 1300px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: #ffffff;
+            background-color: #ffffffcc;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         th {
             background-color: #4169E1;
             color: #ffffff;
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
+            padding: 14px;
+            font-size: 15px;
             position: sticky;
             top: 0;
         }
 
         td {
-            padding: 12px;
+            padding: 14px;
             border-bottom: 1px solid #ddd;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.8);
         }
 
-        tr:hover {
-            background-color: #f5f5f5;
+        tr:hover td {
+            background: #f1f1f1;
         }
 
         .no-data {
             text-align: center;
             padding: 40px;
-            color: #666;
-            font-size: 16px;
+            font-size: 18px;
+            color: #555;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="top-panel">
-            <div class="back-button" onclick="goBack()">&lt;</div>
-            <div class="title">Pending Orders</div>
-            <button class="sales-history-btn" onclick="viewSalesHistory()">SALES HISTORY</button>
-        </div>
-        
-        <div class="data-grid-container">
-            <table id="ordersTable">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Customer Name</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Total Amount</th>
-                        <th>Order Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="ordersTableBody">
-                    <!-- Sample data - replace with actual data -->
-                    <tr>
-                        <td>ORD-001</td>
-                        <td>John Doe</td>
-                        <td>Product A</td>
-                        <td>5</td>
-                        <td>$250.00</td>
-                        <td>2025-11-15</td>
-                        <td>Pending</td>
-                    </tr>
-                    <tr>
-                        <td>ORD-002</td>
-                        <td>Jane Smith</td>
-                        <td>Product B</td>
-                        <td>3</td>
-                        <td>$150.00</td>
-                        <td>2025-11-16</td>
-                        <td>Pending</td>
-                    </tr>
-                    <tr>
-                        <td>ORD-003</td>
-                        <td>Bob Johnson</td>
-                        <td>Product C</td>
-                        <td>10</td>
-                        <td>$500.00</td>
-                        <td>2025-11-17</td>
-                        <td>Pending</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="page-container">
+
+    <div class="top-panel">
+        <div class="back-button" onclick="goBack()">&lt;</div>
+        <div class="title">Pending Orders</div>
+        <button class="sales-history-btn" onclick="viewSalesHistory()">SALES HISTORY</button>
     </div>
 
+    <div class="data-grid-container">
+        <div style="margin-bottom: 15px; display: flex; gap: 15px;">
+    <input type="text" id="searchBox" placeholder="Search name or product..." 
+           style="padding: 8px; width: 250px; border-radius: 5px; border: 1px solid #aaa;">
+
+    <select id="statusFilter" style="padding: 8px; border-radius: 5px; border: 1px solid #aaa;">
+        <option value="">All Status</option>
+        <option value="Pending">Pending</option>
+        <option value="Pending Verification">Pending Verification</option>
+    </select>
+
+    <button onclick="applyFilter()" 
+            style="padding: 8px 15px; background:#4169E1; color:white; border:none; border-radius:5px; cursor:pointer;">
+        Apply Filter
+    </button>
+</div>
+        <table id="ordersTable">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total Amount</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+                <tr>
+                    <td>ORD-001</td>
+                    <td>John Doe</td>
+                    <td>Product A</td>
+                    <td>5</td>
+                    <td>$250.00</td>
+                    <td>2025-11-15</td>
+                    <td>Pending</td>
+                </tr>
+                <tr>
+                    <td>ORD-002</td>
+                    <td>Jane Smith</td>
+                    <td>Product B</td>
+                    <td>3</td>
+                    <td>$150.00</td>
+                    <td>2025-11-16</td>
+                    <td>Pending</td>
+                </tr>
+                <tr>
+                    <td>ORD-003</td>
+                    <td>Bob Johnson</td>
+                    <td>Product C</td>
+                    <td>10</td>
+                    <td>$500.00</td>
+                    <td>2025-11-17</td>
+                    <td>Pending</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
     <script>
+        let allOrders = [];
         function goBack() {
-            alert('Navigating back...');
-            // Add navigation logic here
-            // window.history.back() or redirect to dashboard
+            window.location.href = 'Admin Dashboard.html'
         }
 
         function viewSalesHistory() {
-            alert('Opening Sales History...');
-            // Add navigation logic here
+            window.location.href = 'Order Management - Sales History.html'
         }
+
 
         // Function to load orders dynamically
-        function loadOrders(orders) {
-            const tbody = document.getElementById('ordersTableBody');
-            tbody.innerHTML = '';
-            
-            if (orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="no-data">No pending orders found</td></tr>';
-                return;
-            }
-            
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${order.id}</td>
-                    <td>${order.customerName}</td>
-                    <td>${order.product}</td>
-                    <td>${order.quantity}</td>
-                    <td>${order.totalAmount}</td>
-                    <td>${order.orderDate}</td>
-                    <td>${order.status}</td>
-                `;
-                tbody.appendChild(row);
-            });
+       function loadOrders(orders) {
+    const tbody = document.getElementById('ordersTableBody');
+    tbody.innerHTML = '';
+
+    if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="no-data">No pending orders found</td></tr>';
+        return;
+    }
+
+    orders.forEach(order => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${order.OrderID}</td>
+            <td>${order.StudentName}</td>
+            <td>${order.ItemName}</td>
+            <td>${order.Quantity}</td>
+            <td>${order.FinalAmount}</td>
+            <td>${order.OrderDate}</td>
+            <td>Pending</td>
+        `;
+        tbody.appendChild(row);
+    });
+}function loadPendingOrders() {
+    fetch("../php/get_pending_orders.php", {
+        method: "GET",
+        credentials: "include"
+    })
+    .then(res => res.json())
+    .then(data => {
+        const table = document.getElementById("pendingOrdersTableBody");
+        table.innerHTML = "";
+
+        if (!data.orders || data.orders.length === 0) {
+            table.innerHTML = `<tr><td colspan="12">No pending orders found.</td></tr>`;
+            return;
         }
 
-        // Example: Load orders from API or database
-        // loadOrders(ordersData);
+
+        data.orders.forEach(order => {
+            const row = `
+                <tr>
+                    <td>${order.OrderID}</td>
+                    <td>${order.StudentName}</td>
+                    <td>${order.ItemName}</td>
+                    <td>${order.Size}</td>
+                    <td>${order.Quantity}</td>
+                    <td>${order.TotalAmount}</td>
+                    <td>${order.FinalAmount}</td>
+                    <td>${order.PaymentType}</td>
+                    <td>${order.OrderDate}</td>
+
+                    <td><button onclick="viewReceipt(${order.OrderID})">View</button></td>
+                    <td><button onclick="viewDiscount(${order.OrderID})">View</button></td>
+
+                    <td>
+                        <button onclick="approveOrder(${order.OrderID}, ${order.Quantity})">Approve</button>
+                        <button onclick="rejectOrder(${order.OrderID})">Reject</button>
+                    </td>
+                </tr>
+            `;
+
+            table.innerHTML += row;
+        });
+    });
+}
+
+function viewReceipt(orderID) {
+    fetch("../php/get_receipt.php?orderID=" + orderID)
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            document.getElementById("modalImage").src = data.image;
+            document.getElementById("imageModal").style.display = "flex";
+        } else {
+            alert(data.message);
+        }
+    });
+}
+function viewDiscount(orderID) {
+    fetch("../php/get_discount_id.php?orderID=" + orderID)
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            document.getElementById("modalImage").src = data.image;
+            document.getElementById("imageModal").style.display = "flex";
+        } else {
+            alert(data.message);
+        }
+    });
+}
+function approveOrder(orderID, quantity) {
+    if (!confirm("Approve this order?")) return;
+
+    fetch("../php/approve_order.php", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            orderID: orderID,
+            quantity: quantity
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadPendingOrders();
+    });
+}
+function rejectOrder(orderID) {
+    const reason = prompt("Enter rejection reason:");
+
+    if (reason === null || reason.trim() === "") {
+        alert("A reason is required.");
+        return;
+    }
+
+    fetch("../php/reject_order.php", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            orderID: orderID,
+            reason: reason
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadPendingOrders();
+    });
+}
+
+function applyFilter() {
+    const searchText = document.getElementById('searchBox').value.toLowerCase();
+    const status = document.getElementById('statusFilter').value;
+
+    const filtered = allOrders.filter(o => {
+        const matchSearch =
+            o.StudentName.toLowerCase().includes(searchText) ||
+            o.ItemName.toLowerCase().includes(searchText);
+
+        const matchStatus = status === "" || o.Status === status;
+
+        return matchSearch && matchStatus;
+    });
+
+    loadOrders(filtered);
+}
+fetch('../admin/get_pending_orders.php')
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            allOrders = data.orders;
+            loadOrders(allOrders);
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(err => console.error('Fetch error:', err));
+
+
     </script>
+    <div id="imageModal" style="
+    display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
+    <img id="modalImage" style="max-width:80%; border:4px solid #fff;">
+</div>
+
+<script>
+document.getElementById("imageModal").onclick = () => {
+    document.getElementById("imageModal").style.display = "none";
+};
+  window.onload = loadPendingOrders;
+</script>
 </body>
 </html>

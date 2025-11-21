@@ -12,142 +12,279 @@
         }
 
         body {
-            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
 
-        .container {
-            width: 1198px;
-            height: 822px;
-            background-color: #ffffff;
-            position: relative;
-        }
-
-        .top-panel {
+        /* Top Navigation Bar */
+        .top-nav {
             width: 100%;
             height: 70px;
             background-color: #4169E1;
-            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-left {
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            gap: 15px;
         }
 
-        .back-button {
-            font-size: 33px;
+        .logo {
+            font-size: 24px;
             font-weight: bold;
-            color: #FFFF00;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.2s;
+            color: #FFD700;
+            letter-spacing: 1px;
         }
 
-        .back-button:hover {
-            transform: scale(1.1);
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
         }
 
-        .title {
-            font-size: 36px;
-            font-weight: bold;
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: #ffffff;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
         }
 
-        .account-panel {
-            width: 577px;
-            background-color: #6495ED;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            border-radius: 8px;
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #4169E1;
+            font-size: 16px;
+        }
+
+        .admin-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-label {
+            font-size: 11px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-email {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-back {
+            background-color: transparent;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #ffffff;
+            color: #4169E1;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 110px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .account-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 50px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .account-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
         }
 
         .info-row {
             display: flex;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 35px;
+            gap: 20px;
         }
 
         .info-label {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffffff;
-            min-width: 160px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4169E1;
+            min-width: 150px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .info-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffffff;
-            margin-left: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+            padding: 12px 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
         }
 
         .change-password-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin: 40px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: all 0.3s ease;
         }
 
         .change-password-row:hover {
-            opacity: 0.8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         .change-password-label {
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: 600;
             color: #ffffff;
         }
 
         .arrow {
-            font-size: 33px;
+            font-size: 24px;
             font-weight: bold;
             color: #ffffff;
         }
 
-        .logout-btn {
-            background-color: #4169E1;
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn-logout {
+            background: #ff4757;
             color: #ffffff;
-            border: 1px solid #4169E1;
-            padding: 8px 24px;
-            font-size: 13px;
-            font-weight: bold;
+            border: none;
+            padding: 12px 40px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
+            border-radius: 25px;
             transition: all 0.3s ease;
-            display: block;
-            margin: 30px auto 0;
-            width: 122px;
         }
 
-        .logout-btn:hover {
-            background-color: #315bb5;
-            border-color: #315bb5;
-            transform: translateY(-1px);
+        .btn-logout:hover {
+            background: #ff3344;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
         }
 
-        .logout-btn:active {
-            transform: translateY(0);
+        /* Responsive */
+        @media (max-width: 600px) {
+            .top-nav {
+                padding: 0 20px;
+            }
+
+            .nav-buttons {
+                gap: 5px;
+            }
+
+            .admin-details {
+                display: none;
+            }
+
+            .account-container {
+                padding: 30px;
+            }
+
+            .account-title {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .info-label {
+                min-width: auto;
+            }
+
+            .info-value {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-panel">
-            <div class="back-button" onclick="goBack()">&lt;</div>
-            <div class="title">Account</div>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div class="logo">UniTrack</div>
         </div>
         
-        <div class="account-panel">
+        <div class="nav-right">
+            <div class="admin-info">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <div class="admin-details">
+                    <span class="admin-label">Logged in as</span>
+                    <span class="admin-email" id="adminEmail">admin@example.com</span>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn-back" onclick="goBack()">
+                    ← Back
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="account-container">
+            <h1 class="account-title">Account Settings</h1>
+            
             <div class="info-row">
                 <div class="info-label">Username</div>
                 <div class="info-value" id="username">admin_user</div>
@@ -159,44 +296,85 @@
             </div>
             
             <div class="change-password-row" onclick="changePassword()">
-                <div class="change-password-label">Change Password</div>
+                <div class="change-password-label">🔐 Change Password</div>
                 <div class="arrow">&gt;</div>
             </div>
             
-            <button class="logout-btn" onclick="logout()">Log Out</button>
+            <div class="button-group">
+                <button class="btn-logout" onclick="logout()">Log Out</button>
+            </div>
         </div>
-    </div>
+    </main>
 
     <script>
+        // Load user information on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserInfo();
+        });
+
+        function loadUserInfo() {
+            fetch('../backend/admin-account.php', {
+                method: 'POST',
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=loadUserInfo'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('username').textContent = data.username;
+                    document.getElementById('email').textContent = data.email;
+                    document.getElementById('adminEmail').textContent = data.email;
+                    
+                    // Set avatar initial
+                    const initial = data.email.charAt(0).toUpperCase();
+                    document.getElementById('adminAvatar').textContent = initial;
+                } else {
+                    alert('Error loading user information: ' + data.message);
+                    window.location.href = 'Admin Login.html';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load user information');
+                window.location.href = 'Admin Login.html';
+            });
+        }
+
         function goBack() {
-            alert('Navigating back...');
-            // Add navigation logic here
+            window.location.href = 'Admin Dashboard.html';
         }
 
         function changePassword() {
-            alert('Opening Change Password dialog...');
-            // Add change password logic here
+            window.location.href = 'admin-change-password.html';
         }
 
         function logout() {
             if (confirm('Are you sure you want to log out?')) {
-                alert('Logging out...');
-                // Add logout logic here
-                // window.location.href = 'login.html';
+                fetch('admin-account.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'action=logout'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('You have been logged out successfully.');
+                        window.location.href = 'Admin Login.html';
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to logout');
+                });
             }
         }
-
-        // Function to load account data
-        function loadAccountData(userData) {
-            document.getElementById('username').textContent = userData.username || 'N/A';
-            document.getElementById('email').textContent = userData.email || 'N/A';
-        }
-
-        // Example: Load user data from API or database
-        // loadAccountData({
-        //     username: 'john_admin',
-        //     email: 'john@unitrack.com'
-        // });
     </script>
 </body>
 </html>
