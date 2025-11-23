@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pending Orders</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniTrack - Order Management</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,179 +18,329 @@
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; 
+            left: 0; 
+            right: 0; 
             bottom: 0;
-            background-image: url('payhigh.jpg');
+            background-image: url("payhigh.jpg");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            filter: blur(6px);
             z-index: 0;
         }
 
-        /* Semi-transparent Overlay */
+        /* Gradient Overlay */
         body::after {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; 
+            left: 0; 
+            right: 0; 
             bottom: 0;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(3px);
+            background: linear-gradient(
+                135deg,
+                rgba(65, 105, 225, 0.75),
+                rgba(100, 149, 237, 0.75)
+            );
             z-index: 1;
         }
 
+        /* Ensures page content stays above background */
         .page-container {
             position: relative;
             z-index: 2;
             min-height: 100vh;
         }
 
-        /* TOP PANEL (MATCHING ADMIN NAV STYLE) */
-        .top-panel {
-            width: 100%;
+        .top-nav {
+            width: 100%; 
             height: 70px;
             background-color: #4169E1;
-            display: flex;
-            justify-content: space-between;
+            display: flex; 
+            justify-content: space-between; 
             align-items: center;
-            padding: 0 30px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 0 40px; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-left { 
+            display: flex; 
+            align-items: center; 
+            gap: 20px; 
         }
 
         .back-button {
-            font-size: 33px;
-            font-weight: bold;
-            color: #FFD700;
+            width: 40px; 
+            height: 40px;
+            background: rgba(255,255,255,0.15); 
+            border: none; 
+            border-radius: 50%;
+            color: #FFD700; 
+            font-size: 20px; 
             cursor: pointer;
-            transition: 0.2s;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover { 
+            background: rgba(255,255,255,0.25); 
+            transform: translateX(-3px); 
         }
 
-        .back-button:hover {
-            transform: scale(1.1);
+        .logo { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #FFD700; 
+        }
+        
+        .page-title { 
+            font-size: 22px; 
+            font-weight: bold; 
+            color: #fff; 
         }
 
-        .title {
-            font-size: 32px;
-            font-weight: bold;
-            color: #ffffff;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+        .nav-right { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
         }
 
         .sales-history-btn {
-            background-color: #FFD700;
+            padding: 10px 20px; 
+            font-size: 13px; 
+            font-weight: 600;
+            cursor: pointer; 
+            border-radius: 25px; 
+            transition: all 0.3s ease; 
+            border: none;
+            background: #FFD700; 
             color: #000;
-            border: 2px solid #FFD700;
-            padding: 8px 22px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 25px;
-            transition: 0.3s ease;
+        }
+        
+        .sales-history-btn:hover { 
+            background: #FFC700; 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4); 
         }
 
-        .sales-history-btn:hover {
-            background-color: #FFC700;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        .main-content {
+            padding: 100px 40px 40px; 
+            min-height: 100vh;
+            max-width: 1400px; 
+            margin: 0 auto;
         }
 
-        /* DATA GRID WRAPPER */
-        .data-grid-container {
-            margin: 110px auto 0 auto;
-            width: 90%;
-            max-width: 1300px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(4px);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #ffffffcc;
+        .filter-panel {
+            background: rgba(255,255,255,0.95); 
             border-radius: 12px;
-            overflow: hidden;
+            padding: 20px 25px; 
+            margin-bottom: 20px;
+            display: flex; 
+            gap: 15px; 
+            align-items: center; 
+            flex-wrap: wrap;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
+        .filter-panel input, .filter-panel select, .filter-btn {
+            padding: 10px 15px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 8px;
+            font-size: 14px; 
+            font-weight: 600; 
+            transition: all 0.3s ease;
+        }
+        
+        .filter-panel input { 
+            width: 250px; 
+            background: #fff; 
+            color: #333; 
+        }
+        
+        .filter-panel select { 
+            width: 180px; 
+            background: #fff; 
+            color: #333; 
+            cursor: pointer;
+        }
+        
+        .filter-panel input:focus, .filter-panel select:focus { 
+            border-color: #4169E1; 
+            outline: none; 
+        }
+
+        .filter-btn { 
+            background: #4169E1; 
+            color: #fff; 
+            border-color: #4169E1; 
+            cursor: pointer;
+        }
+        
+        .filter-btn:hover { 
+            background: #3558d1; 
+            transform: translateY(-2px); 
+        }
+
+        .data-grid-container {
+            background: rgba(255,255,255,0.95); 
+            border-radius: 12px;
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            max-height: calc(100vh - 280px); 
+            overflow-y: auto;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        
         th {
-            background-color: #4169E1;
-            color: #ffffff;
-            padding: 14px;
-            font-size: 15px;
-            position: sticky;
-            top: 0;
+            background: linear-gradient(135deg, #4169E1, #3558d1);
+            color: #fff; 
+            padding: 16px; 
+            text-align: left;
+            font-weight: 600; 
+            font-size: 13px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10;
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+        
+        td { 
+            padding: 14px 16px; 
+            border-bottom: 1px solid #e0e0e0; 
+            font-size: 14px; 
+            color: #333; 
+        }
+        
+        tr:hover { 
+            background: rgba(65,105,225,0.05); 
         }
 
-        td {
-            padding: 14px;
-            border-bottom: 1px solid #ddd;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.8);
+        .no-data { 
+            text-align: center; 
+            padding: 60px; 
+            color: #666; 
+            font-size: 16px; 
+        }
+        
+        .loading { 
+            text-align: center; 
+            padding: 40px; 
+            color: #4169E1; 
         }
 
-        tr:hover td {
-            background: #f1f1f1;
+        .data-grid-container::-webkit-scrollbar { 
+            width: 10px; 
+        }
+        
+        .data-grid-container::-webkit-scrollbar-track { 
+            background: rgba(0,0,0,0.05); 
+        }
+        
+        .data-grid-container::-webkit-scrollbar-thumb { 
+            background: #4169E1; 
+            border-radius: 5px; 
         }
 
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            font-size: 18px;
-            color: #555;
+        @media (max-width: 900px) {
+            .nav-left {
+                gap: 10px;
+            }
+            
+            .page-title {
+                font-size: 18px;
+            }
+            
+            .main-content {
+                padding: 100px 20px 40px;
+            }
+            
+            .filter-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-panel input,
+            .filter-panel select,
+            .filter-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
-
 <body>
-<div class="page-container">
+    <div class="page-container">
+        <nav class="top-nav">
+            <div class="nav-left">
+                <button class="back-button" onclick="goBack()">←</button>
+                <div class="logo">UniTrack</div>
+                <span class="page-title">Order Management</span>
+            </div>
+            <div class="nav-right">
+                <button class="sales-history-btn" onclick="viewSalesHistory()">SALES HISTORY</button>
+            </div>
+        </nav>
 
-    <div class="top-panel">
-        <div class="back-button" onclick="goBack()">&lt;</div>
-        <div class="title">Pending Orders</div>
-        <button class="sales-history-btn" onclick="viewSalesHistory()">SALES HISTORY</button>
+        <main class="main-content">
+            <div class="filter-panel">
+                <input type="text" id="searchBox" placeholder="Search name or product...">
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Pending Verification">Pending Verification</option>
+                </select>
+                <button class="filter-btn" onclick="applyFilter()">FILTER</button>
+            </div>
+
+            <div class="data-grid-container">
+                <table id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer Name</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total Amount</th>
+                            <th>Order Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr>
+                            <td colspan="7" class="loading">Loading orders...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
     </div>
 
-    <div class="data-grid-container">
-        <div style="margin-bottom: 15px; display: flex; gap: 15px;">
-    <input type="text" id="searchBox" placeholder="Search name or product..." 
-           style="padding: 8px; width: 250px; border-radius: 5px; border: 1px solid #aaa;">
+    <script>
+        // Check if user is logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const adminEmail = sessionStorage.getItem('adminEmail');
+            if (!adminEmail) {
+                window.location.href = 'Admin%20Login.html';
+                return;
+            }
+            
+            // For now, show sample data
+            loadSampleData();
+        });
 
-    <select id="statusFilter" style="padding: 8px; border-radius: 5px; border: 1px solid #aaa;">
-        <option value="">All Status</option>
-        <option value="Pending">Pending</option>
-        <option value="Pending Verification">Pending Verification</option>
-    </select>
-
-    <button onclick="applyFilter()" 
-            style="padding: 8px 15px; background:#4169E1; color:white; border:none; border-radius:5px; cursor:pointer;">
-        Apply Filter
-    </button>
-</div>
-        <table id="ordersTable">
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Customer Name</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Total Amount</th>
-                    <th>Order Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="ordersTableBody">
+        function loadSampleData() {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = `
                 <tr>
                     <td>ORD-001</td>
                     <td>John Doe</td>
@@ -220,198 +366,26 @@
                     <td>10</td>
                     <td>$500.00</td>
                     <td>2025-11-17</td>
-                    <td>Pending</td>
+                    <td>Pending Verification</td>
                 </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+            `;
+        }
 
-    <script>
-        let allOrders = [];
+        function applyFilter() {
+            const searchText = document.getElementById('searchBox').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            // TODO: Implement filter logic when backend is ready
+            console.log('Filtering with:', { searchText, statusFilter });
+        }
+
         function goBack() {
-            window.location.href = 'Admin Dashboard.html'
+            window.location.href = 'Admin Dashboard.html';
         }
 
         function viewSalesHistory() {
-            window.location.href = 'Order Management - Sales History.html'
+            window.location.href = 'Order Management - Sales History.html';
         }
-
-
-        // Function to load orders dynamically
-       function loadOrders(orders) {
-    const tbody = document.getElementById('ordersTableBody');
-    tbody.innerHTML = '';
-
-    if (orders.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="no-data">No pending orders found</td></tr>';
-        return;
-    }
-
-    orders.forEach(order => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${order.OrderID}</td>
-            <td>${order.StudentName}</td>
-            <td>${order.ItemName}</td>
-            <td>${order.Quantity}</td>
-            <td>${order.FinalAmount}</td>
-            <td>${order.OrderDate}</td>
-            <td>Pending</td>
-        `;
-        tbody.appendChild(row);
-    });
-}function loadPendingOrders() {
-    fetch("../php/get_pending_orders.php", {
-        method: "GET",
-        credentials: "include"
-    })
-    .then(res => res.json())
-    .then(data => {
-        const table = document.getElementById("pendingOrdersTableBody");
-        table.innerHTML = "";
-
-        if (!data.orders || data.orders.length === 0) {
-            table.innerHTML = `<tr><td colspan="12">No pending orders found.</td></tr>`;
-            return;
-        }
-
-
-        data.orders.forEach(order => {
-            const row = `
-                <tr>
-                    <td>${order.OrderID}</td>
-                    <td>${order.StudentName}</td>
-                    <td>${order.ItemName}</td>
-                    <td>${order.Size}</td>
-                    <td>${order.Quantity}</td>
-                    <td>${order.TotalAmount}</td>
-                    <td>${order.FinalAmount}</td>
-                    <td>${order.PaymentType}</td>
-                    <td>${order.OrderDate}</td>
-
-                    <td><button onclick="viewReceipt(${order.OrderID})">View</button></td>
-                    <td><button onclick="viewDiscount(${order.OrderID})">View</button></td>
-
-                    <td>
-                        <button onclick="approveOrder(${order.OrderID}, ${order.Quantity})">Approve</button>
-                        <button onclick="rejectOrder(${order.OrderID})">Reject</button>
-                    </td>
-                </tr>
-            `;
-
-            table.innerHTML += row;
-        });
-    });
-}
-
-function viewReceipt(orderID) {
-    fetch("../php/get_receipt.php?orderID=" + orderID)
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === "success") {
-            document.getElementById("modalImage").src = data.image;
-            document.getElementById("imageModal").style.display = "flex";
-        } else {
-            alert(data.message);
-        }
-    });
-}
-function viewDiscount(orderID) {
-    fetch("../php/get_discount_id.php?orderID=" + orderID)
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === "success") {
-            document.getElementById("modalImage").src = data.image;
-            document.getElementById("imageModal").style.display = "flex";
-        } else {
-            alert(data.message);
-        }
-    });
-}
-function approveOrder(orderID, quantity) {
-    if (!confirm("Approve this order?")) return;
-
-    fetch("../php/approve_order.php", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            orderID: orderID,
-            quantity: quantity
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        loadPendingOrders();
-    });
-}
-function rejectOrder(orderID) {
-    const reason = prompt("Enter rejection reason:");
-
-    if (reason === null || reason.trim() === "") {
-        alert("A reason is required.");
-        return;
-    }
-
-    fetch("../php/reject_order.php", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            orderID: orderID,
-            reason: reason
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        loadPendingOrders();
-    });
-}
-
-function applyFilter() {
-    const searchText = document.getElementById('searchBox').value.toLowerCase();
-    const status = document.getElementById('statusFilter').value;
-
-    const filtered = allOrders.filter(o => {
-        const matchSearch =
-            o.StudentName.toLowerCase().includes(searchText) ||
-            o.ItemName.toLowerCase().includes(searchText);
-
-        const matchStatus = status === "" || o.Status === status;
-
-        return matchSearch && matchStatus;
-    });
-
-    loadOrders(filtered);
-}
-fetch('../admin/get_pending_orders.php')
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === 'success') {
-            allOrders = data.orders;
-            loadOrders(allOrders);
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(err => console.error('Fetch error:', err));
-
-
     </script>
-    <div id="imageModal" style="
-    display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
-    <img id="modalImage" style="max-width:80%; border:4px solid #fff;">
-</div>
-
-<script>
-document.getElementById("imageModal").onclick = () => {
-    document.getElementById("imageModal").style.display = "none";
-};
-  window.onload = loadPendingOrders;
-</script>
 </body>
 </html>

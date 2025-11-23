@@ -13,12 +13,34 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Image */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('payhigh.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+
+        /* Gradient Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(65, 105, 225, 0.75) 0%, rgba(100, 149, 237, 0.75) 100%);
+            z-index: 1;
         }
 
         .container {
@@ -28,6 +50,8 @@
             overflow: hidden;
             max-width: 500px;
             width: 100%;
+            position: relative;
+            z-index: 2;
         }
 
         .header {
@@ -234,7 +258,6 @@
         let emailVerified = false;
         let otpVerified = false;
 
-        // Password strength checker
         document.getElementById('password').addEventListener('input', function() {
             const password = this.value;
             const strengthDiv = document.getElementById('passwordStrength');
@@ -270,145 +293,141 @@
         }
 
         async function verifyEmail() {
-    const email = document.getElementById('email').value.trim();
-    
-    if (!email) {
-        alert('Please enter an email address.');
-        return;
-    }
+            const email = document.getElementById('email').value.trim();
+            
+            if (!email) {
+                alert('Please enter an email address.');
+                return;
+            }
 
-    const btn = document.getElementById('verifyEmailBtn');
-    btn.disabled = true;
-    btn.textContent = 'SENDING...';
+            const btn = document.getElementById('verifyEmailBtn');
+            btn.disabled = true;
+            btn.textContent = 'SENDING...';
 
-    try {
-        const formData = new FormData();
-        formData.append("email", email);
+            try {
+                const formData = new FormData();
+                formData.append("email", email);
 
-        const res = await fetch("http://localhost/UniTrack_web/backend/send_otp.php", {
-            method: "POST",
-            credentials: "include",  
-            body: formData
-        });
+                const res = await fetch("http://localhost/UniTrack_web/backend/admin_send_otp.php", {
+                    method: "POST",
+                    credentials: "include",  
+                    body: formData
+                });
 
-        if (res.ok) {
-            alert('OTP has been sent to your email. Please check your inbox.');
-            document.getElementById('otpGroup').style.display = 'block';
-            document.getElementById('email').disabled = true;
-            emailVerified = true;
-            document.getElementById('emailVerified').style.display = 'block';
-        } else {
-            const error = await res.text();
-            alert(error || 'Failed to send OTP.');
-            btn.disabled = false;
-            btn.textContent = 'VERIFY';
+                if (res.ok) {
+                    alert('OTP has been sent to your email. Please check your inbox.');
+                    document.getElementById('otpGroup').style.display = 'block';
+                    document.getElementById('email').disabled = true;
+                    emailVerified = true;
+                    document.getElementById('emailVerified').style.display = 'block';
+                } else {
+                    const error = await res.text();
+                    alert(error || 'Failed to send OTP.');
+                    btn.disabled = false;
+                    btn.textContent = 'VERIFY';
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('Unable to connect to server.');
+                btn.disabled = false;
+                btn.textContent = 'VERIFY';
+            }
         }
-    } catch (err) {
-        console.error('Error:', err);
-        alert('Unable to connect to server.');
-        btn.disabled = false;
-        btn.textContent = 'VERIFY';
-    }
-}
 
- async function verifyOTP() {
-    const otp = document.getElementById('otp').value.trim();
+        async function verifyOTP() {
+            const otp = document.getElementById('otp').value.trim();
 
-    if (!otp) {
-        alert("Please enter the OTP.");
-        return;
-    }
+            if (!otp) {
+                alert("Please enter the OTP.");
+                return;
+            }
 
-    try {
-        const res = await fetch("http://localhost/UniTrack_web/backend/verify_otp.php", {
-            method: "POST",
-            credentials: "include",  // <-- ADD THIS
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({ otp })
-        });
+            try {
+                const res = await fetch("http://localhost/UniTrack_web/backend/verify_otp.php", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ otp })
+                });
 
-        const response = await res.text();
+                const response = await res.text();
 
-        if (response === "OTP_VALID") {
-            alert("OTP verified successfully!");
-            otpVerified = true;
-            document.getElementById('otpVerified').style.display = 'block';
-            document.getElementById('otp').disabled = true;
-            document.getElementById('signupBtn').disabled = false;
-        } else if (response === "OTP_EXPIRED") {
-            alert("OTP expired. Please request a new one.");
-        } else if (response === "NO_OTP") {
-            alert("No OTP saved in session. Send OTP again.");
-        } else {
-            alert("Invalid OTP.");
+                if (response === "OTP_VALID") {
+                    alert("OTP verified successfully!");
+                    otpVerified = true;
+                    document.getElementById('otpVerified').style.display = 'block';
+                    document.getElementById('otp').disabled = true;
+                    document.getElementById('signupBtn').disabled = false;
+                } else if (response === "OTP_EXPIRED") {
+                    alert("OTP expired. Please request a new one.");
+                } else if (response === "NO_OTP") {
+                    alert("No OTP saved in session. Send OTP again.");
+                } else {
+                    alert("Invalid OTP.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error connecting to server.");
+            }
         }
-    } catch (err) {
-        console.error(err);
-        alert("Error connecting to server.");
-    }
-}
-
-
-
 
         async function handleSignup() {
-    const username = document.getElementById('username').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
-    if (!otpVerified) {
-        alert('Please verify your email with OTP first.');
-        return;
-    }
+            if (!otpVerified) {
+                alert('Please verify your email with OTP first.');
+                return;
+            }
 
-    if (password !== confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-    }
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
 
-    const hasLower = /[a-z]/.test(password);
-    const hasUpper = /[A-Z]/.test(password);
-    const hasDigit = /[0-9]/.test(password);
-    const hasSymbol = /[^a-zA-Z0-9]/.test(password);
-    const isLongEnough = password.length >= 8;
+            const hasLower = /[a-z]/.test(password);
+            const hasUpper = /[A-Z]/.test(password);
+            const hasDigit = /[0-9]/.test(password);
+            const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+            const isLongEnough = password.length >= 8;
 
-    if (!hasLower || !hasUpper || !hasDigit || !hasSymbol || !isLongEnough) {
-        alert('Password must contain:\n- At least 8 characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character');
-        return;
-    }
+            if (!hasLower || !hasUpper || !hasDigit || !hasSymbol || !isLongEnough) {
+                alert('Password must contain:\n- At least 8 characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character');
+                return;
+            }
 
-    try {
-        // Use FormData instead of JSON (matches PHP $_POST)
-        const formData = new URLSearchParams();
-        formData.append('username', username);
-        formData.append('email', email);
-        formData.append('password', password);
+            try {
+                const formData = new URLSearchParams();
+                formData.append('username', username);
+                formData.append('email', email);
+                formData.append('password', password);
 
-        const res = await fetch('http://localhost/UniTrack_web/backend/signup.php', {
-            method: 'POST',
-            credentials: 'include',  // <-- ADD THIS (critical for session)
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData
-        });
+                const res = await fetch('http://localhost/UniTrack_web/backend/admin_signup.php', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
 
-        const response = await res.text();
-        
-        if (response === "SUCCESS") {
-            alert('Account created successfully! You can now log in.');
-            window.location.replace('Admin Login.html');
-        } else if (response === "EXISTS") {
-            alert('An account with this email or username already exists.');
-        } else if (response === "EMAIL_MISMATCH") {
-            alert('Session expired. Please verify your email again.');
-        } else {
-            alert('Failed to create account: ' + response);
+                const response = await res.text();
+                
+                if (response === "SUCCESS") {
+                    alert('Account created successfully! You can now log in.');
+                    window.location.replace('Admin Login.html');
+                } else if (response === "EXISTS") {
+                    alert('An account with this email or username already exists.');
+                } else if (response === "EMAIL_MISMATCH") {
+                    alert('Session expired. Please verify your email again.');
+                } else {
+                    alert('Failed to create account: ' + response);
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('Unable to connect to server.');
+            }
         }
-    } catch (err) {
-        console.error('Error:', err);
-        alert('Unable to connect to server.');
-    }
-}
 
         function goToLogin() {
             window.location.href = 'Admin%20Login.html';

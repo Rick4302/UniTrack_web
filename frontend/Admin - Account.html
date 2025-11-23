@@ -11,9 +11,49 @@
             box-sizing: border-box;
         }
 
+         /* === UniTrack Global Background === */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Image */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background-image: url("payhigh.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+
+        /* Gradient Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(65, 105, 225, 0.75),
+                rgba(100, 149, 237, 0.75)
+            );
+            z-index: 1;
+        }
+
+        /* Ensures page content stays above background */
+        .page-container {
+            position: relative;
+            z-index: 2;
             min-height: 100vh;
         }
 
@@ -258,6 +298,7 @@
     </style>
 </head>
 <body>
+    <div class="page-container">
     <!-- Top Navigation -->
     <nav class="top-nav">
         <div class="nav-left">
@@ -305,7 +346,7 @@
             </div>
         </div>
     </main>
-
+</div>
     <script>
         // Load user information on page load
         window.addEventListener('DOMContentLoaded', () => {
@@ -348,33 +389,34 @@
         }
 
         function changePassword() {
-            window.location.href = 'admin-change-password.html';
+            window.location.href = 'Admin Change Password.html';
         }
 
-        function logout() {
-            if (confirm('Are you sure you want to log out?')) {
-                fetch('admin-account.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'action=logout'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('You have been logged out successfully.');
-                        window.location.href = 'Admin Login.html';
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to logout');
-                });
+       function logout() {
+    if (confirm('Are you sure you want to log out?')) {
+        fetch('../backend/admin-account.php', {  
+            method: 'POST',
+            credentials: 'include',  
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=logout'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('You have been logged out successfully.');
+                window.location.href = 'Admin Login.html';
+            } else {
+                alert('Error: ' + data.message);
             }
-        }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to logout');
+        });
+    }
+}
     </script>
 </body>
 </html>

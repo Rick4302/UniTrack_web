@@ -5,203 +5,322 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniTrack - Student Login</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
-        }
-
-        .container {
-            width: 1198px;
-            height: 822px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
-
-        .form-panel {
-            background-color: #ffff00;
-            padding: 30px 50px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('payhigh.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 235, 130, 0.5) 0%, rgba(255, 245, 170, 0.5) 100%);
+            z-index: 1;
+        }
+        .login-container {
+            background-color: #fffef0;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             width: 500px;
             position: relative;
+            z-index: 2;
         }
-
-        .back-arrow {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 32px;
-            font-weight: bold;
-            color: #4169e1;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .back-arrow:hover {
-            color: #3558c7;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #333;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
+        .form-group { margin-bottom: 20px; }
+        label {
             display: block;
-            font-size: 14px;
             font-weight: bold;
-            color: #000000;
             margin-bottom: 8px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 10px 12px;
+            color: #000;
             font-size: 14px;
-            border: 1px solid #ccc;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            background-color: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.3s;
         }
-
-        .form-input:focus {
+        input:focus {
             outline: none;
-            border-color: #4169e1;
+            border-color: #daa520;
         }
-
         .checkbox-group {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            justify-content: space-between;
+            align-items: center;
             margin: 15px 0;
         }
-
-        .checkbox-label {
+        .checkbox-item {
             display: flex;
             align-items: center;
-            font-size: 13px;
+            gap: 8px;
+            font-size: 12px;
             font-weight: bold;
-            color: #000000;
-            cursor: pointer;
+            color: #000;
         }
-
-        .checkbox-label input {
-            margin-right: 8px;
+        .checkbox-item input[type="checkbox"] {
             cursor: pointer;
+            width: 16px;
+            height: 16px;
         }
-
         .forgot-password {
-            text-align: right;
-            font-size: 13px;
-            font-weight: bold;
             color: #808080;
-            cursor: pointer;
-            margin-bottom: 15px;
-        }
-
-        .forgot-password:hover {
-            color: #666666;
-        }
-
-        .login-btn {
-            width: 100px;
-            padding: 10px;
-            background-color: #4169e1;
-            color: #ffffff;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
-            border: 1px solid #4169e1;
-            border-radius: 4px;
             cursor: pointer;
-            display: block;
-            margin: 0 auto;
+            text-decoration: none;
         }
-
-        .login-btn:hover {
-            background-color: #3558c7;
+        .forgot-password:hover { color: #555; }
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #daa520;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 10px;
         }
-
-        .login-btn:active {
-            transform: scale(0.98);
+        .login-button:hover {
+            background-color: #c49019;
+            transform: translateY(-2px);
         }
-
+        .login-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
         .signup-section {
             text-align: center;
-            margin-top: 15px;
-            font-size: 13px;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        .signup-section .question {
+            color: #808080;
             font-weight: bold;
         }
-
-        .signup-text {
-            color: #a9a9a9;
-        }
-
-        .signup-link {
+        .signup-section .signup-link {
             color: #808080;
+            font-weight: bold;
             cursor: pointer;
+            text-decoration: none;
             margin-left: 5px;
         }
-
-        .signup-link:hover {
-            color: #666666;
+        .signup-section .signup-link:hover { color: #555; }
+        
+        /* Success Message Styles */
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #00c853, #00e676);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: slideDown 0.4s ease;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4);
         }
+        .success-message.show { display: block; }
+        .success-message .icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .success-message .text {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .success-message .subtext {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Error Message Styles */
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        .error-message.show { display: block; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-panel">
-            <div class="back-arrow">&lt;</div>
-            
-            <div class="logo-icon"></div>
-            
-            <form>
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" placeholder="Enter your email">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" placeholder="Enter your password">
-                </div>
-
-                <div class="checkbox-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox"> Show Password
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox"> Remember me
-                    </label>
-                </div>
-
-                <div class="forgot-password">Forgot password?</div>
-
-                <button type="submit" class="login-btn">LOGIN</button>
-                
-                <div class="signup-section">
-                    <span class="signup-text">Don't have an account?</span>
-                    <span class="signup-link">Sign Up Here!</span>
-                </div>
-            </form>
-        </div>
+<div class="login-container">
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message">
+        <div class="icon">✓</div>
+        <div class="text">Login Successful!</div>
+        <div class="subtext">Redirecting to dashboard...</div>
     </div>
+
+    <div id="loginForm">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required 
+                   oncopy="return false" onpaste="return false" 
+                   oncut="return false" autocomplete="off">
+        </div>
+
+        <div class="checkbox-group">
+            <div class="checkbox-item">
+                <input type="checkbox" id="showPassword" onchange="togglePassword()">
+                <label for="showPassword" style="margin: 0;">Show Password</label>
+            </div>
+            <a href="#" class="forgot-password" onclick="forgotPassword(event)">Forgot password?</a>
+        </div>
+
+        <div class="checkbox-item" style="margin-bottom: 15px;">
+            <input type="checkbox" id="rememberMe">
+            <label for="rememberMe" style="margin: 0;">Remember me</label>
+        </div>
+
+        <button type="button" class="login-button" id="loginBtn" onclick="handleLogin(event)">LOGIN</button>
+
+        <div id="loginError" class="error-message"></div>
+    </div>
+
+    <div class="signup-section">
+        <span class="question">Don't have an account?</span>
+        <a href="#" class="signup-link" onclick="signUp(event)">Sign Up Here!</a>
+    </div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+        document.getElementById('email').value = savedEmail;
+        document.getElementById('rememberMe').checked = true;
+    }
+});
+
+function togglePassword() {
+    const pwd = document.getElementById('password');
+    const cb = document.getElementById('showPassword');
+    pwd.type = cb.checked ? 'text' : 'password';
+}
+
+function showError(msg) {
+    const el = document.getElementById('loginError');
+    el.textContent = msg;
+    el.classList.add('show');
+}
+
+function hideError() {
+    document.getElementById('loginError').classList.remove('show');
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+    hideError();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+    const loginBtn = document.getElementById('loginBtn');
+
+    if (!email || !password) {
+        showError('Please enter both email and password.');
+        return;
+    }
+
+    // Save email if "Remember Me" is checked
+    if (rememberMe) localStorage.setItem('rememberedEmail', email);
+    else localStorage.removeItem('rememberedEmail');
+
+    // Disable button while loading
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'LOGGING IN...';
+
+    try {
+        const res = await fetch('http://localhost/UniTrack_web/backend/student_login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email, password, remember: rememberMe })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.status === 'success') {
+            // Show success message
+            document.getElementById('successMessage').classList.add('show');
+            document.getElementById('loginForm').style.opacity = '0.5';
+            
+            // Store session data
+            sessionStorage.setItem('studentEmail', email);
+            sessionStorage.setItem('studentUserId', data.userId);
+            
+            // Redirect after 1.5 seconds
+            setTimeout(() => {
+                window.location.replace('Student Dashboard.html');
+            }, 1500);
+        } else {
+            showError(data.message || 'Login failed. Check your credentials.');
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'LOGIN';
+        }
+
+    } catch (err) {
+        console.error('Login error:', err);
+        showError('Could not connect to server. Make sure your local server is running.');
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'LOGIN';
+    }
+}
+
+function forgotPassword(event) {
+    event.preventDefault();
+    window.location.href = 'Student Forgot Password.html';
+}
+
+function signUp(event) {
+    event.preventDefault();
+    window.location.href = 'Student Create Account.html';
+}
+
+document.getElementById('email').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleLogin(e);
+});
+document.getElementById('password').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleLogin(e);
+});
+</script>
 </body>
 </html>

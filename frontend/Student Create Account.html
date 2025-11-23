@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account</title>
+    <title>Create Account - UniTrack</title>
     <style>
         * {
             margin: 0;
@@ -13,262 +13,253 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            position: relative;
             overflow: hidden;
         }
 
+        /* Background Image */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url('payhigh.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+
+        /* Gradient Overlay - Soft Yellow */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 235, 130, 0.5) 0%, rgba(255, 245, 170, 0.5) 100%);
+            z-index: 1;
+        }
+
         .container {
+            background: #fffef0;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            max-width: 500px;
             width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative;
+            z-index: 2;
         }
 
-        .signup-panel {
-            background-color: #FFD700;
-            padding: 30px 50px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .title {
-            font-size: 32px;
-            font-weight: bold;
-            color: #000;
-            margin-bottom: 20px;
+        .header {
+            background: #daa520;
+            color: white;
+            padding: 25px;
             text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-content {
+            padding: 40px;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-label {
+        .form-group label {
             display: block;
-            font-size: 16px;
             font-weight: bold;
+            margin-bottom: 8px;
             color: #000;
-            margin-bottom: 6px;
+            font-size: 14px;
         }
 
-        .input-with-button {
-            display: flex;
-            gap: 10px;
-        }
-
-        .form-input {
-            flex: 1;
-            padding: 12px 15px;
-            font-size: 16px;
-            border: 1px solid #ccc;
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            outline: none;
+            font-size: 14px;
             transition: border-color 0.3s;
         }
 
-        .form-input.full-width {
-            width: 100%;
+        .form-group input:focus {
+            outline: none;
+            border-color: #daa520;
         }
 
-        .form-input:focus {
-            border-color: #4169E1;
+        .form-group input:disabled {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .btn-golden {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #daa520;
+            color: #fff;
+        }
+
+        .btn-golden:hover:not(:disabled) {
+            background: #c49019;
+            transform: translateY(-2px);
+        }
+
+        .btn-golden:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         .btn-verify {
-            padding: 12px 20px;
-            background-color: #4169E1;
-            color: #fff;
-            font-size: 13px;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .btn-verify:hover {
-            background-color: #365ac6;
-        }
-
-        .btn-verify:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
+            width: auto;
+            padding: 10px 16px;
+            margin-left: 10px;
+            font-size: 12px;
         }
 
         .checkbox-group {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
+            margin: 15px 0;
         }
 
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+        .checkbox-group input {
+            width: auto;
+            margin-right: 8px;
             cursor: pointer;
         }
 
         .checkbox-group label {
+            margin: 0;
+            font-weight: bold;
             font-size: 13px;
-            font-weight: bold;
+            color: #000;
             cursor: pointer;
         }
 
-        .btn-signup {
-            width: 120px;
-            padding: 12px;
-            background-color: #4169E1;
-            color: #fff;
-            font-size: 15px;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: block;
-            margin: 20px auto;
-        }
-
-        .btn-signup:hover {
-            background-color: #365ac6;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(65, 105, 225, 0.4);
-        }
-
-        .footer-text {
+        .text-center {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
+            font-size: 13px;
         }
 
-        .footer-text-gray {
-            font-size: 13px;
-            font-weight: bold;
-            color: #A9A9A9;
-        }
-
-        .footer-link {
-            font-size: 13px;
-            font-weight: bold;
-            color: #808080;
+        .link {
+            color: #daa520;
             cursor: pointer;
-            text-decoration: none;
+            font-weight: bold;
         }
 
-        .footer-link:hover {
+        .link:hover {
             text-decoration: underline;
         }
 
-        .verification-status {
+        .input-with-button {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-with-button input {
+            flex: 1;
+        }
+
+        .password-strength {
             font-size: 12px;
             margin-top: 5px;
             font-weight: bold;
         }
 
+        .strength-weak { color: #ff4444; }
+        .strength-medium { color: #ffaa00; }
+        .strength-strong { color: #00cc00; }
+
         .verified {
-            color: #008000;
+            color: #00cc00;
+            font-weight: bold;
+            font-size: 12px;
         }
 
-        .not-verified {
-            color: #ff0000;
+        .error-msg {
+            color: #ff4444;
+            font-weight: bold;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="signup-panel">
-            <h1 class="title">Create Account</h1>
-            
-            <form onsubmit="handleSubmit(event)">
+        <div class="header">
+            <h1>Create Account</h1>
+        </div>
+        <div class="form-content">
+            <div>
                 <div class="form-group">
-                    <label class="form-label" for="studentId">Student ID</label>
-                    <input 
-                        type="text" 
-                        id="studentId" 
-                        class="form-input full-width" 
-                        placeholder="Enter your student ID"
-                        required
-                    >
+                    <label>Student ID</label>
+                    <input type="text" id="studentId" placeholder="Enter your student ID" required>
                 </div>
-
+                
                 <div class="form-group">
-                    <label class="form-label" for="email">Email Address</label>
+                    <label>Email Address</label>
                     <div class="input-with-button">
-                        <input 
-                            type="email" 
-                            id="email" 
-                            class="form-input" 
-                            placeholder="Enter your email"
-                            required
-                        >
-                        <button type="button" class="btn-verify" onclick="verifyEmail()" id="verifyEmailBtn">
-                            VERIFY EMAIL
-                        </button>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                        <button type="button" class="btn-golden btn-verify" id="verifyEmailBtn" onclick="verifyEmail()">VERIFY</button>
                     </div>
-                    <div id="emailStatus" class="verification-status"></div>
+                    <span id="emailVerified" class="verified" style="display: none;">✓ Email verified</span>
+                    <span id="emailError" class="error-msg" style="display: none;"></span>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="otp">OTP</label>
+                
+                <div class="form-group" id="otpGroup" style="display: none;">
+                    <label>OTP (Check your email)</label>
                     <div class="input-with-button">
-                        <input 
-                            type="text" 
-                            id="otp" 
-                            class="form-input" 
-                            placeholder="Enter OTP code"
-                            maxlength="6"
-                            disabled
-                        >
-                        <button type="button" class="btn-verify" onclick="verifyOTP()" id="verifyOtpBtn" disabled>
-                            VERIFY OTP
-                        </button>
+                        <input type="text" id="otp" placeholder="Enter OTP code" maxlength="6">
+                        <button type="button" class="btn-golden btn-verify" onclick="verifyOTP()">VERIFY OTP</button>
                     </div>
-                    <div id="otpStatus" class="verification-status"></div>
+                    <span id="otpVerified" class="verified" style="display: none;">✓ OTP verified</span>
+                    <span id="otpError" class="error-msg" style="display: none;"></span>
                 </div>
-
+                
                 <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        class="form-input full-width" 
-                        placeholder="Enter password"
-                        required
-                    >
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required 
+                           onpaste="return false" 
+                           oncopy="return false"
+                           oncut="return false">
+                    <div id="passwordStrength" class="password-strength"></div>
                 </div>
-
+                
                 <div class="form-group">
-                    <label class="form-label" for="confirmPassword">Confirm Password</label>
-                    <input 
-                        type="password" 
-                        id="confirmPassword" 
-                        class="form-input full-width" 
-                        placeholder="Confirm your password"
-                        required
-                    >
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required
+                           onpaste="return false"
+                           oncopy="return false"
+                           oncut="return false">
                 </div>
-
+                
                 <div class="checkbox-group">
-                    <input type="checkbox" id="showPassword" onchange="togglePassword()">
-                    <label for="showPassword">Show Password</label>
+                    <input type="checkbox" id="showPass" onchange="togglePassword()">
+                    <label for="showPass">Show Password</label>
                 </div>
-
-                <button type="submit" class="btn-signup" id="signupBtn" disabled>
-                    SIGNUP
-                </button>
-            </form>
-
-            <div class="footer-text">
-                <span class="footer-text-gray">Already have an account?</span>
-                <a href="#" class="footer-link" onclick="goToLogin(event)">Log In Here!</a>
+                
+                <button type="button" class="btn-golden" id="signupBtn" onclick="handleSignup()" disabled>SIGNUP</button>
+                
+                <div class="text-center">
+                    <span style="color: #808080; font-weight: bold;">Already have an account?</span>
+                    <span class="link" onclick="goToLogin()">Log In Here!</span>
+                </div>
             </div>
         </div>
     </div>
@@ -277,92 +268,192 @@
         let emailVerified = false;
         let otpVerified = false;
 
-        function verifyEmail() {
-            const email = document.getElementById('email').value;
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthDiv = document.getElementById('passwordStrength');
             
-            if (!email) {
-                alert('Please enter your email address');
-                return;
-            }
-
-            // Simulate sending OTP
-            alert(`OTP code sent to ${email}\n\nFor demo purposes, use code: 123456`);
+            let score = 0;
+            if (password.length >= 8) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^a-zA-Z0-9]/.test(password)) score++;
             
-            emailVerified = true;
-            document.getElementById('emailStatus').textContent = '✓ Email verified. OTP sent!';
-            document.getElementById('emailStatus').className = 'verification-status verified';
-            
-            // Enable OTP field
-            document.getElementById('otp').disabled = false;
-            document.getElementById('verifyOtpBtn').disabled = false;
-            document.getElementById('verifyEmailBtn').disabled = true;
-            document.getElementById('email').disabled = true;
-        }
-
-        function verifyOTP() {
-            const otp = document.getElementById('otp').value;
-            
-            if (!otp) {
-                alert('Please enter the OTP code');
-                return;
-            }
-
-            // Simulate OTP verification (in real app, verify with backend)
-            if (otp === '123456') {
-                otpVerified = true;
-                document.getElementById('otpStatus').textContent = '✓ OTP verified successfully!';
-                document.getElementById('otpStatus').className = 'verification-status verified';
-                document.getElementById('verifyOtpBtn').disabled = true;
-                document.getElementById('otp').disabled = true;
-                document.getElementById('signupBtn').disabled = false;
+            if (password.length === 0) {
+                strengthDiv.textContent = '';
+            } else if (score <= 2) {
+                strengthDiv.textContent = 'Password Strength: Weak';
+                strengthDiv.className = 'password-strength strength-weak';
+            } else if (score <= 4) {
+                strengthDiv.textContent = 'Password Strength: Medium';
+                strengthDiv.className = 'password-strength strength-medium';
             } else {
-                document.getElementById('otpStatus').textContent = '✗ Invalid OTP code';
-                document.getElementById('otpStatus').className = 'verification-status not-verified';
+                strengthDiv.textContent = 'Password Strength: Strong';
+                strengthDiv.className = 'password-strength strength-strong';
             }
-        }
+        });
 
         function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const confirmPasswordField = document.getElementById('confirmPassword');
-            const showPassword = document.getElementById('showPassword').checked;
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const checkbox = document.getElementById('showPass');
             
-            passwordField.type = showPassword ? 'text' : 'password';
-            confirmPasswordField.type = showPassword ? 'text' : 'password';
+            password.type = checkbox.checked ? 'text' : 'password';
+            confirmPassword.type = checkbox.checked ? 'text' : 'password';
         }
 
-        function handleSubmit(event) {
-            event.preventDefault();
-
-            if (!otpVerified) {
-                alert('Please verify your email and OTP first');
+        async function verifyEmail() {
+            const email = document.getElementById('email').value.trim();
+            
+            if (!email) {
+                alert('Please enter an email address.');
                 return;
             }
 
-            const studentId = document.getElementById('studentId').value;
-            const email = document.getElementById('email').value;
+            const btn = document.getElementById('verifyEmailBtn');
+            btn.disabled = true;
+            btn.textContent = 'SENDING...';
+
+            try {
+                const formData = new FormData();
+                formData.append("email", email);
+
+                const res = await fetch("http://localhost/UniTrack_web/backend/student_send_otp.php", {
+                    method: "POST",
+                    credentials: "include",  
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.status === "success") {
+                    alert('OTP has been sent to your email. Please check your inbox.');
+                    document.getElementById('otpGroup').style.display = 'block';
+                    document.getElementById('email').disabled = true;
+                    emailVerified = true;
+                    document.getElementById('emailVerified').style.display = 'block';
+                    document.getElementById('emailError').style.display = 'none';
+                } else {
+                    document.getElementById('emailError').textContent = data.message || 'Failed to send OTP. Try again.';
+                    document.getElementById('emailError').style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'VERIFY';
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('emailError').textContent = 'Unable to connect to server.';
+                document.getElementById('emailError').style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'VERIFY';
+            }
+        }
+
+        async function verifyOTP() {
+            const otp = document.getElementById('otp').value.trim();
+
+            if (!otp) {
+                alert("Please enter the OTP.");
+                return;
+            }
+
+            try {
+                const res = await fetch("http://localhost/UniTrack_web/backend/verify_otp.php", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ otp })
+                });
+
+                const response = await res.text();
+
+                if (response === "OTP_VALID") {
+                    alert("OTP verified successfully!");
+                    otpVerified = true;
+                    document.getElementById('otpVerified').style.display = 'block';
+                    document.getElementById('otpError').style.display = 'none';
+                    document.getElementById('otp').disabled = true;
+                    document.getElementById('signupBtn').disabled = false;
+                } else if (response === "OTP_EXPIRED") {
+                    document.getElementById('otpError').textContent = 'OTP expired. Request a new one.';
+                    document.getElementById('otpError').style.display = 'block';
+                } else if (response === "NO_OTP") {
+                    document.getElementById('otpError').textContent = 'No OTP found. Try verifying email again.';
+                    document.getElementById('otpError').style.display = 'block';
+                } else {
+                    document.getElementById('otpError').textContent = 'Invalid OTP code.';
+                    document.getElementById('otpError').style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error connecting to server.");
+            }
+        }
+
+        async function handleSignup() {
+            const studentId = document.getElementById('studentId').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!otpVerified) {
+                alert('Please verify your email with OTP first.');
+                return;
+            }
+
+            if (!studentId) {
+                alert('Please enter your student ID.');
+                return;
+            }
 
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
                 return;
             }
 
-            if (password.length < 8) {
-                alert('Password must be at least 8 characters long');
+            const hasLower = /[a-z]/.test(password);
+            const hasUpper = /[A-Z]/.test(password);
+            const hasDigit = /[0-9]/.test(password);
+            const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+            const isLongEnough = password.length >= 8;
+
+            if (!hasLower || !hasUpper || !hasDigit || !hasSymbol || !isLongEnough) {
+                alert('Password must contain:\n- At least 8 characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character');
                 return;
             }
 
-            alert(`Account created successfully!\n\nStudent ID: ${studentId}\nEmail: ${email}\n\nYou can now log in.`);
-            
-            // Redirect to login page
-            // window.location.href = 'login.html';
+            try {
+                const formData = new URLSearchParams();
+                formData.append('studentId', studentId);
+                formData.append('email', email);
+                formData.append('password', password);
+
+                const res = await fetch('http://localhost/UniTrack_web/backend/student_signup.php', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+
+                const response = await res.text();
+                
+                if (response === "SUCCESS") {
+                    alert('Account created successfully! You can now log in.');
+                    window.location.replace('Student%20Login.html');
+                } else if (response === "EXISTS") {
+                    alert('An account with this email or student ID already exists.');
+                } else if (response === "EMAIL_MISMATCH") {
+                    alert('Session expired. Please verify your email again.');
+                } else {
+                    alert('Failed to create account: ' + response);
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('Unable to connect to server.');
+            }
         }
 
-        function goToLogin(event) {
-            event.preventDefault();
-            alert('Redirecting to login page...');
-            // window.location.href = 'login.html';
+        function goToLogin() {
+            window.location.href = 'Student%20Login.html';
         }
     </script>
 </body>
