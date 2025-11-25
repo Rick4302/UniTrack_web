@@ -143,5 +143,10 @@ error_log("Session ID: " . session_id());
 error_log("Email stored in session: " . $_SESSION["email"]);
 error_log("Student ID: " . $_SESSION["studentID"]);
 
-echo json_encode(["status" => "success", "message" => "Login successful.", "userId" => $user["StudentID"]]);
+echo json_encode([
+    "status" => "success", 
+    "message" => "Login successful.", 
+    "userId" => $user["StudentID"],
+    "studentID" => $user["StudentID"]  // ← ADD THIS LINE
+]);
 exit;

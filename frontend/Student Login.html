@@ -278,20 +278,21 @@ async function handleLogin(event) {
 
         const data = await res.json();
 
-        if (res.ok && data.status === 'success') {
-            // Show success message
-            document.getElementById('successMessage').classList.add('show');
-            document.getElementById('loginForm').style.opacity = '0.5';
-            
-            // Store session data
-            sessionStorage.setItem('studentEmail', email);
-            sessionStorage.setItem('studentUserId', data.userId);
-            
-            // Redirect after 1.5 seconds
-            setTimeout(() => {
-                window.location.replace('Student Dashboard.html');
-            }, 1500);
-        } else {
+       if (res.ok && data.status === 'success') {
+    // Show success message
+    document.getElementById('successMessage').classList.add('show');
+    document.getElementById('loginForm').style.opacity = '0.5';
+    
+    // Store session data
+    sessionStorage.setItem('studentEmail', email);
+    sessionStorage.setItem('studentUserId', data.userId);
+    sessionStorage.setItem('studentID', data.userId);  // ← ADD THIS LINE
+    
+    // Redirect after 1.5 seconds
+    setTimeout(() => {
+        window.location.replace('Student Dashboard - SHS.html');
+    }, 1500);
+}else {
             showError(data.message || 'Login failed. Check your credentials.');
             loginBtn.disabled = false;
             loginBtn.textContent = 'LOGIN';
