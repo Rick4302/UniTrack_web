@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gcash Payment</title>
+    <title>GCash Payment - UniTrack</title>
     <style>
         * {
             margin: 0;
@@ -13,74 +13,177 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
+            min-height: 100vh;
             overflow-x: hidden;
+            position: relative;
         }
 
-        .header {
-            background-color: #FFD700;
-            padding: 20px;
-            text-align: center;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background-image: url("payhigh.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
         }
 
-        .header-title {
-            font-size: 32px;
-            font-weight: bold;
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 224, 130, 0.65),
+                rgba(255, 241, 179, 0.65)
+            );
+            z-index: 1;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            width: 100%;
+            height: 70px;
+            background-color: #FFC107;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-button {
+            font-size: 28px;
             color: #000;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
 
-        .container {
+        .back-button:hover {
+            transform: translateX(-5px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000000;
+            letter-spacing: 1px;
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            color: #333333;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding-top: 110px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 42px;
+            font-weight: bold;
+            color: #000000;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .checkout-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            display: flex;
-            gap: 40px;
-        }
-
-        .left-section {
-            flex: 1;
-            padding-right: 20px;
-        }
-
-        .right-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 0 40px;
         }
 
         .amount-panel {
-            background-color: #C0C0C0;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .amount-section {
+            flex: 1;
+            text-align: center;
         }
 
         .amount-label {
-            font-size: 24px;
+            font-size: 14px;
             font-weight: bold;
-            color: #696969;
-            margin-bottom: 5px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .amount-value {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
-            color: #808000;
+            color: #FF9800;
+        }
+
+        .payment-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 25px;
+            text-align: left;
         }
 
         .instructions {
-            font-size: 18px;
+            font-size: 16px;
             line-height: 1.8;
-            color: #696969;
-            padding: 20px 0;
+            color: #555;
+            margin-bottom: 30px;
         }
 
         .instructions h3 {
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 15px;
             color: #000;
+            font-weight: 600;
         }
 
         .instructions ol {
@@ -89,36 +192,42 @@
         }
 
         .instructions li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            color: #666;
         }
 
-        .instructions p {
-            margin-bottom: 15px;
-        }
-
-        .upload-section {
-            text-align: center;
-            width: 100%;
-        }
-
-        .upload-title {
-            font-size: 22px;
-            font-weight: bold;
+        .instructions strong {
             color: #000;
-            margin-bottom: 20px;
+        }
+
+        .instructions ul {
+            margin: 10px 0 10px 20px;
+            list-style-type: disc;
+        }
+
+        .receipt-section {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .receipt-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            text-align: center;
+            margin-bottom: 15px;
         }
 
         .image-preview {
             width: 100%;
-            max-width: 450px;
-            height: 450px;
-            border: 2px solid #ccc;
-            border-radius: 4px;
+            height: 250px;
+            border: 2px dashed #FFC107;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f9f9f9;
-            margin: 0 auto 15px;
+            background-color: rgba(255, 193, 7, 0.05);
+            margin-bottom: 15px;
             overflow: hidden;
         }
 
@@ -130,34 +239,34 @@
 
         .image-preview-text {
             color: #999;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .btn-attach {
             width: 100%;
-            max-width: 450px;
             padding: 15px;
             font-size: 16px;
             font-weight: bold;
             background-color: #fff;
             color: #000;
-            border: 2px solid #000;
-            border-radius: 4px;
+            border: 2px solid #FFC107;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             margin-bottom: 10px;
         }
 
         .btn-attach:hover {
-            background-color: #f0f0f0;
+            background-color: #FFC107;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
         }
 
         .filename {
             font-size: 13px;
-            color: #808080;
+            color: #888;
             text-align: center;
             min-height: 20px;
-            margin-bottom: 20px;
         }
 
         .action-buttons {
@@ -165,7 +274,7 @@
             justify-content: center;
             gap: 20px;
             margin-top: 40px;
-            width: 100%;
+            padding: 0 40px;
         }
 
         .btn-action {
@@ -173,180 +282,514 @@
             font-size: 16px;
             font-weight: bold;
             border: 2px solid;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             min-width: 215px;
         }
 
         .btn-cancel {
             background-color: #fff;
             color: #000;
-            border-color: #000;
+            border-color: #e0e0e0;
         }
 
         .btn-cancel:hover {
             background-color: #f0f0f0;
+            border-color: #999;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .btn-submit {
-            background-color: #FFD700;
+            background-color: #FFC107;
             color: #000;
-            border-color: #FFD700;
+            border-color: #FFC107;
         }
 
-        .btn-submit:hover {
-            background-color: #FFC700;
+        .btn-submit:hover:not(:disabled) {
+            background-color: #FFB300;
+            border-color: #FFB300;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .btn-submit:disabled {
+            background-color: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 15px;
+        }
+
+        .modal-message {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-highlight {
+            background-color: rgba(255, 193, 7, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #FF9800;
+            font-weight: 600;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .modal-btn-primary {
+            background-color: #FFC107;
+            color: #000;
+            border-color: #FFC107;
+        }
+
+        .modal-btn-primary:hover {
+            background-color: #FFB300;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
         }
 
         input[type="file"] {
             display: none;
         }
 
-        @media (max-width: 968px) {
-            .container {
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0 20px;
+            }
+
+            .page-title h1 {
+                font-size: 32px;
+            }
+
+            .checkout-container {
+                padding: 0 20px;
+            }
+
+            .amount-panel {
                 flex-direction: column;
+                padding: 20px;
+            }
+
+            .amount-section {
+                width: 100%;
+                padding: 10px 0;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                padding: 0 20px;
+            }
+
+            .btn-action {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+            }
+
+            .payment-section {
+                padding: 20px;
+            }
+
+            .instructions {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1 class="header-title">Gcash Payment</h1>
-    </div>
-
-    <div class="container">
-        <div class="left-section">
-            <div class="amount-panel">
-                <div class="amount-label">Total Amount</div>
-                <div class="amount-value" id="totalAmount">₱12,500.00</div>
-            </div>
-
-            <div class="instructions">
-                <h3>GCash Payment Instructions:</h3>
-                
-                <ol>
-                    <li><strong>Open your GCash app</strong> on your mobile device.</li>
-                    
-                    <li><strong>Select "Send Money"</strong> or "Pay Bills" depending on the merchant setup.</li>
-                    
-                    <li><strong>Enter the merchant details:</strong>
-                        <ul style="margin-top: 10px; margin-left: 20px;">
-                            <li>GCash Number: <strong>0917-123-4567</strong></li>
-                            <li>Account Name: <strong>UniTrack Registration</strong></li>
-                        </ul>
-                    </li>
-                    
-                    <li><strong>Enter the exact amount</strong> shown above (₱12,500.00).</li>
-                    
-                    <li><strong>Add a reference</strong> (optional): Include your student ID or name.</li>
-                    
-                    <li><strong>Confirm the transaction</strong> and complete the payment.</li>
-                    
-                    <li><strong>Take a screenshot</strong> of the successful transaction receipt showing:
-                        <ul style="margin-top: 10px; margin-left: 20px;">
-                            <li>Transaction reference number</li>
-                            <li>Amount paid</li>
-                            <li>Date and time</li>
-                            <li>Recipient details</li>
-                        </ul>
-                    </li>
-                    
-                    <li><strong>Upload the receipt</strong> using the attachment button on the right.</li>
-                </ol>
-
-                <p><strong>Important Notes:</strong></p>
-                <ul style="margin-left: 25px;">
-                    <li>Ensure the screenshot is clear and all details are visible.</li>
-                    <li>Accepted formats: JPG, PNG, PDF</li>
-                    <li>Maximum file size: 5MB</li>
-                    <li>Your order will be processed within 24 hours after verification.</li>
-                </ul>
+<div class="page-container">
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div class="back-button" onclick="goBack()">←</div>
+            <div>
+                <div class="logo">UniTrack</div>
+                <div class="logo-subtitle">GCash Payment</div>
             </div>
         </div>
+    </nav>
 
-        <div class="right-section">
-            <div class="upload-section">
-                <h3 class="upload-title">Attach Receipt Here</h3>
+    <main class="main-content">
+        <div class="page-title">
+            <h1>GCash Payment</h1>
+        </div>
+
+        <div class="checkout-container">
+            <div class="amount-panel">
+                <div class="amount-section">
+                    <div class="amount-label">Final Amount</div>
+                    <div class="amount-value" id="finalAmount">₱0.00</div>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h2 class="section-title">Payment Instructions</h2>
                 
-                <div class="image-preview" id="imagePreview">
-                    <span class="image-preview-text">No receipt uploaded</span>
+                <div class="instructions">
+                    <h3>📱 GCash Pay Bills Payment Steps:</h3>
+                    
+                    <ol>
+                        <li><strong>Open your GCash app</strong> on your mobile device.</li>
+                        
+                        <li><strong>Select "Pay Bills"</strong> from the main menu.</li>
+
+                        <li><strong>Select "Schools"</strong> from the Categories.</li>
+                        
+                        <li><strong>Search and select "STI"</strong> from the list of available billers.</li>
+                        
+                        <li><strong>Enter the Relevant Information</strong> Enter your Campus and Student Information.</li>
+                        
+                        <li><strong>Enter the exact amount</strong> shown above (₱<span id="billAmount">0.00</span>).</li>
+                        
+                        <li><strong>Review the transaction details</strong> carefully.</li>
+                        
+                        <li><strong>Confirm the transaction</strong> and complete the payment.</li>
+                        
+                        <li><strong>Take a screenshot</strong> of the successful payment confirmation showing:
+                            <ul>
+                                <li>Transaction reference number</li>
+                                <li>Amount paid</li>
+                                <li>Date and time</li>
+                                <li>"Payment Successful" confirmation</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>Upload the receipt</strong> using the attachment button below for verification.</li>
+                    </ol>
+
+                    <p><strong>Important Notes:</strong></p>
+                    <ul>
+                        <li>Ensure the screenshot is clear and all transaction details are visible.</li>
+                        <li>Accepted formats: JPG, PNG, PDF</li>
+                        <li>Maximum file size: 5MB</li>
+                        <li>Your order will be verified within 24 hours after receipt submission.</li>
+                        <li>You will receive a notification once payment is confirmed.</li>
+                    </ul>
                 </div>
 
-                <button class="btn-attach" onclick="document.getElementById('fileInput').click()">
-                    Attach Photo
-                </button>
-                <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFileSelect(event)">
-                
-                <div class="filename" id="filename"></div>
-            </div>
+                <div class="receipt-section">
+                    <div class="receipt-label">📸 Attach Your GCash Payment Receipt Here</div>
+                    
+                    <div class="image-preview" id="imagePreview">
+                        <span class="image-preview-text">No receipt uploaded</span>
+                    </div>
 
-            <div class="action-buttons">
-                <button class="btn-action btn-cancel" onclick="handleCancel()">
-                    Cancel
-                </button>
-                <button class="btn-action btn-submit" onclick="handleSubmit()">
-                    Submit Order
-                </button>
+                    <button class="btn-attach" onclick="document.getElementById('fileInput').click()">
+                        Attach Photo
+                    </button>
+                    <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFileSelect(event)">
+                    
+                    <div class="filename" id="filename"></div>
+                </div>
+
+                <!-- Discount ID Section (Only shows if discount applied) -->
+                <div class="receipt-section" id="discountSection" style="display: none; margin-top: 40px; padding-top: 30px; border-top: 2px dashed #e0e0e0;">
+                    <div class="receipt-label">🆔 Attach Your PWD/Senior Citizen ID</div>
+                    <p style="text-align: center; font-size: 13px; color: #888; margin-bottom: 15px;">
+                        Required for discount verification
+                    </p>
+                    
+                    <div class="image-preview" id="discountImagePreview">
+                        <span class="image-preview-text">No ID uploaded</span>
+                    </div>
+
+                    <button class="btn-attach" onclick="document.getElementById('discountFileInput').click()">
+                        Attach PWD/Senior ID
+                    </button>
+                    <input type="file" id="discountFileInput" accept="image/*,.pdf" onchange="handleDiscountFileSelect(event)">
+                    
+                    <div class="filename" id="discountFilename"></div>
+                </div>
+
             </div>
         </div>
+
+        <div class="action-buttons">
+            <button class="btn-action btn-cancel" onclick="handleCancel()">
+                Cancel
+            </button>
+            <button class="btn-action btn-submit" onclick="handleSubmit()" id="submitBtn">
+                Checkout
+            </button>
+        </div>
+    </main>
+</div>
+
+<div class="modal" id="successModal">
+    <div class="modal-content">
+        <div class="modal-icon">✅</div>
+        <div class="modal-title">Order Submitted Successfully!</div>
+        <div class="modal-message" id="modalMessage"></div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-primary" onclick="closeModal()">
+                Done
+            </button>
+        </div>
     </div>
+</div>
+</body>
 
-    <script>
-        let receiptFile = null;
+<script>
+    let receiptFile = null;
+    let pendingOrder = null;
+    let discountFile = null;
+    const API_BASE_URL = 'http://localhost/UniTrack_web/backend';
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                // Check file size (5MB limit)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('File size must be less than 5MB');
-                    return;
-                }
+   window.addEventListener('DOMContentLoaded', function() {
+    const orderDataStr = sessionStorage.getItem('pendingGCashOrder');
+    if (orderDataStr) {
+        pendingOrder = JSON.parse(orderDataStr);
+        const finalAmount = parseFloat(pendingOrder.finalAmount);
+        document.getElementById('finalAmount').textContent = 
+            '₱' + finalAmount.toLocaleString('en-US', {minimumFractionDigits: 2});
+        document.getElementById('billAmount').textContent = 
+            finalAmount.toLocaleString('en-US', {minimumFractionDigits: 2});
+        
+        // Show discount section if order has discount
+        if (pendingOrder.hasDiscount) {
+            document.getElementById('discountSection').style.display = 'block';
+        }
+    } else {
+        alert('No pending order found. Please go back and create an order.');
+        goBack();
+    }
+});
 
-                receiptFile = file;
-                document.getElementById('filename').textContent = file.name;
-                
-                // Preview image if it's an image file
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const preview = document.getElementById('imagePreview');
-                        preview.innerHTML = `<img src="${e.target.result}" alt="Receipt">`;
-                    };
-                    reader.readAsDataURL(file);
-                } else if (file.type === 'application/pdf') {
-                    const preview = document.getElementById('imagePreview');
-                    preview.innerHTML = `<span class="image-preview-text">PDF Receipt Uploaded<br>${file.name}</span>`;
-                }
-            }
+function handleDiscountFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            return;
         }
 
-        function handleCancel() {
-            if (confirm('Are you sure you want to cancel? Your payment information will be lost.')) {
-                receiptFile = null;
-                document.getElementById('imagePreview').innerHTML = '<span class="image-preview-text">No receipt uploaded</span>';
-                document.getElementById('filename').textContent = '';
-                document.getElementById('fileInput').value = '';
-                // Navigate back or close
-                window.history.back();
-            }
+        discountFile = file;
+        document.getElementById('discountFilename').textContent = file.name;
+        
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('discountImagePreview');
+                preview.innerHTML = `<img src="${e.target.result}" alt="Discount ID">`;
+            };
+            reader.readAsDataURL(file);
+        } else if (file.type === 'application/pdf') {
+            const preview = document.getElementById('discountImagePreview');
+            preview.innerHTML = `<span class="image-preview-text">PDF ID Uploaded<br>${file.name}</span>`;
         }
+    }
+}
 
-        function handleSubmit() {
-            if (!receiptFile) {
-                alert('Please attach your GCash receipt before submitting');
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
                 return;
             }
 
-            const amount = document.getElementById('totalAmount').textContent;
-            alert(`Order submitted successfully!\n\nPayment Type: GCash\nAmount: ${amount}\nReceipt: ${receiptFile.name}\n\nYour order will be verified within 24 hours.\nYou will receive a confirmation email shortly.`);
+            receiptFile = file;
+            document.getElementById('filename').textContent = file.name;
             
-            // Here you would typically upload the file to your server
-            console.log('Submitting order with receipt:', receiptFile);
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Receipt">`;
+                };
+                reader.readAsDataURL(file);
+            } else if (file.type === 'application/pdf') {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<span class="image-preview-text">PDF Receipt Uploaded<br>${file.name}</span>`;
+            }
         }
-    </script>
+    }
+
+    function handleCancel() {
+        if (confirm('Are you sure you want to cancel? Your payment information will be lost.')) {
+            sessionStorage.removeItem('pendingGCashOrder');
+            window.location.href = 'Checkout Section.html';
+        }
+    }
+
+    function handleSubmit() {
+        if (!receiptFile) {
+            alert('Please attach your GCash payment receipt before submitting');
+            return;
+        }
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
+
+        validateAndSubmitOrder();
+    }
+
+    function validateAndSubmitOrder() {
+    const formData = new FormData();
+
+    // Attach GCash receipt file
+    const gcashFileInput = document.getElementById('fileInput');
+    if (!gcashFileInput || !gcashFileInput.files[0]) {
+        alert("Please upload your GCash receipt.");
+        return;
+    }
+    formData.append('gcashReceipt', gcashFileInput.files[0]);
+
+    // Attach discount image if provided
+    if (discountFile && pendingOrder.hasDiscount) {
+        formData.append('discountImage', discountFile);
+    }
+
+    // Attach order data
+    formData.append('studentID', pendingOrder.studentID);
+    formData.append('paymentType', 'gcash');
+    formData.append('totalAmount', pendingOrder.totalAmount);
+    formData.append('discountAmount', pendingOrder.discountAmount);
+    formData.append('finalAmount', pendingOrder.finalAmount);
+    formData.append('hasDiscount', pendingOrder.hasDiscount ? 1 : 0);
+
+    // Attach cart items
+    pendingOrder.cartItems.forEach(item => {
+        formData.append('itemIDs[]', item.inventoryID);
+        formData.append('itemQuantities[]', item.quantity);
+    });
+
+    formData.append('orderData', JSON.stringify({
+        cartItems: pendingOrder.cartItems,
+        paymentType: 'gcash',
+        studentID: pendingOrder.studentID,
+        finalAmount: pendingOrder.finalAmount,
+        discountAmount: pendingOrder.discountAmount,
+        hasDiscount: pendingOrder.hasDiscount ? 1 : 0
+    }));
+
+    fetch(`${API_BASE_URL}/submit_gcash_order.php`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Checkout';
+
+        if (data.status !== 'success') {
+            alert('Error submitting order: ' + data.message);
+            return;
+        }
+
+        sessionStorage.removeItem('pendingGCashOrder');
+        sessionStorage.removeItem('cartItems');
+
+        const finalAmount = document.getElementById('finalAmount').textContent;
+        const modalMessage = document.getElementById('modalMessage');
+
+        modalMessage.innerHTML = `
+            <p>Your order has been placed successfully!</p>
+            <div class="modal-highlight">
+                Order ID: <strong>#${data.orderID}</strong><br>
+                📱 GCash payment receipt received and pending verification.<br>
+                <strong>Final Amount: ${finalAmount}</strong>
+            </div>
+            <p>Your order will be verified and processed within 24 hours.</p>
+            <p>You will receive a notification once your uniforms are ready for pickup.</p>
+        `;
+
+        showModal();
+    })
+    .catch(error => {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Checkout';
+        alert('Error submitting order: ' + error.message);
+    });
+}
+
+
+    function showModal() {
+        document.getElementById('successModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('successModal').classList.remove('show');
+        window.location.href = 'Student Dashboard - SHS.html';
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </body>
 </html>

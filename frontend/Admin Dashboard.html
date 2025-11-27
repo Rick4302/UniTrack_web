@@ -269,6 +269,11 @@
             color: white;
         }
 
+        .card-history .card-icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
         .card-title {
             font-size: 20px;
             font-weight: bold;
@@ -420,7 +425,7 @@
     <main class="main-content">
         <div class="welcome-section">
             <h1 class="welcome-title">Welcome to Dashboard</h1>
-            <p class="welcome-subtitle">Manage your orders, inventory, and sales reports</p>
+            <p class="welcome-subtitle">Manage your orders, inventory, sales reports, and transaction history</p>
         </div>
 
         <div class="dashboard-grid">
@@ -445,6 +450,14 @@
                 <div class="card-icon">📊</div>
                 <h3 class="card-title">Sales Report</h3>
                 <p class="card-description">View sales analytics, generate reports, and track revenue performance</p>
+                <div class="card-arrow">→</div>
+            </div>
+
+            <!-- Sales History Card -->
+            <div class="dashboard-card card-history" onclick="handleSalesHistory()">
+                <div class="card-icon">📜</div>
+                <h3 class="card-title">Sales History</h3>
+                <p class="card-description">View all previous transactions, approved orders, and rejected orders</p>
                 <div class="card-arrow">→</div>
             </div>
         </div>
@@ -490,6 +503,10 @@
 
         function handleSalesReport() {
             window.location.href = 'Sales Report.html';
+        }
+
+        function handleSalesHistory() {
+            window.location.href = 'Sales History.html';
         }
 
         function handleAccount() {

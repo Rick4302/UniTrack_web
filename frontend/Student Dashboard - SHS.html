@@ -758,15 +758,19 @@
             <h2 class="section-title">Available Items</h2>
             <div class="products-grid">
                 <div class="product-card">
-                    <div class="product-name">SHS - DARK BLUE NECKTIE</div>
-                    <div class="product-controls">
-                        <div class="product-price">
-                            <span class="price-label">PRICE</span>
-                            <span class="price-value">₱150</span>
-                        </div>
-                        <button class="add-btn" onclick="addToCart('SH NECKTIE', 150)">ADD TO CART</button>
-                    </div>
-                </div>
+    <div class="product-name">SHS - DARK BLUE NECKTIE</div>
+    <select class="size-select" onfocus="loadSizes(this, 'SH NECKTIE', 'JHS/SHS')" onchange="loadSizes(this, 'SH NECKTIE', 'JHS/SHS')">
+        <option value="">Select Size</option>
+    </select>
+    <div class="error-message"></div>
+    <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+            <span class="price-label">PRICE</span>
+            <span class="price-value">₱150</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('SH NECKTIE', 150)">ADD TO CART</button>
+    </div>
+</div>
 
                 <div class="product-card">
                     <div class="product-name">SHS POLO</div>
@@ -1263,7 +1267,7 @@
     });
 
     function handleSettings() {
-        alert('Settings clicked - Will navigate to settings page');
+       window.location.href = 'Student - Account.html'
     }
 
     function handleCart() {

@@ -493,24 +493,36 @@
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody">
-                        <tr>
-                            <td colspan="8" class="loading">Loading orders...</td>
-                        </tr>
+                        <tr><td colspan="8" class="loading">Loading orders...</td></tr>
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
 
-    <!-- Order Details Modal -->
+     <!-- Order Details Modal -->
     <div class="modal-overlay" id="orderModal">
-        <div class="modal-content">
-            <h3>Order Details</h3>
-            <div class="order-details" id="orderDetails">
-                <!-- Details will be populated here -->
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">
+            <h3 id="orderModalTitle">Order Details</h3>
+            <div class="order-details" id="orderDetails"></div>
+            <div class="modal-buttons" style="margin-top:18px;">
+                <button class="modal-btn modal-btn-cancel" onclick="closeOrderModal()">Close</button>
             </div>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-cancel" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Image Viewer Modal (separate, fullscreen) -->
+    <div class="modal-overlay" id="imageViewerModal" style="background: rgba(0,0,0,0.9);">
+        <div style="position: relative; width: 90%; max-width: 1000px; max-height: 90vh; display: flex; flex-direction: column; background: white; border-radius: 12px; overflow: hidden;">
+            <div style="padding: 20px; background: #4169E1; color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="imageViewerTitle" style="margin: 0; font-size: 18px;">Image Preview</h3>
+                <button onclick="closeImageViewer()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;">×</button>
+            </div>
+            <div style="flex: 1; overflow: auto; padding: 20px; display: flex; align-items: center; justify-content: center; background: #f5f5f5;">
+                <img id="imageViewerImage" src="" alt="Preview" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); background: white;">
+            </div>
+            <div style="padding: 15px 20px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="modal-btn modal-btn-cancel" onclick="closeImageViewer()">Close</button>
             </div>
         </div>
     </div>
@@ -525,364 +537,363 @@
         </div>
     </div>
 
-    <script>
-    const API_BASE = 'http://localhost/UniTrack_web/backend';
-    let allOrders = [];
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const adminEmail = sessionStorage.getItem('adminEmail');
-        if (!adminEmail) {
-            window.location.href = 'Admin%20Login.html';
-            return;
-        }
-        
-        loadOrders();
-    });
-
-    async function loadOrders() {
-        const tbody = document.getElementById('ordersTableBody');
-        tbody.innerHTML = '<tr><td colspan="8" class="loading">Loading orders...</td></tr>';
-
-        try {
-            const response = await fetch(`${API_BASE}/get_pending_orders.php`);
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                allOrders = result.data || [];
-                renderOrders(allOrders);
-                
-                if (allOrders.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" class="no-data">No pending orders found</td></tr>';
-                }
-            } else {
-                tbody.innerHTML = '<tr><td colspan="8" class="no-data">Error loading orders: ' + result.message + '</td></tr>';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            tbody.innerHTML = '<tr><td colspan="8" class="no-data">Failed to connect to server</td></tr>';
-        }
-    }
-
-    function renderOrders(orders) {
-        const tbody = document.getElementById('ordersTableBody');
-        
-        if (!Array.isArray(orders) || orders.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" class="no-data">No orders to display</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = orders.map(order => {
-            const statusClass = getStatusClass(order.Status || 'Pending');
-            const paymentClass = getPaymentClass(order.PaymentType || 'Cash');
-            const statusBadge = getStatusBadge(order.Status || 'Pending');
-            const paymentBadge = getPaymentBadge(order.PaymentType || 'Cash');
-
-            return `
-                <tr>
-                    <td>#${order.OrderID}</td>
-                    <td>${escapeHtml(order.StudentID)}</td>
-                    <td>${escapeHtml(order.ItemName)}</td>
-                    <td>${order.Quantity}</td>
-                    <td>₱${parseFloat(order.FinalAmount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                    <td><span class="payment-type ${paymentClass}">${paymentBadge}</span></td>
-                    <td><span class="status-badge ${statusClass}">${statusBadge}</span></td>
-                    <td>
-                        <button class="action-btn view-btn" onclick="viewOrderDetails(${order.OrderID})">View</button>
-                        ${order.Status === 'Pending' ? `
-                            <button class="action-btn ready-btn" onclick="approveOrder(${order.OrderID})">Approve</button>
-                            <button class="action-btn" style="background: #f44336; color: #fff;" onclick="rejectOrder(${order.OrderID})">Reject</button>
-                        ` : ''}
-                        ${order.Status === 'Pending Verification' ? `<button class="action-btn ready-btn" onclick="markReady(${order.OrderID})">Mark Ready</button>` : ''}
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    function getStatusClass(status) {
-        const statusMap = {
-            'Pending': 'status-pending',
-            'Pending Verification': 'status-verification',
-            'Paid': 'status-paid',
-            'Ready': 'status-ready'
-        };
-        return statusMap[status] || 'status-pending';
-    }
-
-    function getPaymentClass(type) {
-        return type?.toLowerCase() === 'gcash' ? 'payment-gcash' : 'payment-cash';
-    }
-
-    function getStatusBadge(status) {
-        const statusMap = {
-            'Pending': '⏳ Pending',
-            'Pending Verification': '🔍 Pending Verification',
-            'Paid': '✅ Paid',
-            'Ready': '📦 Ready for Pickup'
-        };
-        return statusMap[status] || status;
-    }
-
-    function getPaymentBadge(type) {
-        return type?.toLowerCase() === 'gcash' ? '📱 GCash' : '💰 Cash';
-    }
-
-    function escapeHtml(str) {
-        if (str === null || str === undefined) return '';
-        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-
-    function formatDateTime(dateString) {
-        if (!dateString) return 'N/A';
-        const date = new Date(dateString);
-        const options = { 
-            year: 'numeric', 
-            month: '2-digit', 
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        };
-        return date.toLocaleString('en-US', options);
-    }
-
-    async function viewOrderDetails(orderId) {
-        const order = allOrders.find(o => o.OrderID === orderId);
-        
-        if (!order) {
-            showAlert('⚠️', 'Not Found', 'Order details not found.');
-            return;
-        }
-
-        let detailsHtml = `
-            <div class="detail-row">
-                <span class="detail-label">Order ID:</span>
-                <span class="detail-value">#${order.OrderID}</span>
+    <!-- Rejection modal (kept as-is) -->
+    <div id="rejectionModal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:white; padding:30px; border-radius:16px; max-width:500px; width:90%; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+            <h2 style="margin:0 0 20px 0; color:#333; font-size:24px;">Reject Order</h2>
+            <p style="color:#666; margin-bottom:20px;">Please provide a reason for rejecting this order:</p>
+            <textarea id="rejectionReasonInput" placeholder="Enter rejection reason..." style="width:100%; min-height:120px; padding:15px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px; font-family:inherit; resize:vertical; margin-bottom:20px;"></textarea>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button onclick="closeRejectionModal()" style="padding:12px 24px; background:#f5f5f5; border:none; border-radius:8px; cursor:pointer; font-weight:600; color:#666;">Cancel</button>
+                <button onclick="confirmRejection()" style="padding:12px 24px; background:#f44336; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Confirm Rejection</button>
             </div>
-            <div class="detail-row">
-                <span class="detail-label">Student Number:</span>
-                <span class="detail-value">${escapeHtml(order.StudentID)}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Product:</span>
-                <span class="detail-value">${escapeHtml(order.ItemName)}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Size:</span>
-                <span class="detail-value">${escapeHtml(order.Size)}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Quantity:</span>
-                <span class="detail-value">${order.Quantity}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Total Amount:</span>
-                <span class="detail-value">₱${parseFloat(order.TotalAmount).toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Discount Amount:</span>
-                <span class="detail-value">₱${parseFloat(order.DiscountAmount).toLocaleString('en-US', {minimumFractionDigits: 2})}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Final Amount:</span>
-                <span class="detail-value"><strong>₱${parseFloat(order.FinalAmount).toLocaleString('en-US', {minimumFractionDigits: 2})}</strong></span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Payment Type:</span>
-                <span class="detail-value">${getPaymentBadge(order.PaymentType)}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Status:</span>
-                <span class="detail-value">${getStatusBadge(order.Status)}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Order Date & Time:</span>
-                <span class="detail-value">${formatDateTime(order.OrderDate)}</span>
-            </div>
-        `;
+        </div>
+    </div>
 
-        // Add GCash Receipt section if payment is GCash and receipt exists
-        if (order.PaymentType?.toLowerCase() === 'gcash' && order.HasGCashReceipt) {
-            detailsHtml += `
-                <div class="detail-row">
-                    <span class="detail-label">GCash Receipt:</span>
-                    <span class="detail-value">
-                        <button class="modal-btn modal-btn-save" style="padding: 6px 12px; font-size: 12px; width: auto;" onclick="viewImage(${order.OrderID}, 'gcash')">
-                            📸 View Receipt
-                        </button>
-                    </span>
-                </div>
-            `;
-        }
+<script>
+/* ---------------------------
+   Cleaned & consolidated JS
+   --------------------------- */
+const API_BASE = 'http://localhost/UniTrack_web/backend';
+let allOrders = [];
+let currentOrderId = null;
+let currentOrderObj = null;
+let currentRejectionOrderId = null;
 
-        // Add PWD ID section if discount is applied
-        if (order.HasDiscount && order.HasDiscountImage) {
-            detailsHtml += `
-                <div class="detail-row">
-                    <span class="detail-label">PWD/Senior ID:</span>
-                    <span class="detail-value">
-                        <button class="modal-btn modal-btn-save" style="padding: 6px 12px; font-size: 12px; width: auto;" onclick="viewImage(${order.OrderID}, 'discount')">
-                            📋 View ID
-                        </button>
-                    </span>
-                </div>
-            `;
-        }
-
-        document.getElementById('orderDetails').innerHTML = detailsHtml;
-        document.getElementById('orderModal').classList.add('active');
+window.addEventListener('DOMContentLoaded', () => {
+    const adminEmail = sessionStorage.getItem('adminEmail');
+    if (!adminEmail) {
+        window.location.href = 'Admin%20Login.html';
+        return;
     }
+    loadOrders();
 
-    function viewImage(orderId, imageType) {
-        const imageUrl = `${API_BASE}/get_orders_images.php?orderId=${orderId}&type=${imageType}`;
-        const title = imageType === 'gcash' ? 'GCash Receipt' : 'PWD/Senior Citizen ID';
-        
-        // Create image viewer modal
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay active';
-        modal.id = 'imageViewerModal';
-        modal.innerHTML = `
-            <div class="modal-content" style="max-width: 800px;">
-                <h3>${title}</h3>
-                <img src="${imageUrl}" alt="${title}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22>Image not available</text></svg>'" style="width: 100%; max-height: 600px; object-fit: contain; border-radius: 8px; margin: 20px 0; background: #f5f5f5;">
-                <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-cancel" onclick="document.getElementById('imageViewerModal').remove()">Close</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-
-    async function approveOrder(orderId) {
-        if (!confirm('Approve this order?')) return;
-
-        try {
-            const response = await fetch(`${API_BASE}/update_order_status.php`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    orderId: orderId,
-                    status: 'Pending Verification'
-                })
-            });
-
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                loadOrders();
-                showAlert('✅', 'Success', 'Order approved successfully');
-            } else {
-                showAlert('❌', 'Error', result.message);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showAlert('❌', 'Error', 'Failed to approve order');
-        }
-    }
-
-    async function rejectOrder(orderId) {
-        if (!confirm('Reject this order? This action cannot be undone.')) return;
-
-        try {
-            const response = await fetch(`${API_BASE}/update_order_status.php`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    orderId: orderId,
-                    status: 'Cancelled'
-                })
-            });
-
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                loadOrders();
-                showAlert('✅', 'Success', 'Order rejected successfully');
-            } else {
-                showAlert('❌', 'Error', result.message);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showAlert('❌', 'Error', 'Failed to reject order');
-        }
-    }
-
-    async function markReady(orderId) {
-        if (!confirm('Mark this order as ready for pickup?')) return;
-
-        try {
-            const response = await fetch(`${API_BASE}/update_order_status.php`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    orderId: orderId,
-                    status: 'Ready'
-                })
-            });
-
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                loadOrders();
-                showAlert('✅', 'Success', 'Order marked as ready for pickup');
-            } else {
-                showAlert('❌', 'Error', result.message);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showAlert('❌', 'Error', 'Failed to update order status');
-        }
-    }
-
-    function applyFilter() {
-        const searchText = document.getElementById('searchBox').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
-        const paymentFilter = document.getElementById('paymentFilter').value;
-
-        let filtered = allOrders.filter(order => {
-            const matchSearch = !searchText || 
-                String(order.StudentID).toLowerCase().includes(searchText) ||
-                (order.ItemName || '').toLowerCase().includes(searchText) ||
-                String(order.OrderID).includes(searchText);
-
-            const matchStatus = !statusFilter || order.Status === statusFilter;
-            const matchPayment = !paymentFilter || order.PaymentType?.toLowerCase() === paymentFilter.toLowerCase();
-
-            return matchSearch && matchStatus && matchPayment;
-        });
-
-        renderOrders(filtered);
-    }
-
-    function closeModal() {
-        document.getElementById('orderModal').classList.remove('active');
-    }
-
-    function showAlert(icon, title, message) {
-        document.getElementById('alertIcon').textContent = icon;
-        document.getElementById('alertTitle').textContent = title;
-        document.getElementById('alertMessage').textContent = message;
-        document.getElementById('alertModal').classList.add('active');
-    }
-
-    function closeAlertModal() {
-        document.getElementById('alertModal').classList.remove('active');
-    }
-
-    function goBack() {
-        window.location.href = 'Admin Dashboard.html';
-    }
-
-    // Close modals when clicking overlay
+    // overlay click to close modals
     document.querySelectorAll('.modal-overlay').forEach(modal => {
         modal.addEventListener('click', e => {
-            if (e.target === modal) modal.classList.remove('active');
+            if (e.target === modal) {
+                modal.classList.remove('active'); // generic hide
+            }
         });
     });
+});
 
-    // Real-time search
-    document.getElementById('searchBox').addEventListener('keyup', applyFilter);
+/* Load pending orders */
+async function loadOrders() {
+    const tbody = document.getElementById('ordersTableBody');
+    tbody.innerHTML = '<tr><td colspan="8" class="loading">Loading orders...</td></tr>';
+
+    try {
+        const res = await fetch(`${API_BASE}/get_pending_orders.php`);
+        const result = await res.json();
+
+        if (result.status === 'success') {
+            allOrders = result.data || [];
+            renderOrders(allOrders);
+            if (!allOrders.length) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No pending orders found</td></tr>';
+            }
+        } else {
+            tbody.innerHTML = `<tr><td colspan="8" class="no-data">Error loading orders: ${escapeHtml(result.message || 'Unknown')}</td></tr>`;
+        }
+    } catch (err) {
+        console.error(err);
+        tbody.innerHTML = '<tr><td colspan="8" class="no-data">Failed to connect to server</td></tr>';
+    }
+}
+
+function renderOrders(orders) {
+    const tbody = document.getElementById('ordersTableBody');
+    if (!Array.isArray(orders) || orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="no-data">No orders to display</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = orders.map(o => {
+        const statusClass = getStatusClass(o.Status || 'Pending');
+        const paymentClass = getPaymentClass(o.PaymentType || 'Cash');
+        const statusBadge = getStatusBadge(o.Status || 'Pending');
+        const paymentBadge = getPaymentBadge(o.PaymentType || 'Cash');
+
+        return `
+            <tr>
+                <td>#${o.OrderID}</td>
+                <td>${escapeHtml(o.StudentID)}</td>
+                <td>${escapeHtml(o.ItemName || '')}</td>
+                <td>${o.Quantity ?? ''}</td>
+                <td>₱${(parseFloat(o.FinalAmount || 0)).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                <td><span class="payment-type ${paymentClass}">${paymentBadge}</span></td>
+                <td><span class="status-badge ${statusClass}">${statusBadge}</span></td>
+                <td>
+                    <button class="action-btn view-btn" onclick="viewOrderDetails(${o.OrderID})">View</button>
+                    ${o.Status === 'Pending' || o.Status === 'Pending Verification' ? `
+                        <button class="action-btn ready-btn" onclick="approveOrder(${o.OrderID})">Approve</button>
+                        <button class="action-btn" style="background:#f44336;color:#fff;" onclick="rejectOrder(${o.OrderID})">Reject</button>
+                    ` : ''}
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+/* Helpers for badges & classes */
+function getStatusClass(status) {
+    return {
+        'Pending': 'status-pending',
+        'Pending Verification': 'status-verification',
+        'Paid': 'status-paid',
+        'Ready': 'status-ready'
+    }[status] || 'status-pending';
+}
+function getPaymentClass(type) { return (type || '').toLowerCase() === 'gcash' ? 'payment-gcash' : 'payment-cash'; }
+function getStatusBadge(status) {
+    return {
+        'Pending': '⏳ Pending',
+        'Pending Verification': '🔍 Pending Verification',
+        'Paid': '✅ Paid',
+        'Ready': '📦 Ready for Pickup'
+    }[status] || (status || '');
+}
+function getPaymentBadge(type) { return (type || '').toLowerCase() === 'gcash' ? '📱 GCash' : '💰 Cash'; }
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* Show order details in modal (and set up view buttons) */
+function viewOrderDetails(orderId) {
+    const order = allOrders.find(o => o.OrderID === orderId);
+    if (!order) { showAlert('⚠️', 'Not Found', 'Order details not found.'); return; }
+
+    currentOrderId = orderId;
+    currentOrderObj = order;
+
+    // build details markup
+    let html = `
+        <div class="detail-row"><span class="detail-label">Order ID:</span><span class="detail-value">#${order.OrderID}</span></div>
+        <div class="detail-row"><span class="detail-label">Student Number:</span><span class="detail-value">${escapeHtml(order.StudentID)}</span></div>
+        <div class="detail-row"><span class="detail-label">Product:</span><span class="detail-value">${escapeHtml(order.ItemName || '')}</span></div>
+        <div class="detail-row"><span class="detail-label">Size:</span><span class="detail-value">${escapeHtml(order.Size || '')}</span></div>
+        <div class="detail-row"><span class="detail-label">Quantity:</span><span class="detail-value">${order.Quantity ?? ''}</span></div>
+        <div class="detail-row"><span class="detail-label">Total Amount:</span><span class="detail-value">₱${(parseFloat(order.TotalAmount || 0)).toLocaleString('en-US', {minimumFractionDigits:2})}</span></div>
+        <div class="detail-row"><span class="detail-label">Discount Amount:</span><span class="detail-value">₱${(parseFloat(order.DiscountAmount || 0)).toLocaleString('en-US', {minimumFractionDigits:2})}</span></div>
+        <div class="detail-row"><span class="detail-label">Final Amount:</span><span class="detail-value"><strong>₱${(parseFloat(order.FinalAmount || 0)).toLocaleString('en-US', {minimumFractionDigits:2})}</strong></span></div>
+        <div class="detail-row"><span class="detail-label">Payment Type:</span><span class="detail-value">${getPaymentBadge(order.PaymentType)}</span></div>
+        <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value">${getStatusBadge(order.Status)}</span></div>
+        <div class="detail-row"><span class="detail-label">Order Date & Time:</span><span class="detail-value">${formatDateTime(order.OrderDate)}</span></div>
+    `;
+
+    // show GCash button if payment gcash and server indicates a receipt exists
+    // server-side property names vary — we defensively check multiple possible flags
+    const hasGcash = !!(order.HasGCashReceipt || order.HasReceipt || order.GCashReceipt);
+    if ((order.PaymentType || '').toLowerCase() === 'gcash' && hasGcash) {
+        html += `<div class="detail-row"><span class="detail-label">GCash Receipt:</span>
+                    <span class="detail-value">
+                        <button class="modal-btn modal-btn-save" onclick="viewImageInModal(${order.OrderID}, 'gcash')">📸 View Receipt</button>
+                    </span></div>`;
+    }
+
+    // show discount/PWD ID button if applicable
+    const hasDiscountImage = !!(order.HasDiscountImage || order.DiscountIdImage || order.HasDiscount);
+    if (order.HasDiscount || order.hasDiscount || order.HasDiscountImage) {
+        // only show if there's an image flag
+        if (hasDiscountImage) {
+            html += `<div class="detail-row"><span class="detail-label">PWD/Senior ID:</span>
+                        <span class="detail-value">
+                            <button class="modal-btn modal-btn-save" onclick="viewImageInModal(${order.OrderID}, 'discount')">📋 View ID</button>
+                        </span></div>`;
+        }
+    }
+
+    document.getElementById('orderDetails').innerHTML = html;
+
+    // hide any existing preview
+    hidePreview();
+
+    // show modal
+    const modal = document.getElementById('orderModal');
+    modal.classList.add('active');
+}
+
+/* view image inside the same modal */
+function viewOrderDetails(orderId) {
+    const order = allOrders.find(o => o.OrderID === orderId);
+    if (!order) { showAlert('⚠️', 'Not Found', 'Order details not found.'); return; }
+
+    currentOrderId = orderId;
+    currentOrderObj = order;
+
+    // build details markup
+    let html = `
+        <div class="detail-row"><span class="detail-label">Order ID:</span><span class="detail-value">#${order.OrderID}</span></div>
+        <div class="detail-row"><span class="detail-label">Student Number:</span><span class="detail-value">${escapeHtml(order.StudentID)}</span></div>
+        <div class="detail-row"><span class="detail-label">Product:</span><span class="detail-value">${escapeHtml(order.ItemName || '')}</span></div>
+        <div class="detail-row"><span class="detail-label">Size:</span><span class="detail-value">${escapeHtml(order.Size || '')}</span></div>
+        <div class="detail-row"><span class="detail-label">Quantity:</span><span class="detail-value">${order.Quantity ?? ''}</span></div>
+        <div class="detail-row"><span class="detail-label">Total Amount:</span><span class="detail-value">₱${(parseFloat(order.TotalAmount || 0)).toLocaleString('en-US', {minimumFractionDigits:2})}</span></div>
+        <div class="detail-row"><span class="detail-label">Discount Amount:</span><span class="detail-value">₱${(parseFloat(order.DiscountAmount || 0)).toLocaleString('en-US', {minimumFractionDigits:2})}</span></div>
+        <div class="detail-row"><span class="detail-label">Final Amount:</span><span class="detail-value"><strong>₱${(parseFloat(order.FinalAmount || 0)).toLocaleString('en-US', {minimumFractionDigits:2})}</strong></span></div>
+        <div class="detail-row"><span class="detail-label">Payment Type:</span><span class="detail-value">${getPaymentBadge(order.PaymentType)}</span></div>
+        <div class="detail-row"><span class="detail-label">Status:</span><span class="detail-value">${getStatusBadge(order.Status)}</span></div>
+        <div class="detail-row"><span class="detail-label">Order Date & Time:</span><span class="detail-value">${formatDateTime(order.OrderDate)}</span></div>
+    `;
+
+    // show GCash button if payment gcash and server indicates a receipt exists
+    const hasGcash = !!(order.HasGCashReceipt || order.HasReceipt || order.GCashReceipt);
+    if ((order.PaymentType || '').toLowerCase() === 'gcash' && hasGcash) {
+        html += `<div class="detail-row"><span class="detail-label">GCash Receipt:</span>
+                    <span class="detail-value">
+                        <button class="modal-btn modal-btn-save" onclick="viewImageInModal(${order.OrderID}, 'gcash')">📸 View Receipt</button>
+                    </span></div>`;
+    }
+
+    // show discount/PWD ID button if applicable
+    const hasDiscountImage = !!(order.HasDiscountImage || order.DiscountIdImage || order.HasDiscount);
+    if (order.HasDiscount || order.hasDiscount || order.HasDiscountImage) {
+        if (hasDiscountImage) {
+            html += `<div class="detail-row"><span class="detail-label">PWD/Senior ID:</span>
+                        <span class="detail-value">
+                            <button class="modal-btn modal-btn-save" onclick="viewImageInModal(${order.OrderID}, 'discount')">📋 View ID</button>
+                        </span></div>`;
+        }
+    }
+
+    document.getElementById('orderDetails').innerHTML = html;
+
+    // REMOVED: hidePreview();
+
+    // show modal
+    const modal = document.getElementById('orderModal');
+    modal.classList.add('active');
+}
+
+function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('active');
+    // REMOVED: hidePreview();
+}
+
+
+function viewImageInModal(orderId, type) {
+    const url = `${API_BASE}/get_orders_images.php?orderId=${orderId}&type=${type}`;
+    
+    // Use the existing imageViewerModal
+    const img = document.getElementById('imageViewerImage');
+    const modal = document.getElementById('imageViewerModal');
+    const title = document.getElementById('imageViewerTitle');
+    
+    // Set title based on type
+    title.textContent = type === 'gcash' ? 'GCash Receipt' : 'PWD/Senior ID';
+    
+    // Show modal first
+    modal.classList.add('active');
+    
+    // Reset image
+    img.src = '';
+    img.alt = 'Loading...';
+    
+    // Set error handler
+    img.onerror = function() {
+        img.alt = 'Image not available';
+        img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360"><rect width="100%" height="100%" fill="%23f5f5f5"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23666" font-family="Arial" font-size="18">Image not available</text></svg>';
+    };
+    
+    // Load image
+    img.src = url;
+}
+
+function closeImageViewer() {
+    const modal = document.getElementById('imageViewerModal');
+    modal.classList.remove('active');
+}
+/* Approve / Reject / Mark Ready (kept minimal) */
+async function approveOrder(orderId) {
+    if (!confirm('Approve this order? This will deduct the items from inventory.')) return;
+    try {
+        const response = await fetch(`${API_BASE}/approve-order.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderID: parseInt(orderId), action: 'approve' })
+        });
+        const result = await response.json();
+        if (result.status === 'success') {
+            loadOrders();
+            showAlert('✅', 'Success', result.message || 'Order approved.');
+        } else showAlert('❌', 'Error', result.message || 'Failed to approve order.');
+    } catch (err) {
+        console.error(err);
+        showAlert('❌', 'Error', 'Failed to approve order. See console.');
+    }
+}
+
+function rejectOrder(orderId) {
+    currentRejectionOrderId = orderId;
+    document.getElementById('rejectionModal').style.display = 'flex';
+    document.getElementById('rejectionReasonInput').value = '';
+    document.getElementById('rejectionReasonInput').focus();
+}
+function closeRejectionModal() {
+    document.getElementById('rejectionModal').style.display = 'none';
+    currentRejectionOrderId = null;
+}
+async function confirmRejection() {
+    const reason = document.getElementById('rejectionReasonInput').value.trim();
+    if (!reason) { alert('Please provide a reason'); return; }
+    try {
+        const response = await fetch(`${API_BASE}/approve-order.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderID: parseInt(currentRejectionOrderId), action: 'reject', rejectionReason: reason })
+        });
+        const result = await response.json();
+        if (result.status === 'success') {
+            closeRejectionModal();
+            loadOrders();
+            showAlert('✅', 'Success', result.message || 'Order rejected.');
+        } else showAlert('❌', 'Error', result.message || 'Failed to reject order.');
+    } catch (err) {
+        console.error(err);
+        showAlert('❌', 'Error', 'Failed to reject order.');
+    }
+}
+
+
+/* Filters */
+function applyFilter() {
+    const searchText = document.getElementById('searchBox').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const paymentFilter = document.getElementById('paymentFilter').value;
+
+    const filtered = allOrders.filter(order => {
+        const matchesSearch = !searchText ||
+            String(order.StudentID || '').toLowerCase().includes(searchText) ||
+            String(order.ItemName || '').toLowerCase().includes(searchText) ||
+            String(order.OrderID || '').includes(searchText);
+        const matchesStatus = !statusFilter || order.Status === statusFilter;
+        const matchesPayment = !paymentFilter || (order.PaymentType || '').toLowerCase() === paymentFilter.toLowerCase();
+        return matchesSearch && matchesStatus && matchesPayment;
+    });
+
+    renderOrders(filtered);
+}
+
+/* Small UI helpers */
+function showAlert(icon, title, message) {
+    document.getElementById('alertIcon').textContent = icon;
+    document.getElementById('alertTitle').textContent = title;
+    document.getElementById('alertMessage').textContent = message;
+    document.getElementById('alertModal').classList.add('active');
+}
+function closeAlertModal() { document.getElementById('alertModal').classList.remove('active'); }
+function goBack() { window.location.href = 'Admin Dashboard.html'; }
+function formatDateTime(dateString) {
+    if (!dateString) return 'N/A';
+    const d = new Date(dateString);
+    return d.toLocaleString('en-US', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true });
+}
+
+/* wire search input */
+document.getElementById('searchBox').addEventListener('keyup', applyFilter);
+
 </script>
 </body>
 </html>

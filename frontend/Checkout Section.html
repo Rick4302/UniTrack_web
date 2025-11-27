@@ -11,7 +11,6 @@
             box-sizing: border-box;
         }
 
-        /* === UniTrack Global Background === */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
@@ -19,7 +18,6 @@
             position: relative;
         }
 
-        /* Background Image */
         body::before {
             content: '';
             position: fixed;
@@ -34,7 +32,6 @@
             z-index: 0;
         }
 
-        /* Gradient Overlay - Softer Yellow Theme */
         body::after {
             content: '';
             position: fixed;
@@ -50,14 +47,12 @@
             z-index: 1;
         }
 
-        /* Ensures page content stays above background */
         .page-container {
             position: relative;
             z-index: 2;
             min-height: 100vh;
         }
 
-        /* Top Navigation Bar */
         .top-nav {
             width: 100%;
             height: 70px;
@@ -129,7 +124,6 @@
             transform: scale(1.1);
         }
 
-        /* Main Content */
         .main-content {
             padding-top: 110px;
             padding-bottom: 40px;
@@ -149,14 +143,12 @@
             margin-bottom: 10px;
         }
 
-        /* Container */
         .checkout-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 40px;
         }
 
-        /* Order Items Summary */
         .order-items-section {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 16px;
@@ -209,7 +201,6 @@
             color: #FF9800;
         }
 
-        /* Amount Panel */
         .amount-panel {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 16px;
@@ -242,7 +233,6 @@
             color: #FF9800;
         }
 
-        /* Payment Section */
         .payment-section {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 16px;
@@ -400,7 +390,6 @@
             cursor: not-allowed;
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -513,7 +502,6 @@
             display: none;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .top-nav {
                 padding: 0 20px;
@@ -560,7 +548,6 @@
 </head>
 <body>
 <div class="page-container">
-    <!-- Top Navigation -->
     <nav class="top-nav">
         <div class="nav-left">
             <div class="back-button" onclick="goBack()">←</div>
@@ -577,22 +564,17 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="page-title">
             <h1>Order Submission</h1>
         </div>
 
         <div class="checkout-container">
-            <!-- Order Items Section -->
             <div class="order-items-section">
                 <h2 class="section-title">Order Items</h2>
-                <div class="order-items-list" id="orderItemsList">
-                    <!-- Items will be populated here -->
-                </div>
+                <div class="order-items-list" id="orderItemsList"></div>
             </div>
 
-            <!-- Amount Panel -->
             <div class="amount-panel">
                 <div class="amount-section">
                     <div class="amount-label">Total Amount</div>
@@ -608,7 +590,6 @@
                 </div>
             </div>
 
-            <!-- Payment Section -->
             <div class="payment-section">
                 <h2 class="section-title">Payment Type</h2>
                 
@@ -649,14 +630,11 @@
     </main>
 </div>
 
-<!-- Success Modal -->
 <div class="modal" id="successModal">
     <div class="modal-content">
         <div class="modal-icon">✅</div>
         <div class="modal-title">Order Submitted Successfully!</div>
-        <div class="modal-message" id="modalMessage">
-            <!-- Message will be populated based on payment type -->
-        </div>
+        <div class="modal-message" id="modalMessage"></div>
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-primary" onclick="closeModal()">
                 Done
@@ -670,13 +648,11 @@
     let discountFile = null;
     let cartItems = [];
     let baseAmount = 0;
-    let hasDiscount = false; // Track if discount was applied
+    let hasDiscount = false;
     const API_BASE_URL = 'http://localhost/UniTrack_web/backend';
-    let studentID = null; // Should be set based on logged-in student
+    let studentID = null;
 
-    // Load cart items from sessionStorage when page loads
     window.addEventListener('DOMContentLoaded', function() {
-        // Get student ID from sessionStorage or localStorage
         studentID = sessionStorage.getItem('studentID') || localStorage.getItem('studentID') || '1';
         loadCartItems();
     });
@@ -723,14 +699,26 @@
     function selectPayment(type) {
         selectedPayment = type;
         
-        // Update button styles
         document.getElementById('btnCash').classList.remove('selected');
         document.getElementById('btnGcash').classList.remove('selected');
         
         if (type === 'cash') {
             document.getElementById('btnCash').classList.add('selected');
-        } else {
+        } else if (type === 'gcash') {
             document.getElementById('btnGcash').classList.add('selected');
+            // Redirect to GCash payment page after a brief delay
+            setTimeout(() => {
+                // Store current state before redirecting
+                sessionStorage.setItem('pendingGCashOrder', JSON.stringify({
+                    cartItems: cartItems,
+                    studentID: studentID,
+                    hasDiscount: hasDiscount,
+                    baseAmount: baseAmount,
+                    discountAmount: hasDiscount ? baseAmount * 0.20 : 0,
+                    finalAmount: hasDiscount ? baseAmount - (baseAmount * 0.20) : baseAmount
+                }));
+                window.location.href = 'Gcash Receipt.html';
+            }, 300);
         }
     }
 
@@ -738,10 +726,9 @@
         const file = event.target.files[0];
         if (file) {
             discountFile = file;
-            hasDiscount = true; // Set flag when file is selected
+            hasDiscount = true;
             document.getElementById('filename').textContent = file.name;
             
-            // Preview image
             const reader = new FileReader();
             reader.onload = function(e) {
                 const preview = document.getElementById('imagePreview');
@@ -749,7 +736,6 @@
             };
             reader.readAsDataURL(file);
 
-            // Apply discount (20% off for example)
             const discount = baseAmount * 0.20;
             const finalAmount = baseAmount - discount;
             
@@ -760,15 +746,6 @@
 
     function handleCancel() {
         if (confirm('Are you sure you want to cancel this order?')) {
-            selectedPayment = null;
-            discountFile = null;
-            hasDiscount = false; // Reset discount flag
-            document.getElementById('btnCash').classList.remove('selected');
-            document.getElementById('btnGcash').classList.remove('selected');
-            document.getElementById('imagePreview').innerHTML = '<span class="image-preview-text">No image selected</span>';
-            document.getElementById('filename').textContent = '';
-            document.getElementById('fileInput').value = '';
-            calculateTotal(); // Reset amounts
             window.history.back();
         }
     }
@@ -779,63 +756,60 @@
             return;
         }
 
+        if (selectedPayment === 'gcash') {
+            alert('Please use the GCash payment page');
+            return;
+        }
+
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Processing...';
 
-        // Validate cart with backend first
         validateAndSubmitOrder();
     }
 
     function validateAndSubmitOrder() {
-    const finalAmountText = document.getElementById('finalAmount').textContent;
-    const finalAmount = parseFloat(finalAmountText.replace('₱', '').replace(/,/g, ''));
-    const discountAmountText = document.getElementById('discountedAmount').textContent;
-    const discountAmount = parseFloat(discountAmountText.replace('₱', '').replace(/,/g, ''));
+        const finalAmountText = document.getElementById('finalAmount').textContent;
+        const finalAmount = parseFloat(finalAmountText.replace('₱', '').replace(/,/g, ''));
+        const discountAmountText = document.getElementById('discountedAmount').textContent;
+        const discountAmount = parseFloat(discountAmountText.replace('₱', '').replace(/,/g, ''));
 
-     console.log('StudentID from session:', sessionStorage.getItem('studentID'));
-    console.log('StudentID variable:', studentID);
-    console.log('StudentID type:', typeof studentID);
+        const orderData = {
+            cartItems: cartItems,
+            paymentType: selectedPayment,
+            studentID: studentID,
+            finalAmount: finalAmount,
+            discountAmount: discountAmount,
+            hasDiscount: discountFile ? 1 : 0
+        };
 
-    const orderData = {
-        cartItems: cartItems,
-        paymentType: selectedPayment,
-        studentID: studentID,
-        finalAmount: finalAmount,
-        discountAmount: discountAmount,
-        hasDiscount: discountFile ? 1 : 0
-    };
-
-    // Create FormData for file upload
-    const formData = new FormData();
-    formData.append('orderData', JSON.stringify(orderData));
-    
-    // Append the discount image file if it exists
-    if (discountFile) {
-        formData.append('discountImage', discountFile);
-    }
-
-    // Submit order to backend
-    fetch(`${API_BASE_URL}/submit_order.php`, {
-        method: 'POST',
-        body: formData // Don't set Content-Type header - browser will set it automatically with boundary
-    })
-    .then(response => response.json())
-    .then(data => {
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Order';
-
-        if (data.status !== 'success') {
-            alert('Error submitting order: ' + data.message);
-            return;
+        const formData = new FormData();
+        formData.append('orderData', JSON.stringify(orderData));
+        
+        if (discountFile) {
+            formData.append('discountImage', discountFile);
         }
 
-        // Order submitted successfully
-        const finalAmount = document.getElementById('finalAmount').textContent;
-        const modalMessage = document.getElementById('modalMessage');
-        
-        if (selectedPayment === 'cash') {
+        fetch(`${API_BASE_URL}/submit_order.php`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Order';
+
+            if (data.status !== 'success') {
+                alert('Error submitting order: ' + data.message);
+                return;
+            }
+
+            clearCart();
+
+            const finalAmount = document.getElementById('finalAmount').textContent;
+            const modalMessage = document.getElementById('modalMessage');
+            
             let cashMessage = `
                 <p>Your order has been placed successfully!</p>
                 <div class="modal-highlight">
@@ -845,44 +819,33 @@
                 </div>
             `;
             
-            // Add PWD message if discount was applied
             if (hasDiscount) {
                 cashMessage += `
                     <div class="modal-highlight" style="background-color: rgba(76, 175, 80, 0.2); color: #4CAF50; border-left: 4px solid #4CAF50;">
-                        📋 <strong>Important:</strong> Please make sure to present your PWD/Senior Citizen ID to the cashier to avail of the discount.
+                        📋 <strong>Important:</strong> Please present your PWD/Senior Citizen ID to the cashier to avail of the discount.
                     </div>
                 `;
             }
             
             cashMessage += `<p>You will receive a notification once your uniforms are ready for pickup.</p>`;
-            
             modalMessage.innerHTML = cashMessage;
-        } else {
-            modalMessage.innerHTML = `
-                <p>Your order has been placed successfully!</p>
-                <div class="modal-highlight">
-                    Order ID: <strong>#${data.orderID}</strong><br>
-                    📱 Please upload your GCash receipt for verification.<br>
-                    <strong>Final Amount: ${finalAmount}</strong>
-                </div>
-                <p>You will receive a notification once your payment is verified and your uniforms are ready for pickup.</p>
-            `;
-        }
-        
-        showModal();
-        
-        // Clear cart after successful order
-        setTimeout(() => {
-            sessionStorage.removeItem('cartItems');
-        }, 1500);
-    })
-    .catch(error => {
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Order';
-        alert('Error submitting order: ' + error.message);
-    });
-}
+            
+            showModal();
+        })
+        .catch(error => {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Order';
+            alert('Error submitting order: ' + error.message);
+        });
+    }
+
+    function clearCart() {
+        sessionStorage.removeItem('cartItems');
+        console.log('✅ Cart cleared successfully');
+        cartItems = [];
+        window.dispatchEvent(new Event('cartUpdated'));
+    }
 
     function showModal() {
         document.getElementById('successModal').classList.add('show');
@@ -890,7 +853,6 @@
 
     function closeModal() {
         document.getElementById('successModal').classList.remove('show');
-        // Redirect to home or orders page
         window.location.href = 'Student Dashboard - SHS.html';
     }
 
@@ -899,7 +861,7 @@
     }
 
     function handleSettings() {
-        alert('Settings clicked - Will navigate to settings page');
+        window.location.href = 'Student - Account.html';
     }
 </script>
 </body>

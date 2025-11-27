@@ -53,17 +53,34 @@ try {
         5 => 'Cancelled'
     ];
     
+    
     while ($row = $result->fetch_assoc()) {
         // Convert numeric status to string
         $statusNum = intval($row['Status']);
         $statusText = isset($statusMap[$statusNum]) ? $statusMap[$statusNum] : 'Unknown';
         
+        // Convert numeric payment type to string - ADD THIS
+        $paymentTypeNum = intval($row['PaymentType']);
+        $paymentTypeText = isset($paymentTypeMap[$paymentTypeNum]) ? $paymentTypeMap[$paymentTypeNum] : 'Cash';
+        
         // Properly check BLOB data existence
         $hasGCashReceipt = ($row['GCashReceipt'] !== null && strlen($row['GCashReceipt']) > 0);
         $hasDiscountImage = ($row['DiscountIdImage'] !== null && strlen($row['DiscountIdImage']) > 0);
         
+         $paymentTypeRaw = $row['PaymentType'] ?? 'cash';
+    
+    // Convert any format to proper string
+    if ($paymentTypeRaw === 0 || $paymentTypeRaw === '0' || strtolower($paymentTypeRaw) === 'cash') {
+        $paymentTypeText = 'Cash';
+    } elseif ($paymentTypeRaw === 1 || $paymentTypeRaw === '1' || strtolower($paymentTypeRaw) === 'gcash') {
+        $paymentTypeText = 'GCash';
+    } else {
+        // Fallback: capitalize first letter
+        $paymentTypeText = ucfirst(strtolower(trim($paymentTypeRaw)));
+    }
+        
         // Log for debugging
-        error_log("Order {$row['OrderID']}: GCash=" . ($hasGCashReceipt ? 'YES' : 'NO') . 
+        error_log("Order {$row['OrderID']}: PaymentType={$paymentTypeText}, GCash=" . ($hasGCashReceipt ? 'YES' : 'NO') . 
                   ", Discount=" . ($hasDiscountImage ? 'YES' : 'NO'));
         
         // Format the order data
@@ -77,7 +94,7 @@ try {
             'TotalAmount' => floatval($row['TotalAmount']),
             'DiscountAmount' => floatval($row['DiscountAmount'] ?? 0),
             'FinalAmount' => floatval($row['FinalAmount']),
-            'PaymentType' => $row['PaymentType'] ?? 'cash',
+            'PaymentType' => $paymentTypeText,  // CHANGED: Now returns "Cash" or "GCash"
             'Status' => $statusText,
             'OrderDate' => $row['OrderDate'],
             'HasDiscount' => intval($row['HasDiscount']),

@@ -372,62 +372,64 @@
         }
 
         async function handleSignup() {
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
-            if (!otpVerified) {
-                alert('Please verify your email with OTP first.');
-                return;
-            }
+    if (!otpVerified) {
+        alert('Please verify your email with OTP first.');
+        return;
+    }
 
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
-                return;
-            }
+    if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+    }
 
-            const hasLower = /[a-z]/.test(password);
-            const hasUpper = /[A-Z]/.test(password);
-            const hasDigit = /[0-9]/.test(password);
-            const hasSymbol = /[^a-zA-Z0-9]/.test(password);
-            const isLongEnough = password.length >= 8;
+    const hasLower = /[a-z]/.test(password);
+    const hasUpper = /[A-Z]/.test(password);
+    const hasDigit = /[0-9]/.test(password);
+    const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+    const isLongEnough = password.length >= 8;
 
-            if (!hasLower || !hasUpper || !hasDigit || !hasSymbol || !isLongEnough) {
-                alert('Password must contain:\n- At least 8 characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character');
-                return;
-            }
+    if (!hasLower || !hasUpper || !hasDigit || !hasSymbol || !isLongEnough) {
+        alert('Password must contain:\n- At least 8 characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character');
+        return;
+    }
 
-            try {
-                const formData = new URLSearchParams();
-                formData.append('username', username);
-                formData.append('email', email);
-                formData.append('password', password);
+    try {
+        const formData = new URLSearchParams();
+        formData.append('username', username);
+        formData.append('email', email);
+        formData.append('password', password);
 
-                const res = await fetch('http://localhost/UniTrack_web/backend/admin_signup.php', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: formData
-                });
+        const res = await fetch('http://localhost/UniTrack_web/backend/admin_signup.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData
+        });
 
-                const response = await res.text();
-                
-                if (response === "SUCCESS") {
-                    alert('Account created successfully! You can now log in.');
-                    window.location.replace('Admin Login.html');
-                } else if (response === "EXISTS") {
-                    alert('An account with this email or username already exists.');
-                } else if (response === "EMAIL_MISMATCH") {
-                    alert('Session expired. Please verify your email again.');
-                } else {
-                    alert('Failed to create account: ' + response);
-                }
-            } catch (err) {
-                console.error('Error:', err);
-                alert('Unable to connect to server.');
-            }
+        const response = await res.text();
+        
+        if (response === "SUCCESS") {
+            alert('Account created successfully! You can now log in.');
+            window.location.replace('Admin Login.html');
+        } else if (response === "EXISTS") {
+            alert('An admin account with this email or username already exists.');
+        } else if (response === "EMAIL_REGISTERED_AS_STUDENT") {
+            alert('This email is already registered as a student account. Please use a different email or log in as a student.');
+        } else if (response === "EMAIL_MISMATCH") {
+            alert('Session expired. Please verify your email again.');
+        } else {
+            alert('Failed to create account: ' + response);
         }
+    } catch (err) {
+        console.error('Error:', err);
+        alert('Unable to connect to server.');
+    }
+}
 
         function goToLogin() {
             window.location.href = 'Admin%20Login.html';

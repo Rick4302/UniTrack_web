@@ -5,34 +5,58 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST");
 
-include 'db_connect.php';
+include 'db_connect.php'; // This connects to unitrack_admindb database (both tables are here)
 
 $studentId = trim($_POST['studentId'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
+error_log("=== STUDENT SIGNUP ATTEMPT ===");
+error_log("StudentID: " . $studentId);
+error_log("Email: " . $email);
+
 // Verify email matches OTP email
 if ($email !== $_SESSION['pending_email']) {
+    error_log("EMAIL MISMATCH in student signup");
     echo "EMAIL_MISMATCH";
+    $conn->close();
     exit;
 }
 
 // Check if all fields are provided
 if (empty($studentId) || empty($email) || empty($password)) {
     echo "MISSING_FIELDS";
+    $conn->close();
     exit;
 }
 
-// Check if student already exists
+// Check if student already exists in studentusers table
 $stmt = $conn->prepare("SELECT COUNT(*) FROM studentusers WHERE Email=? OR StudentID=?");
 $stmt->bind_param("ss", $email, $studentId);
 $stmt->execute();
-$stmt->bind_result($exists);
+$stmt->bind_result($student_exists);
 $stmt->fetch();
 $stmt->close();
 
-if ($exists > 0) {
+if ($student_exists > 0) {
+    error_log("Student account already exists: " . $email);
     echo "EXISTS";
+    $conn->close();
+    exit;
+}
+
+// Check if email exists in adminusers table
+$stmt = $conn->prepare("SELECT COUNT(*) FROM adminusers WHERE Email=?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($admin_exists);
+$stmt->fetch();
+$stmt->close();
+
+if ($admin_exists > 0) {
+    error_log("Email already registered as admin account: " . $email);
+    echo "EMAIL_REGISTERED_AS_ADMIN";
+    $conn->close();
     exit;
 }
 
@@ -51,7 +75,7 @@ $stmt = $conn->prepare("
 $stmt->bind_param("ssss", $studentId, $email, $hash_b64, $salt_b64);
 
 if ($stmt->execute()) {
-    error_log("Student account created: " . $email);
+    error_log("Student account created successfully: " . $email);
     
     // Clear OTP session data
     unset($_SESSION['pending_otp']);
@@ -68,3 +92,4 @@ if ($stmt->execute()) {
 $stmt->close();
 $conn->close();
 exit;
+?>

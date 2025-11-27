@@ -5,10 +5,10 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST");
 
-// DB CONNECT
+// DB CONNECT - Both admin and student tables are in the same database
 $conn = new mysqli("localhost", "root", "", "unitrack_admindb", 3307);
-
 if ($conn->connect_error) {
+    error_log("DB connection error: " . $conn->connect_error);
     die("DB_ERROR");
 }
 
@@ -25,20 +25,37 @@ error_log("Session pending_email: " . ($_SESSION['pending_email'] ?? 'NOT SET'))
 if ($email !== $_SESSION['pending_email']) {
     error_log("EMAIL MISMATCH: Posted email ($email) vs Session email (" . ($_SESSION['pending_email'] ?? 'null') . ")");
     echo "EMAIL_MISMATCH";
+    $conn->close();
     exit;
 }
 
-// Check if user exists
+// Check if email exists in adminusers table
 $stmt = $conn->prepare("SELECT COUNT(*) FROM adminusers WHERE Email=? OR Username=?");
 $stmt->bind_param("ss", $email, $username);
 $stmt->execute();
-$stmt->bind_result($exists);
+$stmt->bind_result($admin_exists);
 $stmt->fetch();
 $stmt->close();
 
-if ($exists > 0) {
-    error_log("User already exists with email: " . $email . " or username: " . $username);
+if ($admin_exists > 0) {
+    error_log("Admin account already exists with email: " . $email . " or username: " . $username);
     echo "EXISTS";
+    $conn->close();
+    exit;
+}
+
+// Check if email exists in studentusers table
+$stmt = $conn->prepare("SELECT COUNT(*) FROM studentusers WHERE Email=?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($student_exists);
+$stmt->fetch();
+$stmt->close();
+
+if ($student_exists > 0) {
+    error_log("Email already registered as student account: " . $email);
+    echo "EMAIL_REGISTERED_AS_STUDENT";
+    $conn->close();
     exit;
 }
 
@@ -62,13 +79,14 @@ $stmt = $conn->prepare("
 if (!$stmt) {
     error_log("PREPARE ERROR: " . $conn->error);
     echo "PREPARE_FAIL";
+    $conn->close();
     exit;
 }
 
 $stmt->bind_param("ssss", $username, $email, $hash_b64, $salt_b64);
 
 if ($stmt->execute()) {
-    error_log("User inserted successfully: " . $email);
+    error_log("Admin user inserted successfully: " . $email);
     
     // Clear OTP session data
     unset($_SESSION['pending_otp']);

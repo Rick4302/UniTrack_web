@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account</title>
+    <title>Student Account</title>
     <style>
         * {
             margin: 0;
@@ -11,163 +11,413 @@
             box-sizing: border-box;
         }
 
+        /* === UniTrack Global Background === */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
+            min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        .header {
-            background-color: #FFD700;
-            padding: 20px;
-            display: flex;
-            align-items: center;
             position: relative;
         }
 
-        .settings-icon {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M5.6 5.6l4.2 4.2m4.4 4.4l4.2 4.2M1 12h6m6 0h6M5.6 18.4l4.2-4.2m4.4-4.4l4.2-4.2"/></svg>');
-            background-size: contain;
+        /* Background Image */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background-image: url("payhigh.jpg");
+            background-size: cover;
+            background-position: center;
             background-repeat: no-repeat;
+            z-index: 0;
         }
 
-        .header-title {
-            font-size: 32px;
+        /* Gradient Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 215, 0, 0.75),
+                rgba(255, 193, 7, 0.75)
+            );
+            z-index: 1;
+        }
+
+        /* Ensures page content stays above background */
+        .page-container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            width: 100%;
+            height: 70px;
+            background-color: #FFD700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
             font-weight: bold;
+            color: #000;
+            letter-spacing: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: #000;
         }
 
-        .back-button {
-            position: absolute;
-            right: 20px;
-            font-size: 32px;
-            color: #000;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-
-        .back-button:hover {
-            transform: translateX(5px);
-        }
-
-        .container {
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4169E1, #1E90FF);
+            border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: calc(100vh - 70px);
-            padding: 20px;
+            font-weight: bold;
+            color: #fff;
+            font-size: 16px;
         }
 
-        .account-panel {
-            background-color: #FFFFE0;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 600px;
+        .student-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-label {
+            font-size: 11px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .student-email {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-back {
+            background-color: transparent;
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #000;
+            color: #FFD700;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 110px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .account-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 50px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .account-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
         }
 
         .info-row {
             display: flex;
             align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 35px;
+            gap: 20px;
         }
 
         .info-label {
-            font-size: 22px;
-            font-weight: bold;
-            color: #696969;
-            width: 200px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #FFD700;
+            min-width: 150px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .info-value {
-            font-size: 22px;
-            font-weight: bold;
-            color: #000;
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
             flex: 1;
+            padding: 12px 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
         }
 
-        .action-row {
+        .change-password-row {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 15px 0;
+            align-items: center;
+            margin: 40px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 4px;
-            padding-left: 5px;
-            margin-top: 10px;
+            transition: all 0.3s ease;
         }
 
-        .action-row:hover {
-            background-color: rgba(255, 215, 0, 0.2);
-            padding-left: 10px;
+        .change-password-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        .action-label {
-            font-size: 22px;
-            font-weight: bold;
-            color: #696969;
+        .change-password-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
         }
 
-        .action-arrow {
-            font-size: 32px;
+        .arrow {
+            font-size: 24px;
             font-weight: bold;
             color: #000;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn-logout {
+            background: #ff4757;
+            color: #ffffff;
+            border: none;
+            padding: 12px 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #ff3344;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .top-nav {
+                padding: 0 20px;
+            }
+
+            .nav-buttons {
+                gap: 5px;
+            }
+
+            .student-details {
+                display: none;
+            }
+
+            .account-container {
+                padding: 30px;
+            }
+
+            .account-title {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .info-label {
+                min-width: auto;
+            }
+
+            .info-value {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="settings-icon"></div>
-        <h1 class="header-title">Account</h1>
-        <div class="back-button" onclick="goBack()">&lt;</div>
-    </div>
-
-    <div class="container">
-        <div class="account-panel">
-            <div class="info-row">
-                <div class="info-label">Student ID</div>
-                <div class="info-value" id="studentId">2024-00001</div>
+    <div class="page-container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="logo">UniTrack</div>
             </div>
-
-            <div class="info-row">
-                <div class="info-label">Email Address</div>
-                <div class="info-value" id="emailAddress">student@university.edu</div>
+            
+            <div class="nav-right">
+                <div class="student-info">
+                    <div class="student-avatar" id="studentAvatar">S</div>
+                    <div class="student-details">
+                        <span class="student-label">Logged in as</span>
+                        <span class="student-email" id="studentEmail">student@example.com</span>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn-back" onclick="goBack()">
+                        ← Back
+                    </button>
+                </div>
             </div>
+        </nav>
 
-            <div class="action-row" onclick="changePassword()">
-                <div class="action-label">Change Password</div>
-                <div class="action-arrow">&gt;</div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="account-container">
+                <h1 class="account-title">Account Settings</h1>
+                
+                <div class="info-row">
+                    <div class="info-label">Student ID</div>
+                    <div class="info-value" id="studentId">Loading...</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value" id="email">Loading...</div>
+                </div>
+                
+                <div class="change-password-row" onclick="changePassword()">
+                    <div class="change-password-label">🔐 Change Password</div>
+                    <div class="arrow">&gt;</div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-logout" onclick="logout()">Log Out</button>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        // You can load actual user data here
-        function loadUserData() {
-            // Example: fetch user data from server
-            // const userData = await fetchUserData();
-            // document.getElementById('studentId').textContent = userData.studentId;
-            // document.getElementById('emailAddress').textContent = userData.email;
-        }
+        // Load user information on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserInfo();
+        });
 
-        function changePassword() {
-            alert('Navigating to Change Password...');
-            // window.location.href = 'change-password.html';
+        function loadUserInfo() {
+            fetch('../backend/student-account.php', {
+                method: 'POST',
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=loadUserInfo'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('studentId').textContent = data.studentId;
+                    document.getElementById('email').textContent = data.email;
+                    document.getElementById('studentEmail').textContent = data.email;
+                    
+                    // Set avatar initial
+                    const initial = data.email.charAt(0).toUpperCase();
+                    document.getElementById('studentAvatar').textContent = initial;
+                } else {
+                    alert('Error loading user information: ' + data.message);
+                    window.location.href = 'Student Login.html';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load user information');
+                window.location.href = 'Student Login.html';
+            });
         }
 
         function goBack() {
-            alert('Going back to settings...');
-            // window.history.back();
+            window.location.href = 'Student Dashboard - SHS.html';
         }
 
-        // Load user data on page load
-        loadUserData();
+        function changePassword() {
+            window.location.href = 'Student Change Password.html';
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                fetch('../backend/student-account.php', {  
+                    method: 'POST',
+                    credentials: 'include',  
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'action=logout'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('You have been logged out successfully.');
+                        window.location.href = 'Student Login.html';
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to logout');
+                });
+            }
+        }
     </script>
 </body>
 </html>
