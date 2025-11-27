@@ -98,8 +98,8 @@ try {
         throw new Exception("Invalid final amount");
     }
     
-    // Check if student exists
-    $checkStudent = $conn->prepare("SELECT StudentID FROM studentusers WHERE StudentID = ?");
+    // Check if student exists and get their course
+    $checkStudent = $conn->prepare("SELECT StudentID, Course FROM studentusers WHERE StudentID = ?");
     if (!$checkStudent) {
         throw new Exception("Database prepare failed: " . $conn->error);
     }
@@ -111,6 +111,9 @@ try {
     if ($result->num_rows === 0) {
         throw new Exception("Student ID not found: '" . $studentID . "'");
     }
+    
+    $studentData = $result->fetch_assoc();
+    $studentCourse = $studentData['Course'];
     $checkStudent->close();
     
     $conn->begin_transaction();
@@ -154,10 +157,11 @@ try {
         }
         $checkStmt->close();
         
-        // Insert order
+        // Insert order with Course
         $insertQuery = "
             INSERT INTO orders (
-                StudentID, 
+                StudentID,
+                Course,
                 InventoryID, 
                 Quantity, 
                 TotalAmount, 
@@ -168,7 +172,7 @@ try {
                 HasDiscount, 
                 DiscountIdImage,
                 OrderDate
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, NOW())
         ";
         
         $stmt = $conn->prepare($insertQuery);
@@ -177,8 +181,9 @@ try {
         }
         
         $stmt->bind_param(
-            "siidddsib",
+            "ssiidddsib",
             $studentID,
+            $studentCourse,
             $inventoryID,
             $quantity,
             $totalAmount,
@@ -190,7 +195,7 @@ try {
         );
         
         if ($discountImageData !== null) {
-            $stmt->send_long_data(8, $discountImageData);
+            $stmt->send_long_data(9, $discountImageData);
         }
         
         if (!$stmt->execute()) {
@@ -207,7 +212,8 @@ try {
         'status' => 'success',
         'message' => 'Order(s) placed successfully',
         'orderID' => $orderIDs[0],
-        'orderIDs' => $orderIDs
+        'orderIDs' => $orderIDs,
+        'course' => $studentCourse
     ]);
     
 } catch (Exception $e) {

@@ -82,7 +82,8 @@
             font-size: 14px;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -91,7 +92,13 @@
             transition: border-color 0.3s;
         }
 
-        .form-group input:focus {
+        .form-group select {
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: #daa520;
         }
@@ -210,6 +217,19 @@
                 <div class="form-group">
                     <label>Student ID</label>
                     <input type="text" id="studentId" placeholder="Enter your student ID" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Course</label>
+                    <select id="course" required>
+                        <option value="">Select your course</option>
+                        <option value="Senior High School">Senior High School (SHS)</option>
+                        <option value="ICT and Engineering">ICT and Engineering</option>
+                        <option value="Tourism Management">Tourism Management</option>
+                        <option value="Hospitality Management">Hospitality Management</option>
+                        <option value="Art and Sciences">Art and Sciences</option>
+                        <option value="Business and Management">Business and Management</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">
@@ -389,70 +409,77 @@
             }
         }
 
-       async function handleSignup() {
-    const studentId = document.getElementById('studentId').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+        async function handleSignup() {
+            const studentId = document.getElementById('studentId').value.trim();
+            const course = document.getElementById('course').value;
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
-    if (!otpVerified) {
-        alert('Please verify your email with OTP first.');
-        return;
-    }
+            if (!otpVerified) {
+                alert('Please verify your email with OTP first.');
+                return;
+            }
 
-    if (!studentId) {
-        alert('Please enter your student ID.');
-        return;
-    }
+            if (!studentId) {
+                alert('Please enter your student ID.');
+                return;
+            }
 
-    if (password !== confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-    }
+            if (!course) {
+                alert('Please select your course.');
+                return;
+            }
 
-    const hasLower = /[a-z]/.test(password);
-    const hasUpper = /[A-Z]/.test(password);
-    const hasDigit = /[0-9]/.test(password);
-    const hasSymbol = /[^a-zA-Z0-9]/.test(password);
-    const isLongEnough = password.length >= 8;
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
 
-    if (!hasLower || !hasUpper || !hasDigit || !hasSymbol || !isLongEnough) {
-        alert('Password must contain:\n- At least 8 characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character');
-        return;
-    }
+            const hasLower = /[a-z]/.test(password);
+            const hasUpper = /[A-Z]/.test(password);
+            const hasDigit = /[0-9]/.test(password);
+            const hasSymbol = /[^a-zA-Z0-9]/.test(password);
+            const isLongEnough = password.length >= 8;
 
-    try {
-        const formData = new URLSearchParams();
-        formData.append('studentId', studentId);
-        formData.append('email', email);
-        formData.append('password', password);
+            if (!hasLower || !hasUpper || !hasDigit || !hasSymbol || !isLongEnough) {
+                alert('Password must contain:\n- At least 8 characters\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character');
+                return;
+            }
 
-        const res = await fetch('http://localhost/UniTrack_web/backend/student_signup.php', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData
-        });
+            try {
+                const formData = new URLSearchParams();
+                formData.append('studentId', studentId);
+                formData.append('course', course);
+                formData.append('email', email);
+                formData.append('password', password);
 
-        const response = await res.text();
-        
-        if (response === "SUCCESS") {
-            alert('Account created successfully! You can now log in.');
-            window.location.replace('Student%20Login.html');
-        } else if (response === "EXISTS") {
-            alert('An account with this email or student ID already exists.');
-        } else if (response === "EMAIL_REGISTERED_AS_ADMIN") {
-            alert('This email is already registered as an admin account. Please use a different email or log in as an admin.');
-        } else if (response === "EMAIL_MISMATCH") {
-            alert('Session expired. Please verify your email again.');
-        } else {
-            alert('Failed to create account: ' + response);
+                const res = await fetch('http://localhost/UniTrack_web/backend/student_signup.php', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+
+                const response = await res.text();
+                
+                if (response === "SUCCESS") {
+                    alert('Account created successfully! You can now log in.');
+                    window.location.replace('Student%20Login.html');
+                } else if (response === "EXISTS") {
+                    alert('An account with this email or student ID already exists.');
+                } else if (response === "EMAIL_REGISTERED_AS_ADMIN") {
+                    alert('This email is already registered as an admin account. Please use a different email or log in as an admin.');
+                } else if (response === "EMAIL_MISMATCH") {
+                    alert('Session expired. Please verify your email again.');
+                } else {
+                    alert('Failed to create account: ' + response);
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('Unable to connect to server.');
+            }
         }
-    } catch (err) {
-        console.error('Error:', err);
-        alert('Unable to connect to server.');
-    }
-}
 
         function goToLogin() {
             window.location.href = 'Student%20Login.html';

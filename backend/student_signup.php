@@ -8,11 +8,13 @@ header("Access-Control-Allow-Methods: POST");
 include 'db_connect.php'; // This connects to unitrack_admindb database (both tables are here)
 
 $studentId = trim($_POST['studentId'] ?? '');
+$course = trim($_POST['course'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
 error_log("=== STUDENT SIGNUP ATTEMPT ===");
 error_log("StudentID: " . $studentId);
+error_log("Course: " . $course);
 error_log("Email: " . $email);
 
 // Verify email matches OTP email
@@ -24,7 +26,7 @@ if ($email !== $_SESSION['pending_email']) {
 }
 
 // Check if all fields are provided
-if (empty($studentId) || empty($email) || empty($password)) {
+if (empty($studentId) || empty($course) || empty($email) || empty($password)) {
     echo "MISSING_FIELDS";
     $conn->close();
     exit;
@@ -67,12 +69,12 @@ $hash = hash_pbkdf2("sha1", $password, $salt, 10000, 20, true);
 $salt_b64 = base64_encode($salt);
 $hash_b64 = base64_encode($hash);
 
-// Insert into studentusers table
+// Insert into studentusers table with Course
 $stmt = $conn->prepare("
-    INSERT INTO studentusers (StudentID, Email, PasswordHash, PasswordSalt, IsActive)
-    VALUES (?, ?, ?, ?, 1)
+    INSERT INTO studentusers (StudentID, Course, Email, PasswordHash, PasswordSalt, IsActive)
+    VALUES (?, ?, ?, ?, ?, 1)
 ");
-$stmt->bind_param("ssss", $studentId, $email, $hash_b64, $salt_b64);
+$stmt->bind_param("sssss", $studentId, $course, $email, $hash_b64, $salt_b64);
 
 if ($stmt->execute()) {
     error_log("Student account created successfully: " . $email);

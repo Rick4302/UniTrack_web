@@ -187,6 +187,8 @@
         .data-grid-container::-webkit-scrollbar { width: 10px; }
         .data-grid-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
         .data-grid-container::-webkit-scrollbar-thumb { background: #4169E1; border-radius: 5px; }
+
+        #itemNameGroup { display: none; }
     </style>
 </head>
 <body>
@@ -371,7 +373,6 @@ const uniformItemsByCourse = {
         "POLO (MALE)",
         "BLOUSE (FEMALE)",
         "TM SKIRT",
-        "TM CLOTH",
         "TM BLAZER (FEMALE)",
         "TM BLAZER (MALE)",
         "NECKTIE",
@@ -418,6 +419,8 @@ const uniformItemsByCourse = {
             }
             loadInventory();
         });
+
+        
 
         async function loadInventory(showAlert = false) {
 

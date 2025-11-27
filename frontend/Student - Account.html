@@ -332,6 +332,11 @@
                 </div>
                 
                 <div class="info-row">
+                    <div class="info-label">Course</div>
+                    <div class="info-value" id="course">Loading...</div>
+                </div>
+                
+                <div class="info-row">
                     <div class="info-label">Email Address</div>
                     <div class="info-value" id="email">Loading...</div>
                 </div>
@@ -367,6 +372,7 @@
             .then(data => {
                 if (data.success) {
                     document.getElementById('studentId').textContent = data.studentId;
+                    document.getElementById('course').textContent = data.course;
                     document.getElementById('email').textContent = data.email;
                     document.getElementById('studentEmail').textContent = data.email;
                     

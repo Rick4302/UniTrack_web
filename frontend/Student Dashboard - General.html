@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniTrack - Hospitality Management Uniforms</title>
+    <title>UniTrack - General Uniforms</title>
     <style>
         * {
             margin: 0;
@@ -199,100 +199,66 @@
             margin: 0 auto 40px;
             padding: 0 40px;
         }
-/* container card */
-.featured-carousel {
-  max-width: 820px;        /* card width */
-  margin: 24px auto 48px;
-  padding: 34px 40px;
-  background: rgba(255,255,255,0.95);
-  border-radius: 14px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-  overflow: hidden;        /* important: hide off-screen slides */
-  position: relative;
-}
 
-/* THIS is the key: make the slides a horizontal flex track */
-.slides {
-  display: flex;           /* horizontal row of slides */
-  width: 100%;
-  transition: transform .55s cubic-bezier(.22,.9,.25,1);
-  will-change: transform;
-}
+        .featured-carousel {
+            width: 100%;
+            max-width: 900px;
+            height: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            position: relative;
+            overflow: visible;
+        }
 
-/* Each slide fills the card width so translateX(-N*100%) shows one slide */
-.slide {
-  flex: 0 0 100%;          /* full card width per slide */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 360px;       /* adjust as needed */
-  box-sizing: border-box;
-}
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* Constrain image size inside the card */
-.slide img {
-  display: block;
-  max-width: 280px;          /* Smaller width */
-  max-height: 380px;         /* Smaller height */
-  object-fit: contain;
-  border-radius: 6px;
-  margin: 0 auto;
-}
+        .carousel-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            height: auto;
+            width: auto;
+            object-fit: contain;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
 
-.featured-section {
-  margin-bottom: 36px;    
-}
-       .featured-carousel {
-  max-width: 820px;          /* full card width */
-  margin: 24px auto 48px;    /* center and spacing from products */
-  padding: 34px 40px;        /* white card padding */
-  background: rgba(255,255,255,0.95);
-  border-radius: 14px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-  position: relative;
-  overflow: hidden;          /* hide overflow while sliding */
-  display: block;
-  height: auto;              /* height driven by content (image) */
-}
+        .carousel-slide img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
 
-/* Use a horizontal flex track for slides */
-.slides {
-  display: flex;             /* track = flex row */
-  width: 100%;
-  transition: transform .55s cubic-bezier(.22,.9,.25,1);
-  will-change: transform;
-}
+        .zoom-hint {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-/* Each slide fills the card width */
-.slide {
-  flex: 0 0 100%;            /* full width per slide */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  min-height: 360px;         /* visual minimum height - tweak to taste */
-}
-
-/* Image sizing to match example look */
-.slide img {
-  display: block;
-  width: auto;
-  max-width: 420px;          /* controls visible image size (tweak 380-520) */
-  max-height: 520px;         /* ensure tall images fit inside card */
-  object-fit: contain;
-  border-radius: 6px;
-  margin: 0 auto;
-}
-
-/* Small responsive tweaks */
-@media (max-width: 980px) {
-  .featured-carousel { padding: 22px; max-width: 92%; }
-  .slide img { max-width: 320px; max-height: 420px; }
-}
-@media (max-width: 720px) {
-  .slide img { max-width: 280px; }
-}
-        
+        .featured-carousel:hover .zoom-hint {
+            opacity: 1;
+        }
 
         /* Image Zoom Modal */
         .zoom-modal {
@@ -731,205 +697,230 @@
             .toast-notification:not(.show) {
                 pointer-events: none;
             }
-            
         }
     </style>
 </head>
 <body>
-  <div class="page-container">
+    <div class="page-container">
+    <!-- Top Navigation -->
     <nav class="top-nav">
-      <div class="nav-left">
-        <div>
-          <div class="logo">UniTrack</div>
-          <div class="logo-subtitle">STI College Global City</div>
+        <div class="nav-left">
+            <div>
+                <div class="logo">UniTrack</div>
+                <div class="logo-subtitle">STI College Global City</div>
+            </div>
         </div>
-      </div>
-      <div class="nav-right">
-        <div class="icon-btn" title="Settings" onclick="handleSettings()">⚙️</div>
-        <div style="position:relative;">
-          <div class="icon-btn" title="Cart" onclick="handleCart()">🛒</div>
-          <span id="cartBadge" class="cart-badge">0</span>
+        
+        <div class="nav-right">
+            <div class="icon-btn" title="Settings" onclick="handleSettings()">
+                ⚙️
+            </div>
+            <div class="icon-btn" title="Shopping Cart" onclick="handleCart()">
+                🛒
+                <span class="cart-badge" id="cartBadge">0</span>
+            </div>
         </div>
-      </div>
     </nav>
 
+        <!-- Main Content -->
     <main class="main-content">
-      <section class="welcome-section">
-        <h1 class="welcome-title">Hospitality Management Uniform Store</h1>
-        <p class="welcome-subtitle">Browse and order your school uniforms</p>
-      </section>
-
-      <nav class="category-nav">
-        <div class="category-buttons">
-          <button class="category-btn" data-target="Student Dashboard - SHS.html">SHS</button>
-          <button class="category-btn" data-target="Student Dashboard - ICT and Engineering.html">ICT and ENGINEERING</button>
-          <button class="category-btn" data-target="Student Dashboard - Tourism Management.html">TOURISM MANAGEMENT</button>
-          <button class="category-btn active" data-target="Student Dashboard - Hospitality Management.html">HOSPITALITY MANAGEMENT</button>
-          <button class="category-btn" data-target="Student Dashboard - Arts & Sciences.html">ART and SCIENCES</button>
-          <button class="category-btn" data-target="Student Dashboard - Business Management.html">BUSINESS and MANAGEMENT</button>
-          <button class="category-btn" data-target="Student Dashboard - General.html">GENERAL</button>
+        <div class="welcome-section">
+            <h1 class="welcome-title">General Uniform Store</h1>
+            <p class="welcome-subtitle">Browse and order your school uniforms</p>
         </div>
-      </nav>
 
-      <!-- Featured Carousel with 3 images -->
-      <section class="featured-section" aria-label="Featured uniforms">
-        <div class="featured-carousel" id="featuredCarousel">
-<div class="slides" id="slides">
-                <div class="slide active" data-index="0">
-              <img src="HM - DAILY.png" alt="Hospitality Uniform - Set 1" data-src="HM - DAILY.png" />
+        <!-- Category Navigation -->
+        <div class="category-nav">
+            <div class="category-buttons">
+                <button class="category-btn" data-target="Student Dashboard - SHS.html">SHS</button>
+                <button class="category-btn" data-target="Student Dashboard - ICT and Engineering.html">ICT and ENGINEERING</button>
+                <button class="category-btn" data-target="Student Dashboard - Tourism Management.html">TOURISM MANAGEMENT</button>
+                <button class="category-btn" data-target="Student Dashboard - Hospitality Management.html">HOSPITALITY MANAGEMENT</button>
+                <button class="category-btn" data-target="Student Dashboard - Arts & Sciences.html">ART and SCIENCES</button>
+                <button class="category-btn" data-target="Student Dashboard - Business Management.html">BUSINESS and MANAGEMENT</button>
+                <button class="category-btn active" data-target="Student Dashboard - General.html">GENERAL UNIFORM</button>
+
+
             </div>
-            <div class="slide" data-index="1">
-              <img src="HM - FOOD & BEV.png" alt="Hospitality Uniform - Set 2" data-src="HM - FOOD & BEV.png" />
-            </div>
-            <div class="slide" data-index="2">
-              <img src="HM - KITCHEN.png" alt="Hospitality Uniform - Set 3" data-src="HM - KITCHEN.png" />
-            </div>
-          </div>
-
-          <div class="carousel-controls left">
-            <button class="ctrl-btn" id="prevBtn" aria-label="Previous">‹</button>
-          </div>
-          <div class="carousel-controls right">
-            <button class="ctrl-btn" id="nextBtn" aria-label="Next">›</button>
-          </div>
-
-          
-
-          <div class="zoom-hint">Click any image to zoom</div>
         </div>
-      </section>
 
-      <!-- Products Section (Hospitality items: itemName + course changed) -->
-      <section class="products-section">
-        <h2 class="section-title">Available Items</h2>
-
-        <div class="products-grid">
-          <!-- POLO (MALE) -->
-          <div class="product-card">
-            <div class="product-name">POLO (MALE)</div>
-            <select class="size-select" onfocus="loadSizes(this,'POLO (MALE)','BSHM')" onchange="loadSizes(this,'POLO (MALE)','BSHM')">
-              <option value="">Select Size</option>
-            </select>
-            <div class="error-message"></div>
-            <div class="product-controls">
-              <div><span class="price-label">PRICE</span> <span class="price-value">₱520</span></div>
-              <button class="add-btn" onclick="addToCart('POLO (MALE)',520)">ADD TO CART</button>
-            </div>
-          </div>
-
-          <!-- BLOUSE (FEMALE) -->
-          <div class="product-card">
-            <div class="product-name">BLOUSE (FEMALE)</div>
-            <select class="size-select" onfocus="loadSizes(this,'BLOUSE (FEMALE)','BSHM')" onchange="loadSizes(this,'BLOUSE (FEMALE)','BSHM')">
-              <option value="">Select Size</option>
-            </select>
-            <div class="error-message"></div>
-            <div class="product-controls">
-              <div><span class="price-label">PRICE</span> <span class="price-value">₱520</span></div>
-              <button class="add-btn" onclick="addToCart('BLOUSE (FEMALE)',520)">ADD TO CART</button>
-            </div>
-          </div>
-
-          <!-- CHEF'S POLO -->
-          <div class="product-card">
-            <div class="product-name">CHEF'S POLO</div>
-            <select class="size-select" onfocus="loadSizes(this,'CHEF\'S POLO','BSHM')" onchange="loadSizes(this,'CHEF\'S POLO','BSHM')">
-              <option value="">Select Size</option>
-            </select>
-            <div class="error-message"></div>
-            <div class="product-controls">
-              <div><span class="price-label">PRICE</span> <span class="price-value">₱650</span></div>
-              <button class="add-btn" onclick="addToCart('CHEF\'S POLO',650)">ADD TO CART</button>
-            </div>
-          </div>
-
-          <!-- CHEF PANTS -->
-          <div class="product-card">
-            <div class="product-name">CHEF PANTS</div>
-            <select class="size-select" onfocus="loadSizes(this,'CHEF PANTS','BSHM')" onchange="loadSizes(this,'CHEF PANTS','BSHM')">
-              <option value="">Select Size</option>
-            </select>
-            <div class="error-message"></div>
-            <div class="product-controls">
-              <div><span class="price-label">PRICE</span> <span class="price-value">₱520</span></div>
-              <button class="add-btn" onclick="addToCart('CHEF PANTS',520)">ADD TO CART</button>
-            </div>
-          </div>
-
-          <!-- HRM VEST MALE -->
-          <div class="product-card">
-            <div class="product-name">HRM VEST (MALE)</div>
-            <select class="size-select" onfocus="loadSizes(this,'HRM VEST MALE','BSHM')" onchange="loadSizes(this,'HRM VEST MALE','BSHM')">
-              <option value="">Select Size</option>
-            </select>
-            <div class="error-message"></div>
-            <div class="product-controls">
-              <div><span class="price-label">PRICE</span> <span class="price-value">₱720</span></div>
-              <button class="add-btn" onclick="addToCart('HRM VEST MALE',720)">ADD TO CART</button>
-            </div>
-          </div>
-
-          <!-- HRM VEST FEMALE -->
-          <div class="product-card">
-            <div class="product-name">HRM VEST (FEMALE)</div>
-            <select class="size-select" onfocus="loadSizes(this,'HRM VEST FEMALE','BSHM')" onchange="loadSizes(this,'HRM VEST FEMALE','BSHM')">
-              <option value="">Select Size</option>
-            </select>
-            <div class="error-message"></div>
-            <div class="product-controls">
-              <div><span class="price-label">PRICE</span> <span class="price-value">₱720</span></div>
-              <button class="add-btn" onclick="addToCart('HRM VEST FEMALE',720)">ADD TO CART</button>
-            </div>
-          </div>
-
-          <!-- APRON -->
-          <div class="product-card">
-            <div class="product-name">HM APRON</div>
-            <select class="size-select" onfocus="loadSizes(this,'APRON','BSHM')" onchange="loadSizes(this,'APRON','BSHM')">
-              <option value="">Select Size</option>
-            </select>
-            <div class="error-message"></div>
-            <div class="product-controls">
-              <div><span class="price-label">PRICE</span> <span class="price-value">₱200</span></div>
-              <button class="add-btn" onclick="addToCart('APRON',200)">ADD TO CART</button>
-            </div>
-          </div>
+         
+ <!-- Products Section -->
+        <div class="products-section">
+  <h2 class="section-title">Available Items</h2>
+  <div class="products-grid">
 
     <div class="product-card">
-                    <div class="product-name">HOSPITALITY MANAGEMENT PANTS</div>
-                    <select class="size-select" onfocus="loadSizes(this, 'GENERAL PANTS MALE', 'GENERAL UNIFORMS')" onchange="loadSizes(this,'GENERAL PANTS MALE', 'GENERAL UNIFORMS')">
-                        <option value="">Select Size</option>
-                    </select>
-                    <div class="error-message"></div>
-                    <div class="product-controls" style="margin-top: 15px;">
-                        <div class="product-price">
-                            <span class="price-label">PRICE</span>
-                            <span class="price-value">₱520</span>
-                        </div>
-                        <button class="add-btn" onclick="addToCart('GENERAL PANTS MALE',  520)">ADD TO CART</button>
-                    </div>
-                </div>
-
-<div class="product-card">
-                    <div class="product-name">HOSPITALITY MANAGEMENT- SKIRT (FEMALE)</div>
-                    <select class="size-select" onfocus="loadSizes(this, 'GENERAL SKIRT', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'GENERAL SKIRT', 'GENERAL UNIFORMS')">
-                        <option value="">Select Size</option>
-                    </select>
-                    <div class="error-message"></div>
-                    <div class="product-controls" style="margin-top: 15px;">
-                        <div class="product-price">
-                            <span class="price-label">PRICE</span>
-                            <span class="price-value">₱480</span>
-                        </div>
-                        <button class="add-btn" onclick="addToCart('GENERAL SKIRT', 480)">ADD TO CART</button>
-                    </div>
-                </div>
-
+      <div class="product-name">GENERAL BLAZER MALE</div>
+      <select class="size-select" onfocus="loadSizes(this, 'GENERAL BLAZER MALE', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'GENERAL BLAZER MALE', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱520</span>
         </div>
-      </section>
-    </main>
+        <button class="add-btn" onclick="addToCart('GENERAL BLAZER MALE', 520)">ADD TO CART</button>
+      </div>
+    </div>
 
-   <div class="zoom-modal" id="zoomModal" onclick="closeZoom()">
+    <div class="product-card">
+      <div class="product-name">GENERAL BLAZER FEMALE</div>
+      <select class="size-select" onfocus="loadSizes(this, 'GENERAL BLAZER FEMALE', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'GENERAL BLAZER FEMALE', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱520</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('GENERAL BLAZER FEMALE', 520)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">GENERAL SKIRT</div>
+      <select class="size-select" onfocus="loadSizes(this, 'GENERAL SKIRT', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'GENERAL SKIRT', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱520</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('GENERAL SKIRT', 520)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">NSTP SHIRT</div>
+      <select class="size-select" onfocus="loadSizes(this, 'NSTP SHIRT', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'NSTP SHIRT', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱410</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('NSTP SHIRT', 410)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">COLLEGE PE PANTS</div>
+      <select class="size-select" onfocus="loadSizes(this, 'COLLEGE PE PANTS', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'COLLEGE PE PANTS', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱460</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('COLLEGE PE PANTS', 460)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">COLLEGE PE SHIRT</div>
+      <select class="size-select" onfocus="loadSizes(this, 'COLLEGE PE SHIRT', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'COLLEGE PE SHIRT', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱410</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('COLLEGE PE SHIRT', 410)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">GENERAL PANTS FEMALE</div>
+      <select class="size-select" onfocus="loadSizes(this, 'GENERAL PANTS FEMALE', 'GENERAL UNIFORMS')" onchange="loadSizes(this,'GENERAL PANTS FEMALE', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱410</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('GENERAL PANTS FEMALE', 410)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">GENERAL PANTS MALE</div>
+      <select class="size-select" onfocus="loadSizes(this, 'GENERAL PANTS MALE', 'GENERAL UNIFORMS')" onchange="loadSizes(this,'GENERAL PANTS MALE', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱520</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('GENERAL PANTS MALE', 520)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">WASHDAY SHIRT MALE</div>
+      <select class="size-select" onfocus="loadSizes(this, 'WASHDAY SHIRT MALE', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'WASHDAY SHIRT MALE', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱410</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('WASHDAY SHIRT MALE', 410)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">WASHDAY SHIRT FEMALE</div>
+      <select class="size-select" onfocus="loadSizes(this, 'WASHDAY SHIRT FEMALE', 'GENERAL UNIFORMS')" onchange="loadSizes(this, 'WASHDAY SHIRT FEMALE', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱410</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('WASHDAY SHIRT FEMALE', 410)">ADD TO CART</button>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-name">42nd Anniv. Shirt</div>
+      <select class="size-select" onfocus="loadSizes(this, '42nd Anniv. Shirt', 'GENERAL UNIFORMS')" onchange="loadSizes(this, '42nd Anniv. Shirt', 'GENERAL UNIFORMS')">
+        <option value="">Select Size</option>
+      </select>
+      <div class="error-message"></div>
+      <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+          <span class="price-label">PRICE</span>
+          <span class="price-value">₱410</span>
+        </div>
+        <button class="add-btn" onclick="addToCart('42nd Anniv. Shirt', 410)">ADD TO CART</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+        </main>
+
+       <div class="zoom-modal" id="zoomModal" onclick="closeZoom()">
         <span class="zoom-close" onclick="closeZoom()">×</span>
         <div class="zoom-modal-content">
             <img id="zoomedImage" src="" alt="">
@@ -937,7 +928,7 @@
         <div class="zoom-instructions">Click anywhere or press ESC to close</div>
     </div>
 
-   <!-- Toast Notification -->
+    <!-- Toast Notification -->
     <div class="toast-notification" id="toastNotification">
         <div class="toast-header">
             <div class="toast-icon">✓</div>
@@ -956,8 +947,8 @@
     </div>
 </div>
 
-  <script>
-           // Configuration - Change this to your actual backend URL
+    <script>
+        // Configuration - Change this to your actual backend URL
     const API_BASE_URL = 'http://localhost/UniTrack_web/backend'; // Backend folder path
 
     // Update cart badge function
@@ -1247,7 +1238,7 @@
     // prefer explicit data-target attribute if present:
     const target = this.dataset.target || this.textContent.trim();
     // If still the current page (SHS) — scroll
-    if (target === 'Student Dashboard - Hospitality Management.html' || target === 'HOSPITALITY MANAGEMENT') {
+    if (target === 'Student Dashboard - General.html' || target === 'GU') {
       document.querySelector('.products-section')?.scrollIntoView({behavior:'smooth'});
       return;
     }
@@ -1282,50 +1273,6 @@
     window.addEventListener('focus', function() {
         updateCartBadge();
     });
-
-    // Simple sliding carousel using existing HTML structure (#slides and .slide)
-(function() {
-  const slidesTrack = document.getElementById('slides'); // must be the element that directly contains .slide elements
-  if (!slidesTrack) return;
-
-  const slides = Array.from(slidesTrack.querySelectorAll('.slide'));
-  let index = 0;
-  const total = slides.length;
-
-  // Ensure slidesTrack starts in the correct layout (flex track)
-  slidesTrack.style.transform = 'translateX(0)';
-
-  function goTo(i) {
-    index = ((i % total) + total) % total; // wrap
-    slidesTrack.style.transform = `translateX(-${index * 100}%)`;
-    // update thumbs active class if you have thumbs
-    const thumbs = document.querySelectorAll('.thumb');
-    thumbs.forEach(t => t.classList.toggle('active', Number(t.dataset.index) === index));
-  }
-
-  // Prev / Next wiring (if you used #prevBtn / #nextBtn)
-  const prev = document.getElementById('prevBtn');
-  const next = document.getElementById('nextBtn');
-  if (prev) prev.addEventListener('click', () => goTo(index - 1));
-  if (next) next.addEventListener('click', () => goTo(index + 1));
-
-  // Thumb clicks (optional)
-  document.querySelectorAll('.thumb').forEach(t => {
-    t.addEventListener('click', () => goTo(Number(t.dataset.index)));
-  });
-
-  // Auto-advance (optional)
-  let auto = setInterval(() => goTo(index + 1), 5000);
-  // pause on hover
-  const carousel = document.getElementById('featuredCarousel') || document.querySelector('.featured-carousel');
-  if (carousel) {
-    carousel.addEventListener('mouseenter', () => clearInterval(auto));
-    carousel.addEventListener('mouseleave', () => auto = setInterval(()=> goTo(index+1), 5000));
-  }
-
-  // init
-  goTo(0);
-})();
-  </script>
+    </script>
 </body>
 </html>

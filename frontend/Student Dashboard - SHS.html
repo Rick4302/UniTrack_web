@@ -734,12 +734,14 @@
         <!-- Category Navigation -->
         <div class="category-nav">
             <div class="category-buttons">
-                <button class="category-btn active">SHS</button>
-                <button class="category-btn">ICT and ENGINEERING</button>
-                <button class="category-btn">TOURISM MANAGEMENT</button>
-                <button class="category-btn">HOSPITALITY MANAGEMENT</button>
-                <button class="category-btn">ART and SCIENCES</button>
-                <button class="category-btn">BUSINESS and MANAGEMENT</button>
+                <!-- Keep the visible labels as before but include a data-file attribute for navigation -->
+                <button class="category-btn active" data-target="Student Dashboard - SHS.html">SHS</button>
+                <button class="category-btn" data-target="Student Dashboard - ICT and Engineering.html">ICT and ENGINEERING</button>
+                <button class="category-btn" data-target="Student Dashboard - Tourism Management.html">TOURISM MANAGEMENT</button>
+                <button class="category-btn" data-target="Student Dashboard - Hospitality Management.html">HOSPITALITY MANAGEMENT</button>
+                <button class="category-btn" data-target="Student Dashboard - Arts & Sciences.html">ART and SCIENCES</button>
+                <button class="category-btn" data-target="Student Dashboard - Business Management.html">BUSINESS and MANAGEMENT</button>
+                <button class="category-btn" data-target="Student Dashboard - General.html">GENERAL UNIFORM</button>
             </div>
         </div>
 
@@ -1269,19 +1271,39 @@
     function handleSettings() {
        window.location.href = 'Student - Account.html'
     }
+    
 
     function handleCart() {
         window.location.href = 'Shopping Cart.html';
     }
 
-    // Category button functionality
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            alert('Category clicked: ' + this.textContent);
-        });
-    });
+   document.querySelectorAll('.category-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    // UI active state
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+
+    // prefer explicit data-target attribute if present:
+    const target = this.dataset.target || this.textContent.trim();
+    // If still the current page (SHS) — scroll
+    if (target === 'Student Dashboard - SHS.html' || target === 'SHS') {
+      document.querySelector('.products-section')?.scrollIntoView({behavior:'smooth'});
+      return;
+    }
+    // If the text is just the label (e.g., 'ICT and ENGINEERING'), convert it to the filename:
+    const labelToFile = {
+      'SHS': 'Student Dashboard - SHS.html',
+      'ICT and ENGINEERING': 'Student Dashboard - ICT and Engineering.html',
+      'TM': 'Student Dashboard - Tourism Management.html',
+      'HOSPITALITY MANAGEMENT': 'Student Dashboard - Hospitality Management.html',
+      'ANS': 'Student Dashboard - Arts & Sciences.html',
+      'BUSINESS and MANAGEMENT': 'Student Dashboard - Business Management.html',
+      'GU': 'Student Dashboard - General.html'
+    };
+    const file = labelToFile[target.toString().trim().toUpperCase()] || target;
+    window.location.href = file;
+  });
+});
 
     // Update cart badge when page becomes visible again (back button)
     document.addEventListener('visibilitychange', function() {

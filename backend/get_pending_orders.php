@@ -27,6 +27,7 @@ try {
             o.HasDiscount,
             o.GCashReceipt,
             o.DiscountIdImage,
+            o.Course,
             i.ItemName,
             i.Size
         FROM orders o
@@ -53,31 +54,27 @@ try {
         5 => 'Cancelled'
     ];
     
-    
     while ($row = $result->fetch_assoc()) {
         // Convert numeric status to string
         $statusNum = intval($row['Status']);
         $statusText = isset($statusMap[$statusNum]) ? $statusMap[$statusNum] : 'Unknown';
         
-        // Convert numeric payment type to string - ADD THIS
-        $paymentTypeNum = intval($row['PaymentType']);
-        $paymentTypeText = isset($paymentTypeMap[$paymentTypeNum]) ? $paymentTypeMap[$paymentTypeNum] : 'Cash';
+        // Convert numeric payment type to string
+        $paymentTypeRaw = $row['PaymentType'] ?? 'cash';
+    
+        // Convert any format to proper string
+        if ($paymentTypeRaw === 0 || $paymentTypeRaw === '0' || strtolower($paymentTypeRaw) === 'cash') {
+            $paymentTypeText = 'Cash';
+        } elseif ($paymentTypeRaw === 1 || $paymentTypeRaw === '1' || strtolower($paymentTypeRaw) === 'gcash') {
+            $paymentTypeText = 'GCash';
+        } else {
+            // Fallback: capitalize first letter
+            $paymentTypeText = ucfirst(strtolower(trim($paymentTypeRaw)));
+        }
         
         // Properly check BLOB data existence
         $hasGCashReceipt = ($row['GCashReceipt'] !== null && strlen($row['GCashReceipt']) > 0);
         $hasDiscountImage = ($row['DiscountIdImage'] !== null && strlen($row['DiscountIdImage']) > 0);
-        
-         $paymentTypeRaw = $row['PaymentType'] ?? 'cash';
-    
-    // Convert any format to proper string
-    if ($paymentTypeRaw === 0 || $paymentTypeRaw === '0' || strtolower($paymentTypeRaw) === 'cash') {
-        $paymentTypeText = 'Cash';
-    } elseif ($paymentTypeRaw === 1 || $paymentTypeRaw === '1' || strtolower($paymentTypeRaw) === 'gcash') {
-        $paymentTypeText = 'GCash';
-    } else {
-        // Fallback: capitalize first letter
-        $paymentTypeText = ucfirst(strtolower(trim($paymentTypeRaw)));
-    }
         
         // Log for debugging
         error_log("Order {$row['OrderID']}: PaymentType={$paymentTypeText}, GCash=" . ($hasGCashReceipt ? 'YES' : 'NO') . 
@@ -88,13 +85,14 @@ try {
             'OrderID' => intval($row['OrderID']),
             'StudentID' => $row['StudentID'],
             'StudentName' => 'Student #' . $row['StudentID'],
+            'Course' => $row['Course'],
             'ItemName' => $row['ItemName'] ?? 'Unknown Item',
             'Size' => $row['Size'] ?? 'N/A',
             'Quantity' => intval($row['Quantity']),
             'TotalAmount' => floatval($row['TotalAmount']),
             'DiscountAmount' => floatval($row['DiscountAmount'] ?? 0),
             'FinalAmount' => floatval($row['FinalAmount']),
-            'PaymentType' => $paymentTypeText,  // CHANGED: Now returns "Cash" or "GCash"
+            'PaymentType' => $paymentTypeText,
             'Status' => $statusText,
             'OrderDate' => $row['OrderDate'],
             'HasDiscount' => intval($row['HasDiscount']),

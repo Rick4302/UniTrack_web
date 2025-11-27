@@ -555,7 +555,7 @@
 
                 <!-- Discount ID Section (Only shows if discount applied) -->
                 <div class="receipt-section" id="discountSection" style="display: none; margin-top: 40px; padding-top: 30px; border-top: 2px dashed #e0e0e0;">
-                    <div class="receipt-label">🆔 Attach Your PWD/Senior Citizen ID</div>
+                    <div class="receipt-label">🆔 Attach Your Discount ID</div>
                     <p style="text-align: center; font-size: 13px; color: #888; margin-bottom: 15px;">
                         Required for discount verification
                     </p>
@@ -726,14 +726,15 @@ function handleDiscountFileSelect(event) {
         formData.append('itemQuantities[]', item.quantity);
     });
 
-    formData.append('orderData', JSON.stringify({
-        cartItems: pendingOrder.cartItems,
-        paymentType: 'gcash',
-        studentID: pendingOrder.studentID,
-        finalAmount: pendingOrder.finalAmount,
-        discountAmount: pendingOrder.discountAmount,
-        hasDiscount: pendingOrder.hasDiscount ? 1 : 0
-    }));
+ formData.append('orderData', JSON.stringify({
+    cartItems: pendingOrder.cartItems,
+    paymentType: 'gcash',
+    studentID: pendingOrder.studentID,
+    totalAmount: pendingOrder.totalAmount,  // ADD THIS LINE
+    finalAmount: pendingOrder.finalAmount,
+    discountAmount: pendingOrder.discountAmount,
+    hasDiscount: pendingOrder.hasDiscount ? 1 : 0
+}));
 
     fetch(`${API_BASE_URL}/submit_gcash_order.php`, {
         method: 'POST',

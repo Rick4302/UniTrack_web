@@ -31,11 +31,11 @@ if (!isset($_SESSION['email']) || empty($_SESSION['email'])) {
 }
 
 if ($action === 'loadUserInfo') {
-    // Fetch student information
+    // Fetch student information including Course
     try {
         error_log("Attempting to load student: " . $studentEmail);
         
-        $query = "SELECT StudentID, Email FROM studentusers WHERE Email = ?";
+        $query = "SELECT StudentID, Course, Email FROM studentusers WHERE Email = ?";
         $stmt = $conn->prepare($query);
         
         if (!$stmt) {
@@ -58,6 +58,7 @@ if ($action === 'loadUserInfo') {
                     error_log("Student found: " . json_encode($row));
                     $response['success'] = true;
                     $response['studentId'] = $row['StudentID'];
+                    $response['course'] = $row['Course'];
                     $response['email'] = $row['Email'];
                 } else {
                     error_log("No student found with email: " . $studentEmail);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniTrack - Tourism Management</title>
+    <title>UniTrack - Tourism Management Uniforms</title>
     <style>
         * {
             margin: 0;
@@ -11,296 +11,1253 @@
             box-sizing: border-box;
         }
 
+        /* === UniTrack Global Background === */
         body {
-            font-family: 'Microsoft YaHei UI', Arial, sans-serif;
-            background-color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        .container {
-            width: 1198px;
-            margin: 0 auto;
-            background-color: #ffffff;
+        /* Background Image */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background-image: url("payhigh.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
         }
 
-        .header {
-            background-color: #ffff00;
-            padding: 20px;
+        /* Gradient Overlay - Softer Yellow Theme */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 224, 130, 0.65),
+                rgba(255, 241, 179, 0.65)
+            );
+            z-index: 1;
+        }
+
+        /* Ensures page content stays above background */
+        .page-container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            width: 100%;
+            height: 70px;
+            background-color: #FFC107;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .logo-section {
-            flex: 1;
-            text-align: center;
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .logo-title {
-            font-size: 42px;
+        .logo {
+            font-size: 24px;
             font-weight: bold;
             color: #000000;
+            letter-spacing: 1px;
         }
 
         .logo-subtitle {
-            font-size: 13px;
-            font-weight: bold;
-            color: #000000;
+            font-size: 12px;
+            color: #333333;
+            font-weight: 600;
         }
 
-        .header-icons {
+        .nav-right {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 20px;
         }
 
         .icon-btn {
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            background-color: #333;
-            border-radius: 4px;
-        }
-
-        .navigation {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
             display: flex;
-            gap: 0;
-            padding: 18px 0;
-        }
-
-        .nav-btn {
-            padding: 8px 16px;
-            background-color: #d3d3d3;
-            border: 1px solid #999;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            color: #000000;
-        }
-
-        .nav-btn:hover {
-            background-color: #c0c0c0;
-        }
-
-        .main-image {
-            width: 500px;
-            height: 400px;
-            margin: 20px auto;
-            background-color: #e0e0e0;
-            border: 1px solid #ccc;
-        }
-
-        .products-section {
-            padding: 20px 7px;
-        }
-
-        .product-row {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 0;
-        }
-
-        .product-item {
-            flex: 1;
-            border: 1px solid #000;
-            padding: 8px;
-            display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            background-color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: rgba(0, 0, 0, 0.2);
+            transform: scale(1.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF5722;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 110px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .welcome-title {
+            font-size: 42px;
+            font-weight: bold;
+            color: #000000;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: rgba(0, 0, 0, 0.75);
+            font-weight: 500;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 40px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .category-buttons {
+            display: inline-flex;
+            gap: 10px;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            padding: 12px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: #000000;
+            color: #FFC107;
+            border-color: #000000;
+            transform: translateY(-2px);
+        }
+
+        /* Featured Image */
+        .featured-section {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 40px;
+        }
+
+        .featured-carousel {
+            width: 100%;
+            max-width: 900px;
+            height: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            height: auto;
+            width: auto;
+            object-fit: contain;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .carousel-slide img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .zoom-hint {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .featured-carousel:hover .zoom-hint {
+            opacity: 1;
+        }
+
+        /* Image Zoom Modal */
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            padding: 20px;
+        }
+
+        .zoom-modal.active {
+            display: flex;
+        }
+
+        .zoom-modal-content {
+            position: relative;
+            max-width: 95%;
+            max-height: 95%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .zoom-modal img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            animation: zoomIn 0.3s ease;
+            border-radius: 8px;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .zoom-close {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            font-size: 45px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 193, 7, 0.3);
+            border-radius: 50%;
+            z-index: 3001;
+            font-weight: 300;
+        }
+
+        .zoom-close:hover {
+            background: rgba(255, 193, 7, 0.5);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .zoom-instructions {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 193, 7, 0.9);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 3001;
+        }
+
+        /* Products Section */
+        .products-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FFC107, #FF9800);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
         .product-name {
+            font-size: 16px;
             font-weight: bold;
-            font-size: 14px;
-            color: #000000;
+            color: #333;
+            margin-bottom: 15px;
         }
 
         .product-controls {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
 
         .size-select {
-            padding: 4px 8px;
-            border: 1px solid #ccc;
-            color: #c0c0c0;
-            font-size: 13px;
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .size-select:focus {
+            outline: none;
+            border-color: #FFC107;
+        }
+
+        .size-select:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            color: #999;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #FFC107;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .price-label {
+            font-size: 12px;
+            color: #999;
+            font-weight: 600;
+        }
+
+        .price-value {
+            font-size: 18px;
             font-weight: bold;
-            font-size: 14px;
-            color: #ffff00;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            color: #FF9800;
         }
 
         .add-btn {
-            background-color: #ffff00;
-            border: 1px solid #000;
-            padding: 6px 20px;
+            background: #FFC107;
+            border: none;
+            padding: 10px 25px;
+            font-size: 14px;
             font-weight: bold;
-            font-size: 12px;
             cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: #000;
         }
 
-        .add-btn:hover {
-            background-color: #ffed00;
+        .add-btn:hover:not(:disabled) {
+            background: #FFB300;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .add-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            color: #666;
+        }
+
+        .error-message {
+            color: #FF5722;
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            top: 100px;
+            right: -400px;
+            background: linear-gradient(135deg, #ffffff 0%, #fff9e6 100%);
+            padding: 20px 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            min-width: 320px;
+            max-width: 400px;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 5px solid #FFC107;
+        }
+
+        .toast-notification.show {
+            right: 30px;
+        }
+
+        .toast-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .toast-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #FFC107, #FFB300);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .toast-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            flex: 1;
+        }
+
+        .toast-close {
+            cursor: pointer;
+            font-size: 24px;
+            color: #999;
+            transition: all 0.3s ease;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .toast-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+            transform: rotate(90deg);
+        }
+
+        .toast-body {
+            padding-left: 57px;
+        }
+
+        .toast-product {
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .toast-details {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .toast-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .toast-actions {
+            display: flex;
+            gap: 10px;
+            padding-left: 57px;
+        }
+
+        .toast-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toast-btn-view {
+            background: #FFC107;
+            color: #000;
+        }
+
+        .toast-btn-view:hover {
+            background: #FFB300;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+        }
+
+        .toast-btn-continue {
+            background: transparent;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .toast-btn-continue:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FFC107, #FF9800);
+            border-radius: 0 0 0 16px;
+            animation: progressBar 3s linear;
+        }
+
+        @keyframes progressBar {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0 20px;
+            }
+
+            .welcome-title {
+                font-size: 32px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-nav {
+                padding: 0 20px;
+            }
+
+            .products-section,
+            .featured-section {
+                padding: 0 20px;
+            }
+
+            .featured-carousel {
+                height: 400px;
+                padding: 20px;
+            }
+
+            .toast-notification {
+                right: -100%;
+                left: auto;
+                min-width: auto;
+                max-width: 90vw;
+                transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+                            left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            }
+
+            .toast-notification.show {
+                right: auto;
+                left: 10px;
+            }
+
+            .toast-notification:not(.show) {
+                pointer-events: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div style="width: 50px;"></div>
-            <div class="logo-section">
-                <div class="logo-title">UniTrack</div>
+<div class="page-container">
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div>
+                <div class="logo">UniTrack</div>
                 <div class="logo-subtitle">STI College Global City</div>
             </div>
-            <div class="header-icons">
-                <div class="icon-btn" title="Settings"></div>
-                <div class="icon-btn" title="Cart"></div>
+        </div>
+        
+        <div class="nav-right">
+            <div class="icon-btn" title="Settings" onclick="handleSettings()">
+                ⚙️
+            </div>
+            <div class="icon-btn" title="Shopping Cart" onclick="handleCart()">
+                🛒
+                <span class="cart-badge" id="cartBadge">0</span>
+            </div>
+        </div>
+    </nav>
+
+        <!-- Main Content -->
+    <main class="main-content">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Tourism Management Uniform Store</h1>
+            <p class="welcome-subtitle">Browse and order your school uniforms</p>
+        </div>
+
+        <!-- Category Navigation -->
+        <div class="category-nav">
+            <div class="category-buttons">
+                <button class="category-btn" data-target="Student Dashboard - SHS.html">SHS</button>
+                <button class="category-btn" data-target="Student Dashboard - ICT and Engineering.html">ICT and ENGINEERING</button>
+                <button class="category-btn active" data-target="Student Dashboard - Tourism Management.html">TOURISM MANAGEMENT</button>
+                <button class="category-btn" data-target="Student Dashboard - Hospitality Management.html">HOSPITALITY MANAGEMENT</button>
+                <button class="category-btn" data-target="Student Dashboard - Arts & Sciences.html">ART and SCIENCES</button>
+                <button class="category-btn" data-target="Student Dashboard - Business Management.html">BUSINESS and MANAGEMENT</button>
             </div>
         </div>
 
-        <div class="navigation">
-            <button class="nav-btn">JHS/SHS</button>
-            <button class="nav-btn">ICT and ENGINEERING</button>
-            <button class="nav-btn">TOURISM MANAGEMENT</button>
-            <button class="nav-btn">HOSPITALITY MANAGEMENT</button>
-            <button class="nav-btn">ART and SCIENCES</button>
-            <button class="nav-btn">BUSINESS and MANAGEMENT</button>
+         <!-- Featured Image -->
+        <div class="featured-section">
+            <div class="featured-carousel">
+                <div class="carousel-slide">
+                    <img src="TM.png" alt="Tourism Management Uniform" onclick="zoomImage('TM.png', 'Tourism Management Uniform')">
+                </div>
+                <div class="zoom-hint">Click to view full size</div>
+            </div>
         </div>
-
-        <div class="main-image"></div>
-
+ <!-- Products Section -->
         <div class="products-section">
-            <div class="product-row">
-                <div class="product-item">
-                    <span class="product-name">TM - TOURISM PIN</span>
-                    <div class="product-controls">
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
+            <h2 class="section-title">Available Items</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-name">TOURISM - WHITE POLO (MALE)</div>
+                    <select class="size-select" onfocus="loadSizes(this, 'POLO (MALE)', 'BSTM')" onchange="loadSizes(this, 'POLO (MALE)', 'BSTM')">
+                        <option value="">Select Size</option>
+                    </select>
+                    <div class="error-message"></div>
+                    <div class="product-controls" style="margin-top: 15px;">
+                        <div class="product-price">
+                            <span class="price-label">PRICE</span>
+                            <span class="price-value">₱520</span>
+                        </div>
+                        <button class="add-btn" onclick="addToCart('POLO (MALE)', 520)">ADD TO CART</button>
                     </div>
                 </div>
-                <div class="product-item">
-                    <span class="product-name">TM - YELLOW SCARF</span>
-                    <div class="product-controls">
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
-                    </div>
-                </div>
-            </div>
 
-            <div class="product-row">
-                <div class="product-item">
-                    <span class="product-name">TM - BERET</span>
-                    <div class="product-controls">
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
+                   <div class="product-card">
+                    <div class="product-name">TOURISM - BLOUSE (FEMALE)</div>
+                    <select class="size-select" onfocus="loadSizes(this, 'BLOUSE (FEMALE)', 'BSTM')" onchange="loadSizes(this, 'BLOUSE (FEMALE)', 'BSTM')">
+                        <option value="">Select Size</option>
+                    </select>
+                    <div class="error-message"></div>
+                    <div class="product-controls" style="margin-top: 15px;">
+                        <div class="product-price">
+                            <span class="price-label">PRICE</span>
+                            <span class="price-value">₱520</span>
+                        </div>
+                        <button class="add-btn" onclick="addToCart('BLOUSE (FEMALE)', 520)">ADD TO CART</button>
                     </div>
                 </div>
-                <div class="product-item">
-                    <span class="product-name">TM - YELLOW NECKTIE</span>
-                    <div class="product-controls">
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
-                    </div>
-                </div>
-            </div>
 
-            <div class="product-row">
-                <div class="product-item">
-                    <span class="product-name">TM - WHITE POLO</span>
-                    <div class="product-controls">
-                        <select class="size-select">
-                            <option>Size</option>
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
+                   <div class="product-card">
+                    <div class="product-name">TOURISM - SKIRT</div>
+                    <select class="size-select" onfocus="loadSizes(this, 'TM SKIRT', 'BSTM')" onchange="loadSizes(this, 'TM SKIRT', 'BSTM')">
+                        <option value="">Select Size</option>
+                    </select>
+                    <div class="error-message"></div>
+                    <div class="product-controls" style="margin-top: 15px;">
+                        <div class="product-price">
+                            <span class="price-label">PRICE</span>
+                            <span class="price-value">₱520</span>
+                        </div>
+                        <button class="add-btn" onclick="addToCart('TM SKIRT', 520)">ADD TO CART</button>
                     </div>
                 </div>
-                <div class="product-item">
-                    <span class="product-name">TM - FEMALE BLAZER</span>
-                    <div class="product-controls">
-                        <select class="size-select">
-                            <option>Size</option>
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
-                    </div>
-                </div>
-            </div>
 
-            <div class="product-row">
-                <div class="product-item">
-                    <span class="product-name">TM - WHITE BLOUSE</span>
-                    <div class="product-controls">
-                        <select class="size-select">
-                            <option>Size</option>
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
+                   <div class="product-card">
+                    <div class="product-name">TOURISM - BLAZER (MALE)</div>
+                    <select class="size-select" onfocus="loadSizes(this, 'TM BLAZER (MALE)', 'BSTM')" onchange="loadSizes(this, 'TM BLAZER (MALE)', 'BSTM')">
+                        <option value="">Select Size</option>
+                    </select>
+                    <div class="error-message"></div>
+                    <div class="product-controls" style="margin-top: 15px;">
+                        <div class="product-price">
+                            <span class="price-label">PRICE</span>
+                            <span class="price-value">₱520</span>
+                        </div>
+                        <button class="add-btn" onclick="addToCart('TM BLAZER (MALE)', 520)">ADD TO CART</button>
                     </div>
                 </div>
-                <div class="product-item">
-                    <span class="product-name">TM - GRAY PANTS</span>
-                    <div class="product-controls">
-                        <select class="size-select">
-                            <option>Size</option>
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
-                    </div>
-                </div>
-            </div>
 
-            <div class="product-row">
-                <div class="product-item">
-                    <span class="product-name">TM - MALE BLAZER</span>
-                    <div class="product-controls">
-                        <select class="size-select">
-                            <option>Size</option>
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
+                      <div class="product-card">
+                    <div class="product-name">TOURISM - BLAZER (FEMALE)</div>
+                    <select class="size-select" onfocus="loadSizes(this, 'TM BLAZER (FEMALE)', 'BSTM')" onchange="loadSizes(this, 'TM BLAZER (FEMALE)', 'BSTM')">
+                        <option value="">Select Size</option>
+                    </select>
+                    <div class="error-message"></div>
+                    <div class="product-controls" style="margin-top: 15px;">
+                        <div class="product-price">
+                            <span class="price-label">PRICE</span>
+                            <span class="price-value">₱520</span>
+                        </div>
+                        <button class="add-btn" onclick="addToCart('TM BLAZER (FEMALE)', 520)">ADD TO CART</button>
                     </div>
                 </div>
-                <div class="product-item">
-                    <span class="product-name">TM - GRAY SKIRT</span>
-                    <div class="product-controls">
-                        <select class="size-select">
-                            <option>Size</option>
-                            <option>S</option>
-                            <option>M</option>
-                            <option>L</option>
-                            <option>XL</option>
-                        </select>
-                        <span class="price-label">PRICE</span>
-                        <button class="add-btn">ADD</button>
-                    </div>
-                </div>
-            </div>
+
+                    <div class="product-card">
+    <div class="product-name">TOURISM - NECKTIE</div>
+    <select class="size-select" onfocus="loadSizes(this, 'NECKTIE', 'BSTM')" onchange="loadSizes(this, 'NECKTIE', 'BSTM')">
+        <option value="">Select Size</option>
+    </select>
+    <div class="error-message"></div>
+    <div class="product-controls" style="margin-top: 15px;">
+        <div class="product-price">
+            <span class="price-label">PRICE</span>
+            <span class="price-value">₱150</span>
         </div>
+        <button class="add-btn" onclick="addToCart('NECKTIE', 150)">ADD TO CART</button>
     </div>
+</div>
+
+                    <div class="product-card">
+                        <div class="product-name">TOURISM MANAGEMENT - SCARF</div>
+                        <select class="size-select" onfocus="loadSizes(this, 'SCARF', 'BSTM')" onchange="loadSizes(this, 'SCARF', 'BSTM')">
+                        <option value="">Select Size</option>
+                    </select>
+                        <div class="product-controls">
+                            <div class="product-price">
+                                <span class="price-label">PRICE</span>
+                                <span class="price-value">₱150</span>
+                            </div>
+                            <button class="add-btn" onclick="addToCart('SCARF', 150)">ADD TO CART</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-name">TOURISM MANAGEMENT - PIN</div>
+                        <select class="size-select" onfocus="loadSizes(this, 'PIN', 'BSTM')" onchange="loadSizes(this, 'PIN', 'BSTM')">
+                        <option value="">Select Size</option>
+                    </select>
+                        <div class="product-controls">
+                            <div class="product-price">
+                                <span class="price-label">PRICE</span>
+                                <span class="price-value">₱50</span>
+                            </div>
+                            <button class="add-btn" onclick="addToCart('PIN', 50)">ADD TO CART</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-name">TOURISM MANAGEMENT - BERET</div>
+                        <select class="size-select" onfocus="loadSizes(this, 'BERET', 'BSTM')" onchange="loadSizes(this, 'BERET', 'BSTM')">
+                        <option value="">Select Size</option>
+                    </select>
+                        <div class="product-controls">
+                            <div class="product-price">
+                                <span class="price-label">PRICE</span>
+                                <span class="price-value">₱200</span>
+                            </div>
+                            <button class="add-btn" onclick="addToCart('BERET', 200)">ADD TO CART</button>
+                        </div>
+                    </div>
+
+                    
+
+                     <div class="product-card">
+                    <div class="product-name">GRAY PANTS</div>
+                    <select class="size-select" onfocus="loadSizes(this, 'GENERAL PANTS MALE', 'GENERAL UNIFORMS')" onchange="loadSizes(this,'GENERAL PANTS MALE', 'GENERAL UNIFORMS')">
+                        <option value="">Select Size</option>
+                    </select>
+                    <div class="error-message"></div>
+                    <div class="product-controls" style="margin-top: 15px;">
+                        <div class="product-price">
+                            <span class="price-label">PRICE</span>
+                            <span class="price-value">₱520</span>
+                        </div>
+                        <button class="add-btn" onclick="addToCart('GENERAL PANTS MALE',  520)">ADD TO CART</button>
+                    </div>
+                </div>
+
+                   
+        </main>
+
+       <div class="zoom-modal" id="zoomModal" onclick="closeZoom()">
+        <span class="zoom-close" onclick="closeZoom()">×</span>
+        <div class="zoom-modal-content">
+            <img id="zoomedImage" src="" alt="">
+        </div>
+        <div class="zoom-instructions">Click anywhere or press ESC to close</div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-notification" id="toastNotification">
+        <div class="toast-header">
+            <div class="toast-icon">✓</div>
+            <div class="toast-title">Added to Cart!</div>
+            <div class="toast-close" onclick="closeToast()">×</div>
+        </div>
+        <div class="toast-body">
+            <div class="toast-product" id="toastProduct"></div>
+            <div class="toast-details" id="toastDetails"></div>
+        </div>
+        <div class="toast-actions">
+            <button class="toast-btn toast-btn-view" onclick="handleCart()">View Cart</button>
+            <button class="toast-btn toast-btn-continue" onclick="closeToast()">Continue Shopping</button>
+        </div>
+        <div class="toast-progress"></div>
+    </div>
+</div>
+    <script>
+       // Configuration - Change this to your actual backend URL
+    const API_BASE_URL = 'http://localhost/UniTrack_web/backend'; // Backend folder path
+
+    // Update cart badge function
+    function updateCartBadge() {
+        const cart = JSON.parse(sessionStorage.getItem('cartItems')) || [];
+        const badge = document.getElementById('cartBadge');
+        if (badge) {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.textContent = totalItems;
+        }
+    }
+
+    // Zoom functionality
+    function zoomImage(src, alt) {
+        const modal = document.getElementById('zoomModal');
+        const zoomedImg = document.getElementById('zoomedImage');
+        zoomedImg.src = src;
+        zoomedImg.alt = alt;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeZoom() {
+        const modal = document.getElementById('zoomModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close zoom with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeZoom();
+        }
+    });
+
+    // Fetch available sizes from PHP backend
+    function loadSizes(selectElement, itemName, course) {
+        const errorDiv = selectElement.nextElementSibling;
+        
+        // Don't load if already loaded
+        if (selectElement.dataset.loaded === 'true') {
+            return;
+        }
+        
+        // Reset error message
+        errorDiv.classList.remove('show');
+        errorDiv.textContent = '';
+
+        // Show loading state
+        selectElement.disabled = true;
+        selectElement.innerHTML = '<option>Loading...</option>';
+
+        // Build query parameters
+        const params = new URLSearchParams({
+            itemName: itemName,
+            course: course
+        });
+
+        const url = `${API_BASE_URL}/get_available_sizes.php?${params}`;
+        console.log('Fetching from:', url);
+        console.log('Item:', itemName, 'Course:', course);
+
+        // Fetch from PHP backend
+        fetch(url)
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received data:', data);
+                selectElement.innerHTML = '<option value="">Select Size</option>';
+
+                if (data.status === 'success' && data.availableSizes && data.availableSizes.length > 0) {
+                    console.log('Adding', data.availableSizes.length, 'sizes');
+                    data.availableSizes.forEach(sizeObj => {
+                        const option = document.createElement('option');
+                        option.value = sizeObj.size;
+                        option.textContent = sizeObj.size;
+                        // Store inventoryID as data attribute
+                        option.dataset.inventoryId = sizeObj.inventoryID;
+                        selectElement.appendChild(option);
+                    });
+                    selectElement.disabled = false;
+                    selectElement.dataset.loaded = 'true';
+                } else {
+                    console.log('No sizes found or error:', data);
+                    const option = document.createElement('option');
+                    option.textContent = 'No sizes available';
+                    option.disabled = true;
+                    selectElement.appendChild(option);
+                    selectElement.disabled = true;
+                    errorDiv.textContent = 'This item is currently out of stock';
+                    errorDiv.classList.add('show');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading sizes:', error);
+                selectElement.innerHTML = '<option value="">Select Size</option>';
+                selectElement.disabled = false;
+                errorDiv.textContent = 'Unable to load sizes. Error: ' + error.message;
+                errorDiv.classList.add('show');
+            });
+    }
+
+    // Toast notification functions
+    let toastTimeout;
+
+    function showToast(productName, price, size, quantity) {
+        const toast = document.getElementById('toastNotification');
+        const productDiv = document.getElementById('toastProduct');
+        const detailsDiv = document.getElementById('toastDetails');
+
+        // Set product name
+        productDiv.textContent = productName;
+
+        // Set details
+        let detailsHTML = `<div class="toast-detail-item">💰 ₱${price}</div>`;
+        if (size) {
+            detailsHTML += `<div class="toast-detail-item">📏 Size: ${size}</div>`;
+        }
+        detailsHTML += `<div class="toast-detail-item">🛍️ Qty: ${quantity}</div>`;
+        detailsDiv.innerHTML = detailsHTML;
+
+        // Clear any existing timeout
+        if (toastTimeout) {
+            clearTimeout(toastTimeout);
+        }
+
+        // Show toast
+        toast.classList.add('show');
+
+        // Auto hide after 3 seconds
+        toastTimeout = setTimeout(() => {
+            closeToast();
+        }, 3000);
+    }
+
+    function closeToast() {
+        const toast = document.getElementById('toastNotification');
+        toast.classList.remove('show');
+        if (toastTimeout) {
+            clearTimeout(toastTimeout);
+        }
+    }
+
+    // Check stock for items without size selection
+    async function checkItemStock(itemName, course, cardElement) {
+        const addBtn = cardElement.querySelector('.add-btn');
+        const priceContainer = cardElement.querySelector('.product-controls');
+        
+        try {
+            const params = new URLSearchParams({
+                itemName: itemName,
+                course: course,
+                checkStockOnly: 'true'
+            });
+            
+            const response = await fetch(`${API_BASE_URL}/get_available_sizes.php?${params}`);
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Store inventoryID in the card for later use
+                if (data.inventoryID) {
+                    cardElement.dataset.inventoryId = data.inventoryID;
+                }
+                
+                if (!data.hasStock) {
+                    addBtn.disabled = true;
+                    addBtn.textContent = 'OUT OF STOCK';
+                    
+                    let outOfStockMsg = cardElement.querySelector('.error-message');
+                    if (!outOfStockMsg) {
+                        outOfStockMsg = document.createElement('div');
+                        outOfStockMsg.className = 'error-message';
+                        priceContainer.parentElement.insertBefore(outOfStockMsg, priceContainer);
+                    }
+                    outOfStockMsg.textContent = 'This item is currently out of stock';
+                    outOfStockMsg.classList.add('show');
+                    outOfStockMsg.style.marginTop = '10px';
+                }
+            }
+        } catch (error) {
+            console.error('Error checking stock:', error);
+        }
+    }
+
+    // Updated addToCart function with inventoryID
+    async function addToCart(productName, price) {
+        const card = event.target.closest('.product-card');
+        const sizeSelect = card.querySelector('.size-select');
+        const size = sizeSelect?.value;
+        const addBtn = card.querySelector('.add-btn');
+        
+        let inventoryID = null;
+        
+        // Check if size is required and selected
+        if (sizeSelect && !size) {
+            alert('Please select a size before adding to cart');
+            return;
+        }
+        
+        // Get inventoryID from size selection
+        if (sizeSelect && size) {
+            const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+            inventoryID = parseInt(selectedOption.dataset.inventoryId);
+        }
+        
+        // For items without size selection, get inventoryID from card
+        if (!sizeSelect) {
+            inventoryID = parseInt(card.dataset.inventoryId);
+            
+            
+        }
+        
+        // Validate inventoryID
+        if (!inventoryID || isNaN(inventoryID)) {
+            alert('Unable to add item to cart. Please try again.');
+            console.error('Invalid inventoryID:', inventoryID);
+            return;
+        }
+
+        // Get existing cart from sessionStorage
+        let cart = JSON.parse(sessionStorage.getItem('cartItems')) || [];
+        
+        // Create item object with inventoryID
+        const newItem = {
+            inventoryID: inventoryID,  // ← CRITICAL: This was missing!
+            name: productName,
+            size: size || 'N/A',
+            price: price,
+            quantity: 1
+        };
+
+        // Check if item with same inventoryID already exists
+        const existingItem = cart.find(item => item.inventoryID === inventoryID);
+
+        let finalQuantity = 1;
+        if (existingItem) {
+            existingItem.quantity += 1;
+            finalQuantity = existingItem.quantity;
+        } else {
+            cart.push(newItem);
+        }
+
+        // Save cart to sessionStorage
+        sessionStorage.setItem('cartItems', JSON.stringify(cart));
+        
+        // Update cart badge
+        updateCartBadge();
+
+        // Show elegant toast notification
+        showToast(productName, price, size, finalQuantity);
+    }
+
+    // Update the DOMContentLoaded event
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartBadge();
+        
+        // Check stock for necktie (and any other items without size selection)
+        const productCards = document.querySelectorAll('.product-card');
+        productCards.forEach(card => {
+            const productName = card.querySelector('.product-name').textContent.trim();
+            const sizeSelect = card.querySelector('.size-select');
+            
+          
+        });
+    });
+
+    function handleSettings() {
+       window.location.href = 'Student - Account.html'
+    }
+    
+
+    function handleCart() {
+        window.location.href = 'Shopping Cart.html';
+    }
+
+   document.querySelectorAll('.category-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    // UI active state
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+
+    // prefer explicit data-target attribute if present:
+    const target = this.dataset.target || this.textContent.trim();
+    // If still the current page (SHS) — scroll
+    if (target === 'Student Dashboard - Tourism Management.html' || target === 'TM') {
+      document.querySelector('.products-section')?.scrollIntoView({behavior:'smooth'});
+      return;
+    }
+    // If the text is just the label (e.g., 'ICT and ENGINEERING'), convert it to the filename:
+    const labelToFile = {
+      'SHS': 'Student Dashboard - SHS.html',
+      'ICT and ENGINEERING': 'Student Dashboard - ICT and Engineering.html',
+      'TM': 'Student Dashboard - Tourism Management.html',
+      'HOSPITALITY MANAGEMENT': 'Student Dashboard - Hospitality Management.html',
+      'ANS': 'Student Dashboard - Arts & Sciences.html',
+      'BUSINESS and MANAGEMENT': 'Student Dashboard - Business Management.html',
+      'GU': 'Student Dashboard - General.html'
+    };
+    const file = labelToFile[target.toString().trim().toUpperCase()] || target;
+    window.location.href = file;
+  });
+});
+
+    // Update cart badge when page becomes visible again (back button)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            updateCartBadge();
+        }
+    });
+
+    // Update cart badge when page is shown (including back button navigation)
+    window.addEventListener('pageshow', function(event) {
+        updateCartBadge();
+    });
+
+    // Also update when the page gains focus
+    window.addEventListener('focus', function() {
+        updateCartBadge();
+    });
+    </script>
 </body>
 </html>

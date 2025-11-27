@@ -589,6 +589,7 @@ async function loadOrders() {
 
         if (result.status === 'success') {
             allOrders = result.data || [];
+            console.log('Orders loaded:', allOrders); // ADD THIS LINE
             renderOrders(allOrders);
             if (!allOrders.length) {
                 tbody.innerHTML = '<tr><td colspan="8" class="no-data">No pending orders found</td></tr>';
@@ -601,7 +602,6 @@ async function loadOrders() {
         tbody.innerHTML = '<tr><td colspan="8" class="no-data">Failed to connect to server</td></tr>';
     }
 }
-
 function renderOrders(orders) {
     const tbody = document.getElementById('ordersTableBody');
     if (!Array.isArray(orders) || orders.length === 0) {
@@ -672,6 +672,7 @@ function viewOrderDetails(orderId) {
     let html = `
         <div class="detail-row"><span class="detail-label">Order ID:</span><span class="detail-value">#${order.OrderID}</span></div>
         <div class="detail-row"><span class="detail-label">Student Number:</span><span class="detail-value">${escapeHtml(order.StudentID)}</span></div>
+        <div class="detail-row"><span class="detail-label">Course:</span><span class="detail-value">${escapeHtml(order.Course || 'N/A')}</span></div>
         <div class="detail-row"><span class="detail-label">Product:</span><span class="detail-value">${escapeHtml(order.ItemName || '')}</span></div>
         <div class="detail-row"><span class="detail-label">Size:</span><span class="detail-value">${escapeHtml(order.Size || '')}</span></div>
         <div class="detail-row"><span class="detail-label">Quantity:</span><span class="detail-value">${order.Quantity ?? ''}</span></div>
@@ -715,7 +716,6 @@ function viewOrderDetails(orderId) {
     modal.classList.add('active');
 }
 
-/* view image inside the same modal */
 function viewOrderDetails(orderId) {
     const order = allOrders.find(o => o.OrderID === orderId);
     if (!order) { showAlert('⚠️', 'Not Found', 'Order details not found.'); return; }
@@ -727,6 +727,7 @@ function viewOrderDetails(orderId) {
     let html = `
         <div class="detail-row"><span class="detail-label">Order ID:</span><span class="detail-value">#${order.OrderID}</span></div>
         <div class="detail-row"><span class="detail-label">Student Number:</span><span class="detail-value">${escapeHtml(order.StudentID)}</span></div>
+        <div class="detail-row"><span class="detail-label">Course:</span><span class="detail-value">${escapeHtml(order.Course || 'N/A')}</span></div>
         <div class="detail-row"><span class="detail-label">Product:</span><span class="detail-value">${escapeHtml(order.ItemName || '')}</span></div>
         <div class="detail-row"><span class="detail-label">Size:</span><span class="detail-value">${escapeHtml(order.Size || '')}</span></div>
         <div class="detail-row"><span class="detail-label">Quantity:</span><span class="detail-value">${order.Quantity ?? ''}</span></div>
@@ -759,8 +760,6 @@ function viewOrderDetails(orderId) {
     }
 
     document.getElementById('orderDetails').innerHTML = html;
-
-    // REMOVED: hidePreview();
 
     // show modal
     const modal = document.getElementById('orderModal');
@@ -814,11 +813,20 @@ async function approveOrder(orderId) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ orderID: parseInt(orderId), action: 'approve' })
         });
+
+        // THIS LINE IS MISSING in your code!
         const result = await response.json();
+
         if (result.status === 'success') {
             loadOrders();
-            showAlert('✅', 'Success', result.message || 'Order approved.');
-        } else showAlert('❌', 'Error', result.message || 'Failed to approve order.');
+            if (result.emailSent === false) {
+                showAlert('⚠️', 'Partial', `Order updated but email failed to send: ${result.emailError || 'Unknown'}`);
+            } else {
+                showAlert('✅', 'Success', result.message || 'Order updated and email sent.');
+            }
+        } else {
+            showAlert('❌', 'Error', result.message || 'Failed to update order.');
+        }
     } catch (err) {
         console.error(err);
         showAlert('❌', 'Error', 'Failed to approve order. See console.');

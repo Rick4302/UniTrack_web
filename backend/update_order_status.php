@@ -28,11 +28,20 @@ try {
         'Paid' => 2,
         'Ready' => 3,
         'Completed' => 4,
-        'Cancelled' => 5
+        'Cancelled' => 5,
+        'Rejected' => 6
     ];
     
     // Reverse map for numeric to text
-    $reverseStatusMap = array_flip($statusMap);
+    $reverseStatusMap = [
+        0 => 'Pending',
+        1 => 'Pending Verification',
+        2 => 'Paid',
+        3 => 'Ready',
+        4 => 'Completed',
+        5 => 'Cancelled',
+        6 => 'Rejected'
+    ];
     
     if (!isset($statusMap[$statusText])) {
         throw new Exception("Invalid status: " . $statusText);
@@ -43,8 +52,8 @@ try {
     // Start transaction
     $conn->begin_transaction();
     
-    // Get order details before updating
-    $getOrderQuery = "SELECT InventoryID, Quantity, Status FROM orders WHERE OrderID = ?";
+    // Get order details before updating (including Course)
+    $getOrderQuery = "SELECT InventoryID, Quantity, Status, Course FROM orders WHERE OrderID = ?";
     $getStmt = $conn->prepare($getOrderQuery);
     $getStmt->bind_param("i", $orderId);
     $getStmt->execute();
@@ -57,8 +66,12 @@ try {
     $order = $orderResult->fetch_assoc();
     $inventoryID = $order['InventoryID'];
     $quantity = $order['Quantity'];
-    $oldStatus = $order['Status'];
+    $oldStatusNum = intval($order['Status']);
+    $course = $order['Course'];
     $getStmt->close();
+    
+    // Get previous status TEXT
+    $previousStatusText = isset($reverseStatusMap[$oldStatusNum]) ? $reverseStatusMap[$oldStatusNum] : 'Unknown';
     
     // Update order status
     $updateQuery = "UPDATE orders SET Status = ?, ProcessedDate = NOW() WHERE OrderID = ?";
@@ -80,11 +93,11 @@ try {
     
     $updateStmt->close();
     
-    // ✅ UPDATE INVENTORY based on status change
+    // UPDATE INVENTORY based on status change
     $approvedStatuses = [2, 3, 4]; // Paid, Ready, Completed
     $cancelledStatus = 5;
     
-    $wasApproved = in_array($oldStatus, $approvedStatuses);
+    $wasApproved = in_array($oldStatusNum, $approvedStatuses);
     $nowApproved = in_array($statusNum, $approvedStatuses);
     $nowCancelled = ($statusNum === $cancelledStatus);
     
@@ -126,19 +139,19 @@ try {
         $invStmt->close();
     }
     
-    // ✅ MOVE TO ORDERHISTORY if approved or cancelled
-    $shouldMoveToHistory = in_array($statusNum, [2, 3, 4, 5]); // Paid, Ready, Completed, or Cancelled
+    // MOVE TO ORDERHISTORY if approved, cancelled, or rejected
+    $shouldMoveToHistory = in_array($statusNum, [2, 3, 4, 5, 6]);
     
     if ($shouldMoveToHistory) {
         // Insert into orderhistory
         $historyQuery = "INSERT INTO orderhistory (
+            OrderID,
             ChangeDate, 
             ChangedBy, 
             NewStatus, 
-            Notes, 
-            OrderID, 
-            PreviousStatus
-        ) VALUES (NOW(), ?, ?, ?, ?, ?)";
+            PreviousStatus,
+            Notes
+        ) VALUES (?, NOW(), ?, ?, ?, ?)";
         
         $historyStmt = $conn->prepare($historyQuery);
         
@@ -149,17 +162,16 @@ try {
         // You can get ChangedBy from session or input if needed
         $changedBy = isset($input['changedBy']) ? $input['changedBy'] : "Admin";
         
-        $notes = "Order " . ($statusNum === 5 ? "cancelled" : "approved as " . $statusText);
+        $notes = "Order " . ($statusNum === 5 ? "cancelled" : ($statusNum === 6 ? "rejected" : "approved as " . $statusText)) . 
+                 ($course ? " (Course: " . $course . ")" : "");
         
-        // Convert old status number to text
-        $previousStatusText = isset($reverseStatusMap[$oldStatus]) ? $reverseStatusMap[$oldStatus] : "Unknown";
-        
-        $historyStmt->bind_param("sssis", 
+        // Use TEXT values for both statuses
+        $historyStmt->bind_param("issss", 
+            $orderId,
             $changedBy,
-            $statusText,  // NewStatus as text
-            $notes,
-            $orderId,  // OrderID as integer
-            $previousStatusText  // PreviousStatus as text
+            $statusText,          // NewStatus as TEXT
+            $previousStatusText,  // PreviousStatus as TEXT
+            $notes
         );
         
         if (!$historyStmt->execute()) {
@@ -191,6 +203,7 @@ try {
         'status' => 'success',
         'message' => 'Order status updated to ' . $statusText . ($shouldMoveToHistory ? ' and moved to history' : ''),
         'orderId' => $orderId,
+        'course' => $course,
         'inventoryUpdated' => ($nowApproved && !$wasApproved) || ($nowCancelled && $wasApproved),
         'movedToHistory' => $shouldMoveToHistory
     ]);
